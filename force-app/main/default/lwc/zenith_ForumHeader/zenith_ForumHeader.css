@@ -1,0 +1,43 @@
+.headertitle{
+    font-size: 48px;
+    color: white;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+@media screen and (min-width: 1024px){
+	.headertitle{
+    	margin: 0% 10%;
+        padding-top:3.125rem;
+	}   
+}
+
+@media screen and (max-width: 1023px){
+	.headertitle{
+    	margin-left: 10%;
+        margin-right: 10%;
+        font-size: 30px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+	}  
+}
+
+@media screen and (max-width: 767px){
+	.headertitle{
+        margin-left: 10%;
+    margin-right: 10%;
+        font-size: 15px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+	}  
+}
+
+@media screen and (max-width: 480px){
+	.headertitle{
+        margin-left: 5%;
+    margin-right: 5%;
+        font-size: 15px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+	}  
+}

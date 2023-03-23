@@ -1,0 +1,55 @@
+.container{
+    font-family: 'Haptik-Regular' !important;
+}
+
+h1{
+    /* font-weight: 700; */
+    font-size: 	1.875rem;
+    font-family: 'Haptik-Bold' !important;
+    margin-bottom: 1.25rem;
+}
+
+.categoryHead{
+    color: #575757;
+    font-size: 1.375rem;
+     font-family: 'Haptik-Bold' !important;
+}
+
+.subCategories{
+    font-weight: 400;
+    font-size: 1rem;
+    color: #236BF5;
+    padding-top: .5625rem;
+    cursor: pointer;
+}
+
+.view-more-button{
+    border-radius: 3rem;
+    color: #236BF5;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.6255rem 1rem;
+    cursor: pointer;
+    background: linear-gradient(180deg, #F7F7F7 81.04%, rgba(247, 247, 247, 0) 100%);
+    border: 1px solid #c1c1c1;
+}
+
+.mainCols{
+    padding: 0.625rem;
+}
+.hide{
+    display: none;
+}
+
+.spinnerDiv{
+    position: relative;
+  
+}
+.spinner{
+    display: inline-block;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 80px;
+}

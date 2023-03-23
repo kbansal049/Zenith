@@ -1,0 +1,36 @@
+<apex:page standardController="Significant_Customer_Interaction__c" recordSetVar="sci" standardStylesheets="false" applyBodyTag="false" extensions="NewSCIController">
+    <apex:messages />
+    <apex:variable var="lightningDesktop" value="{! $User.UIThemeDisplayed == 'Theme4d'}" />
+    <apex:outputPanel rendered="{! !lightningDesktop}">
+        <script>
+            var patchTeamId = "{!patchIdVal}";
+            console.log('patchTeamId--->',patchTeamId);
+            var retUrl = "" + window.parent.location;
+            console.log('retUrl--->',retUrl);
+            var accountId = "{!$CurrentPage.parameters.Id}";
+            /*if (retUrl.indexOf('#') > -1) {
+            retUrl = retUrl.substr(0, retUrl.indexOf('#'));
+            }*/
+            var redirectTo = '/apex/ManageSCI?edit=false&accountId=' + accountId + '&patchTeamId=' + patchTeamId;
+            console.log('redirectTo--->',redirectTo);
+            console.log('window.parent.location--->',window.parent.location);
+            window.parent.location.replace(redirectTo);
+        </script>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{! lightningDesktop}">
+        <apex:includeLightning />
+        <div id="ContactSearchId" />    
+        <script>
+        $Lightning.use("c:significantCustomerInteractionApp", function() {
+            $Lightning.createComponent("c:SignificantCustomerInteractionWizardOverride",
+            { 
+                recordId : "{!$CurrentPage.parameters.Id}"
+            },
+            "ContactSearchId",
+            function(cmp) {
+                console.log('Contact Search page loaded successfully');
+            });
+        });
+        </script>
+    </apex:outputPanel>
+</apex:page>

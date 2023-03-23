@@ -1,0 +1,6 @@
+.cardSpinner{
+    position: relative;
+}
+:host .slds-modal__content{
+    overflow: initial;
+}

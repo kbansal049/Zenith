@@ -1,0 +1,229 @@
+<template>
+    <div class="container">
+        <div class="headerText">
+            <p>Community activity</p>
+        </div>
+        <div class="widgetSwitches">
+            <div class="slds-grid slds-wrap">
+                <div class="slds-col slds-size_7-of-12">
+                    <div class="slds-grid slds-wrap switchHead">
+                        <div class="slds-col slds-size_2-of-12 borderClass latestDiv" data-id="latest" onclick={latestPosts}><p>Latest</p></div>
+                        <div class="slds-col slds-size_3-of-12 borderClass solvedDiv" data-id="solved" onclick={solvedPosts}><p>Solved</p></div>
+                        <div class="slds-col slds-size_3-of-12 borderClass unreadDiv" data-id="unread" onclick={unreadPosts}><p>Unread</p></div>
+                        <div class="slds-col slds-size_4-of-12 borderClass bookmarkDiv" data-id="bookmarked" onclick={bookmarkPost} ><p>Bookmarks</p></div>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_5-of-12">
+
+                </div>
+            </div>
+        </div>
+        <div class="contentContainer">
+            <div class="slds-grid slds-wrap">
+                <template if:true={isLatest}>
+                    <template for:each={resultList} for:item="feedItem">
+                        <!-- {feedItem.feedItemBody} -->
+                        <div key={feedItem} class="slds-col slds-size_12-of-12 contentMainDiv">
+                            <div class="slds-grid slds-wrap">
+                                <div class="slds-col slds-large-size_1-of-12 slds-size_1-of-12 slds-medium-size_1-of-12">
+                                    <img class="userAvatar" src={feedItem.userImg} data-target-id={feedItem.createdById} onclick={handleUser}></img>
+                                </div>
+                                <div class="slds-col slds-large-size_11-of-12  slds-size_11-of-12 slds-medium-size_11-of-12">
+                                    <div class="slds-col slds-grid">
+                                        <div class="slds-col slds-large-size_9-of-12">
+                                            <div class="userName">
+                                                <lightning-formatted-text value={feedItem.createdByName} data-target-id={feedItem.createdById} onclick={handleUser}></lightning-formatted-text>
+                                            </div>
+                                            <template if:true={feedItem.bestAnswerId}>
+                                                <img src={solvedBadge} alt="solved_Banner">
+                                            </template>
+                                        </div>
+                                        <div class="slds-col slds-large-size_3-of-12 slds-text-align_right postDateDiv">
+                                            <img src={calendarImg} alt="calendar.png" class="calendarImg">
+                                            <lightning-formatted-date-time class="postDate" value={feedItem.createdDate} year="numeric" month="numeric" day="numeric"></lightning-formatted-date-time>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col">Community_Member</div>
+                                </div>
+                                <div class="slds-col slds-grid">
+                                    <div class=" slds-col slds-large-size_8-of-12 slds-medium-size_6-of-12 feedContent" >
+                                        <lightning-formatted-text value={feedItem.feedItemBody} data-target-id={feedItem.feedItemId} onclick={navigateToFeedItemPage}></lightning-formatted-text>
+                                    </div>
+                                    <div class="slds-col slds-grid slds-grid_vertical-align-end slds-text-align_center slds-large-size_4-of-12 slds-medium-size_6-of-12 feedStats">
+                                        <div class="slds-col slds-size_1-of-3 borderClass">
+                                            <img class="statsIcons" src={view_icon} alt="view_icon.png">
+                                            <lightning-formatted-number value={feedItem.viewsCount}></lightning-formatted-number>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-3 borderClass">
+                                            <img class="statsIcons" src={thumbs_up_icon} alt="thumbs_up.png">
+                                            <lightning-formatted-number value={feedItem.feedLikesCount}></lightning-formatted-number>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-3 borderClass">
+                                            <img class="statsIcons" src={comment_icon} alt="comment.png">
+                                            <lightning-formatted-number value={feedItem.feedCommentCount}></lightning-formatted-number>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </template>
+                </template>
+                <template if:true={isSolved}>
+                    <template for:each={resultList} for:item="feedItem">
+                        <!-- {feedItem.feedItemBody} -->
+                        <div key={feedItem} class="slds-col slds-size_12-of-12 contentMainDiv">
+                            <div class="slds-grid slds-wrap">
+                                <div class="slds-col slds-large-size_1-of-12 slds-size_1-of-12 slds-medium-size_1-of-12">
+                                    <img class="userAvatar" src={feedItem.userImg} data-target-id={feedItem.createdById} onclick={handleUser}></img>
+                                </div>
+                                <div class="slds-col slds-large-size_11-of-12  slds-size_11-of-12 slds-medium-size_11-of-12">
+                                    <div class="slds-col slds-grid">
+                                        <div class="slds-col slds-large-size_9-of-12">
+                                            <div class="userName">
+                                                <lightning-formatted-text value={feedItem.createdByName}></lightning-formatted-text>
+                                            </div>
+                                            <template if:true={feedItem.bestAnswerId}>
+                                                <img src={solvedBadge} alt="solved_Banner">
+                                            </template>
+                                        </div>
+                                        <div class="slds-col slds-large-size_3-of-12 slds-text-align_right postDateDiv">
+                                            <img src={calendarImg} alt="calendar.png" class="calendarImg">
+                                            <lightning-formatted-date-time class="postDate" value={feedItem.createdDate} year="numeric" month="numeric" day="numeric"></lightning-formatted-date-time>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col">Community_Member</div>
+                                </div>
+                                <div class="slds-col slds-grid">
+                                    <div class=" slds-col slds-large-size_8-of-12 slds-medium-size_6-of-12 feedContent">
+                                        <lightning-formatted-text value={feedItem.feedItemBody} data-target-id={feedItem.feedItemId} onclick={navigateToFeedItemPage}></lightning-formatted-text>
+                                    </div>
+                                    <div class="slds-col slds-grid slds-grid_vertical-align-end slds-text-align_center slds-large-size_4-of-12 slds-medium-size_6-of-12 feedStats">
+                                        <div class="slds-col slds-size_1-of-3 borderClass">
+                                            <img class="statsIcons" src={view_icon} alt="view_icon.png">
+                                            <lightning-formatted-number value={feedItem.viewsCount}></lightning-formatted-number>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-3 borderClass">
+                                            <img class="statsIcons" src={thumbs_up_icon} alt="thumbs_up.png">
+                                            <lightning-formatted-number value={feedItem.feedLikesCount}></lightning-formatted-number>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-3 borderClass">
+                                            <img class="statsIcons" src={comment_icon} alt="comment.png">
+                                            <lightning-formatted-number value={feedItem.feedCommentCount}></lightning-formatted-number>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </template>
+                <div if:true={showSpinner}>
+                    <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+                </div>
+                <template if:true={isUnread}>
+                    <template for:each={resultList} for:item="feedItem">
+                        <!-- {feedItem.feedItemBody} -->
+                        <div key={feedItem} class="slds-col slds-size_12-of-12 contentMainDiv">
+                            <div class="slds-grid slds-wrap">
+                                <div class="slds-col slds-large-size_1-of-12 slds-size_1-of-12 slds-medium-size_1-of-12">
+                                    <img class="userAvatar" src={feedItem.userImg} data-target-id={feedItem.createdById} onclick={handleUser}></img>
+                                </div>
+                                <div class="slds-col slds-large-size_11-of-12  slds-size_11-of-12 slds-medium-size_11-of-12">
+                                    <div class="slds-col slds-grid">
+                                        <div class="slds-col slds-large-size_9-of-12">
+                                            <div class="userName">
+                                                <lightning-formatted-text value={feedItem.createdByName}></lightning-formatted-text>
+                                            </div>
+                                            <template if:true={feedItem.bestAnswerId}>
+                                                <img src={solvedBadge} alt="solved_Banner">
+                                            </template>
+                                        </div>
+                                        <div class="slds-col slds-large-size_3-of-12 slds-text-align_right postDateDiv">
+                                            <img src={calendarImg} alt="calendar.png" class="calendarImg">
+                                            <lightning-formatted-date-time class="postDate" value={feedItem.createdDate} year="numeric" month="numeric" day="numeric"></lightning-formatted-date-time>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col">Community_Member</div>
+                                </div>
+                                <div class="slds-col slds-grid">
+                                    <div class=" slds-col slds-large-size_8-of-12 slds-medium-size_6-of-12 feedContent">
+                                        <lightning-formatted-text value={feedItem.feedItemBody} data-target-id={feedItem.feedItemId} onclick={navigateToFeedItemPage}></lightning-formatted-text>
+                                    </div>
+                                    <div class="slds-col slds-grid slds-grid_vertical-align-end slds-text-align_center slds-large-size_4-of-12 slds-medium-size_6-of-12 feedStats">
+                                        <div class="slds-col slds-size_1-of-3 borderClass">
+                                            <img class="statsIcons" src={view_icon} alt="view_icon.png">
+                                            <lightning-formatted-number value={feedItem.viewsCount}></lightning-formatted-number>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-3 borderClass">
+                                            <img class="statsIcons" src={thumbs_up_icon} alt="thumbs_up.png">
+                                            <lightning-formatted-number value={feedItem.feedLikesCount}></lightning-formatted-number>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-3 borderClass">
+                                            <img class="statsIcons" src={comment_icon} alt="comment.png">
+                                            <lightning-formatted-number value={feedItem.feedCommentCount}></lightning-formatted-number>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </template>
+                <template if:true={isBookmarked}>
+                    <template for:each={resultList} for:item="feedItem">
+                        <!-- {feedItem.feedItemBody} -->
+                        <div key={feedItem} class="slds-col slds-size_12-of-12 contentMainDiv">
+                            <div class="slds-grid slds-wrap">
+                                <div class="slds-col slds-large-size_1-of-12 slds-size_1-of-12 slds-medium-size_1-of-12">
+                                    <img class="userAvatar" src={feedItem.userImg} data-target-id={feedItem.createdById} onclick={handleUser}></img>
+                                </div>
+                                <div class="slds-col slds-large-size_11-of-12  slds-size_11-of-12 slds-medium-size_11-of-12">
+                                    <div class="slds-col slds-grid">
+                                        <div class="slds-col slds-large-size_9-of-12">
+                                            <div class="userName">
+                                                <lightning-formatted-text value={feedItem.createdByName}></lightning-formatted-text>
+                                            </div>
+                                            <template if:true={feedItem.bestAnswerId}>
+                                                <img src={solvedBadge} alt="solved_Banner">
+                                            </template>
+                                        </div>
+                                        <div class="slds-col slds-large-size_3-of-12 slds-text-align_right postDateDiv">
+                                            <img src={calendarImg} alt="calendar.png" class="calendarImg">
+                                            <lightning-formatted-date-time class="postDate" value={feedItem.createdDate} year="numeric" month="numeric" day="numeric"></lightning-formatted-date-time>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col">Community_Member</div>
+                                </div>
+                                <div class="slds-col slds-grid">
+                                    <div class=" slds-col slds-large-size_8-of-12 slds-medium-size_6-of-12 feedContent">
+                                        <lightning-formatted-text value={feedItem.feedItemBody} data-target-id={feedItem.feedItemId} onclick={navigateToFeedItemPage}></lightning-formatted-text>
+                                    </div>
+                                    <div class="slds-col slds-grid slds-grid_vertical-align-end slds-text-align_center slds-large-size_4-of-12 slds-medium-size_6-of-12 feedStats">
+                                        <div class="slds-col slds-size_1-of-3 borderClass">
+                                            <img class="statsIcons" src={view_icon} alt="view_icon.png">
+                                            <lightning-formatted-number value={feedItem.viewsCount}></lightning-formatted-number>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-3 borderClass">
+                                            <img class="statsIcons" src={thumbs_up_icon} alt="thumbs_up.png">
+                                            <lightning-formatted-number value={feedItem.feedLikesCount}></lightning-formatted-number>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-3 borderClass">
+                                            <img class="statsIcons" src={comment_icon} alt="comment.png">
+                                            <lightning-formatted-number value={feedItem.feedCommentCount}></lightning-formatted-number>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </template>
+            </div>
+            <template if:true={showViewMore}>
+                <div style="margin-top: 1rem;" data-name="viewMore" onclick={handleViewMore}>
+                    <span class="view-more-button">
+                        <p class="viewBtn empPaddingLarge" >VIEW MORE >></p>
+                    </span>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>

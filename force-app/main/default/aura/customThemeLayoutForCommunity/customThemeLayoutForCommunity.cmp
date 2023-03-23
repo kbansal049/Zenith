@@ -1,0 +1,27 @@
+<aura:component implements="forceCommunity:themeLayout" access="global">
+    <aura:attribute name="search" type="Aura.Component[]" required="false"/>
+    <aura:attribute name="profileMenu" type="Aura.Component[]" required="false"/>
+    <aura:attribute name="navBar" type="Aura.Component[]" required="false"/>
+    <aura:attribute name="newHeader" type="Aura.Component[]" required="false"/>
+    <aura:attribute name="newFooter" type="Aura.Component[]" required="false"/>
+    <div>
+        <!--<div class="searchRegion">
+            {!v.search}
+        </div>
+        <div class="profileMenuRegion">
+            {!v.profileMenu}
+        </div> -->
+        <!--<div class="navigation">
+            <c:navbar/>
+        </div>-->
+       <div class="newHeader">
+            {!v.newHeader}
+        </div>
+        <div class="mainContentArea">
+            {!v.body}
+        </div>
+        <div class="newFooter">
+            {!v.newFooter}
+        </div>
+    </div>
+</aura:component>

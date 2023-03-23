@@ -1,0 +1,359 @@
+<template>
+    
+    <lightning-card>
+        <div class="slds-border_top"></div>
+            <div title="External Attendees">
+                <h4 class="slds-m-around_medium"><strong>External Attendees</strong></h4>
+                <p style="text-align:center;">Dont forget who you interacted with... We could use this data in so many useful ways...</p>
+            </div>
+
+            <div title="Manage External Attendees">
+                <div class="slds-box slds-box_xx-small slds-m-around_medium">
+                    <h3><strong>Manage External Attendees</strong></h3>
+                </div>
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="ACTION">ACTION</div>
+                                </th>
+                               
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="NAME">NAME</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="ACCOUNT">ACCOUNT</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="GENERAL ROLE/TITLE">GENERAL ROLE/TITLE</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="EMALI">EMAIL</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="PHONE">PHONE</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template if:true={data.length}>
+                            <template for:each={data} for:item="con">
+                                <tr key={con.Id}>
+                                    <th scope="col">
+                                        <div><lightning-icon data-id={con.Id} icon-name="action:delete" size="x-small" alternative-text="delete" title="delete" onclick={callRowAction}></lightning-icon></div>
+                                    </th>
+                                    
+                                    <th scope="col">
+                                        <div>{con.Name}</div>
+                                    </th>
+                                        <th scope="col">
+                                            <div>{con.AccountName__c}</div>
+                                        </th>
+                                    
+                                    <th scope="col">
+                                        <div>{con.Title}</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div>{con.Email}</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div>{con.Phone}</div>
+                                    </th>
+                                </tr>
+                            </template>
+                            <template if:false={data.length}>
+                                <p class="slds-m-around_medium">No attendees were added. Use the below section to search and add attendees.</p>
+                            </template>
+                            </template>
+                        </tbody>
+                    </table>
+                    
+            </div>
+
+            <div title="Search contacts">
+                <div class="slds-box slds-box_xx-small slds-m-around_medium">
+                    <h3><strong>Search contacts</strong></h3>
+                </div>
+                <div class="slds-box slds-box_xx-small slds-m-around_medium">
+                    <lightning-record-edit-form label="Enter contact" object-api-name={objectApiName}>
+                                <!-- <lightning-input-field title="Enter the contact" label="Enter contact" field-name="Attendee_Name__c" onchange={handleContact}></lightning-input-field> -->
+                                <label for="fieldidContact">Enter the contact name</label>
+                        <lightning-input-field
+                        id="fieldidContact"
+                        variant="label-hidden"
+                        name="contactSearch"
+                        field-name="Attendee_Name__c"
+                        onchange={handleContact}
+                        label="Enter the contact name"
+                    ></lightning-input-field>
+                    </lightning-record-edit-form>
+                        <p class="slds-m-around_medium slds-text-title_bold">OR</p>
+                        <lightning-button class="" variant="brand" title="create new contact" label="Create New Contact" onclick={openModal}></lightning-button>
+                </div>
+                    
+            </div>
+
+            <template if:true={isModalOpen} style="margin: 40px;">
+                <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-hidden="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open --slds-c-modal-color-border --slds-c-modal-shadow" style="margin: 130px;" >
+                    <lightning-card title="Create Contact" class="slds-m-around_medium " >
+                        <lightning-record-edit-form object-api-name="Contact" onsuccess={handleSuccess} onsubmit={onSubmitContact}>
+                            <lightning-messages> </lightning-messages>
+                            <div class="slds-grid slds-gutters slds-var-p-around_medium">
+                                <div class="slds-col">
+                                    <lightning-input-field field-name="Salutation"> </lightning-input-field>
+                                    <lightning-input-field field-name="LastName"> </lightning-input-field>
+                                    <lightning-input-field required="True" field-name="Email"> </lightning-input-field>
+                                    <lightning-input-field field-name="Phone"> </lightning-input-field>
+                                    <lightning-input-field required="True" field-name="Contact_Type__c"> </lightning-input-field>
+                                </div>
+                                <div class="slds-col">
+                                    <lightning-input-field field-name="FirstName"> </lightning-input-field>                            
+                                    <lightning-input-field required="True" field-name="AccountId" value={accountRecId}> </lightning-input-field>                            
+                                    <lightning-input-field field-name="Title"> </lightning-input-field>                           
+                                    <lightning-input-field required="True" field-name="Project_Role__c"> </lightning-input-field>                            
+                                    <lightning-input-field field-name="LeadSource"> </lightning-input-field>
+                                </div>
+                              </div>
+
+                            <div if:false={isLoadedContact} class="slds-align_absolute-center slds-var-p-around_medium">
+                                <lightning-button
+                                    class="slds-m-around_small"
+                                    type="submit"
+                                    variant="brand"
+                                    label="Create & Add"         
+                                    
+                                >
+                                </lightning-button>
+                                <lightning-button variant="destructive" 
+                                label="Cancel" title="Cancel" onclick={closeModal} class="slds-m-around_small"></lightning-button>
+                            </div>
+                            <div class="slds-m-around_large">
+                                <div if:true={isLoadedContact} class="slds-is-relative">
+                                    <lightning-spinner
+                                        alternative-text="Loading..." variant="brand">
+                                    </lightning-spinner>
+                                </div>
+                            </div>
+                            
+                        </lightning-record-edit-form>
+                    </lightning-card>
+                    
+                </section>
+                <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+
+            </template>
+            <template if:true={dataAddLoading}>
+                <lightning-spinner alternative-text="Loading"></lightning-spinner>
+            </template>
+            <template if:true={dataDeleteLoading}>
+                <lightning-spinner alternative-text="Loading"></lightning-spinner>
+            </template>
+            <template if:true={dataSearchLoading}>
+                <lightning-spinner alternative-text="Loading"></lightning-spinner>
+            </template>
+            <template if:true={previousLoading}>
+                <lightning-spinner alternative-text="Loading"></lightning-spinner>
+            </template>
+
+            <!-- <div title="Search Leads">
+                <div class="slds-box slds-box_xx-small slds-m-around_medium">
+                    <h3><strong>Search Leads</strong></h3>
+                </div>
+                <div class="slds-box slds-box_xx-small slds-m-around_medium">
+                <lightning-record-edit-form object-api-name={objectApiName}>
+                    <label for="fieldidLead">Enter the lead name</label>
+                    <lightning-input-field id="fieldidLead" variant="label-hidden" field-name="Attendee_Name_Lead__c" onchange={handleLead}></lightning-input-field>
+                </lightning-record-edit-form>
+            </div> -->
+                <!--<div class="slds-m-around_medium">
+                        <lightning-input
+                            name="leadSearch"
+                            field-name="Name"
+                            onchange={handleLead}
+                            label="Enter the lead name"
+                            type="search"
+                        ></lightning-input>       
+                </div>-->
+                    
+            <!-- </div> -->
+            <div title="Contacts that Matter-Execs">
+                <div class="slds-box slds-box_xx-small slds-m-around_medium">
+                    <h3><strong>Contacts that Matter-Execs</strong></h3>
+                </div>
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="ACTION">ACTION</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="NAME">NAME</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="ACCOUNT">ACCOUNT</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="GENERAL ROLE/TITLE">GENERAL ROLE/TITLE</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="EMALI">EMAIL</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="PHONE">PHONE</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template if:true={cmtData}>
+                            <template for:each={cmtData} for:item="con">
+                                <tr key={con.Id}>
+                                    <th scope="col">
+                                    <lightning-record-edit-form object-api-name={objectApiName}>
+                                        <div><lightning-icon data-id={con.Id} icon-name="action:approval" size="x-small" alternative-text="Add" title="Add" onclick={handleSuggestedContact}></lightning-icon></div>
+                                    </lightning-record-edit-form>
+                                        
+                                    </th>
+                                    <!-- <th scope="col">
+                                        
+                                        <div>
+                                            <lightning-combobox
+                                                name="progress"
+                                                data-id={con.Id}
+                                                label="Status"
+                                                variant="label-hidden"
+                                                value={con.type}
+                                                placeholder="Select Attendee"
+                                                onchange={handleAttendee}
+                                                options={optionsAttendee}></lightning-combobox>
+                                        </div>
+                                    </th> -->
+                                    <th scope="col">
+                                        <div>{con.Name}</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div>{con.Account.Name}</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div>{con.Title}</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div>{con.Email}</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div>{con.Phone}</div>
+                                    </th>
+                                </tr>
+                            </template>
+                            </template>
+                        </tbody>
+                    </table>
+                    
+            </div>
+            <template if:true={conData}>
+                <div title="Suggested Contacts" >
+                    <div class="slds-box slds-box_xx-small slds-m-around_medium">
+                        <h3><strong>Suggested Contacts</strong></h3>
+                    </div>
+                    <div class="slds-scrollable_y" style="height:15rem;">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="ACTION">ACTION</div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="NAME">NAME</div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="ACCOUNT">ACCOUNT</div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="GENERAL ROLE/TITLE">GENERAL ROLE/TITLE</div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="EMALI">EMAIL</div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="PHONE">PHONE</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={conData} for:item="con">
+                                    <tr key={con.Id}>
+                                        <th scope="col">
+                                        <lightning-record-edit-form object-api-name={objectApiName}>
+                                            <div><lightning-icon data-id={con.Id} icon-name="action:approval" size="x-small" alternative-text="Add" title="Add" onclick={handleSuggestedContact}></lightning-icon></div>
+                                        </lightning-record-edit-form>
+                                            
+                                        </th>
+                                        <!-- <th scope="col">
+                                            
+                                            <div>
+                                                <lightning-combobox
+                                                    name="progress"
+                                                    data-id={con.Id}
+                                                    label="Status"
+                                                    variant="label-hidden"
+                                                    value={con.type}
+                                                    placeholder="Select Attendee"
+                                                    onchange={handleAttendee}
+                                                    options={optionsAttendee}></lightning-combobox>
+                                            </div>
+                                        </th> -->
+                                        <th scope="col">
+                                            <div>{con.Name}</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div>{con.Account.Name}</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div>{con.Title}</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div>{con.Email}</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div>{con.Phone}</div>
+                                        </th>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </template>
+            
+            <div if:false={isLoaded}>
+                <lightning-button
+                    class="slds-m-around_small"
+                    label="Cancel"
+                    onclick={handleCancel}
+
+                ></lightning-button>
+                <lightning-button
+                    class="slds-m-around_small"
+                    variant="brand"
+                    label="Previous"
+                    onclick={handlePreviousLoader}
+
+                ></lightning-button>
+                <lightning-button
+                    class="slds-m-around_small"
+                    variant="brand"
+                    label="Save"
+                    onclick={handleNext}
+
+                ></lightning-button>
+           </div>
+            <div class="slds-m-around_large">
+                <template if:true={isLoaded} class="slds-is-relative">
+                   <lightning-spinner
+                       alternative-text="Loading..." variant="brand">
+                   </lightning-spinner>
+                </template>
+           </div>
+           
+    </lightning-card>
+    <c-custom-toast-component auto-close-time="3000"></c-custom-toast-component>
+</template>

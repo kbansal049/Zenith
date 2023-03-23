@@ -1,0 +1,53 @@
+<template>
+
+    <template if:false={isLoaded}>
+        <lightning-spinner variant="brand" alternative-text="Loading" size="small"></lightning-spinner>
+    </template>
+    <template if:true={isLoaded}>
+        <template if:true={hasError}>
+            <div class="slds-align_absolute-center slds-text-color_error">{errMsg}
+                <a onclick={showDetailErrorMessage}>&nbsp; More Information</a>
+            </div>
+            <template if:true={showDetailError}>
+                <div class="slds-align_absolute-center slds-text-color_error">
+                    {errDetail}
+                </div>
+            </template>
+        </template>
+    </template>
+
+    <lightning-card>
+        <div class="slds-grid slds-page-header forceRelatedListCardHeader" data-aura-class="forceRelatedListCardHeader">
+            <header class="slds-media slds-media--center slds-has-flexi-truncate">
+                <div class="slds-media__figure stencil slds-avatar slds-avatar_small" aria-hidden="true">
+                    <lightning-icon icon-name="utility:file" alternative-text="files" title="files" size="x-small">
+                    </lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <a class="slds-card__header-link baseCard__header-title-container"
+                            href="/lightning/r/PartnerFundClaim/0RB7g000000GmcUGAS/related/CombinedAttachments/view">
+                            <span class="slds-truncate slds-m-right--xx-small" title="Notes &amp; Attachments">
+                                Notes &amp;
+                                Attachments ({totalNumberOfFiles})
+                            </span>
+                        </a>
+                    </h2>
+                </div>
+                <div class="slds-no-flex">
+                    <ul class="branding-actions slds-button-group slds-m-bottom_small">
+                        <lightning-file-upload label={label} name="fileUploader" accept={acceptedFormats}
+                            record-id={recordId} onuploadfinished={handleActionFinished} multiple>
+                        </lightning-file-upload>
+                    </ul>
+                </div>
+            </header>
+        </div>
+        <lightning-card>
+            <template if:true={files.data}>
+                <c-files-related-list-lwc files={files.data} onfiledelete={handleActionFinished}>
+                </c-files-related-list-lwc>
+            </template>
+        </lightning-card>
+    </lightning-card>
+</template>

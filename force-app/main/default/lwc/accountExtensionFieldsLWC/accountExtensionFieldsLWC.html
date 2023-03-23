@@ -1,0 +1,148 @@
+<template>
+    <div class="componentHolder">
+      <!-- Show Spinner-->
+      <template if:false={isLoaded}>
+        <lightning-spinner variant="brand" alternative-text="Loading" size="small"></lightning-spinner>
+      </template>
+  
+      <template if:true={isLoaded}>
+  
+        <template if:true={hasError}>
+          <div class="slds-align_absolute-center slds-text-color_error">{errMsg}
+            <a onclick={showDetailErrorMessage}>&nbsp; More Information</a>
+          </div>
+          <template if:true={showDetailError}>
+            <div class="slds-align_absolute-center slds-text-color_error">
+              {errDetail}
+            </div>
+          </template>
+        </template>
+  
+        <template if:false={hasError}>
+          <div class="slds-section">
+            <h3 class="slds-section__title">
+              <button onclick={toggleSectionVisibility} aria-controls="recordBodySection"
+                class="slds-button slds-section__title-action">
+                <span class="slds-m-right_x-small">
+                  <lightning-icon icon-name={sectionButtonType} alternative-text="Expand" size="x-small" title="Expand">
+                  </lightning-icon>
+                </span>
+                <span class="slds-truncate" title={title}>{title}</span>
+              </button>
+            </h3>
+            <div class={sectionBodyCSS} id="recordBodySection">
+              <div class="slds-p-vertical_x-small">
+                <lightning-card variant="narrow">
+                  <template if:true={hasErrorEdit}>
+                    <div class="slds-align_absolute-center slds-p-around_small slds-text-color_error">{errMsgEdit}
+                      <template if:true={errDetailEdit}>
+                        <a onclick={showDetailErrorMessageEdit}>&nbsp; More Information</a>
+                      </template>
+                    </div>
+                    <template if:true={showDetailErrorEdit}>
+                      <div class="slds-align_absolute-center slds-text-color_error">
+                        {errDetailEdit}
+                      </div>
+                    </template>
+                  </template>
+  
+                  <div slot="actions">
+                    <template if:false={editForm}>
+                      <div class="slds-m-top_small">
+                        <lightning-button label="Edit" if:true={showEditAction} onclick={setEditFormValue}>
+                        </lightning-button>
+                      </div>
+                    </template>
+                  </div>
+                  <div class="slds-card__body slds-card__body_inner">
+  
+                    <template if:true={fldSetWrapper}>
+                      <!-- View Form -->
+                      <template if:false={editForm}>
+                        <lightning-record-edit-form density={componentDensity} object-api-name="Account_Extension__c"
+                          record-id={accountExtId}>
+                          <div class="slds-grid slds-wrap">
+                            <template for:each={fldSetWithDetails} for:item="fld">
+                              <template if:true={fld.isAccessible}>
+                                <div key={fld.fieldAPIName} class={componentColumns}>
+                                  <div class="slds-form-element slds-form-element_readonly">
+                                    <template if:true={fld.isLookup}>
+                                      <template if:true={fld.fieldValue}>
+                                        <div class="disableSelection">
+                                          <a href="#" title="Goto Record">
+                                            <lightning-input-field class="setCursorPointer" onclick={navigateToRecord}
+                                              data-target-id={fld.fieldValue} id={fld.fieldValue}
+                                              field-name={fld.fieldAPIName} value={fld.fieldValue} disabled>
+                                            </lightning-input-field>
+                                          </a>
+                                        </div>
+                                      </template>
+                                      <template if:false={fld.fieldValue}>
+                                        <lightning-output-field field-name={fld.fieldAPIName}>
+                                        </lightning-output-field>
+                                      </template>
+                                    </template>
+                                    <template if:false={fld.isLookup}>
+                                      <lightning-output-field field-name={fld.fieldAPIName}>
+                                      </lightning-output-field>
+                                    </template>
+                                  </div>
+                                </div>
+                              </template>
+                            </template>
+                          </div>
+                        </lightning-record-edit-form>
+                      </template>
+  
+                      <!-- Edit Form -->
+                      <template if:true={editForm}>
+                        <lightning-record-edit-form density={componentDensity} object-api-name={objectApiName}
+                          record-id={recordId} onload={handleEditLoad} onsubmit={handleEditSubmit}
+                          onsuccess={handleEditSuccess} onerror={handleEditError}>
+                          <template if:false={isFormLoaded}>
+                            <div class="spinnerHolder">
+                              <lightning-spinner variant="brand" alternative-text="Loading" size="small">
+                              </lightning-spinner>
+                            </div>
+                          </template>
+                          <template if:true={isFormLoaded}>
+                            <div class="slds-grid slds-wrap">
+                              <template for:each={fldSetWithDetails} for:item="fld">
+                                <div key={fld.fieldAPIName} class={componentColumns}>
+                                  <div class="slds-form-element">
+                                    <template if:true={fld.isFormula}>
+                                      <lightning-output-field field-name={fld.fieldAPIName}>
+                                      </lightning-output-field>
+                                    </template>
+                                    <template if:false={fld.isFormula}>
+                                      <template if:true={fld.isAccessible}>
+                                        <template if:true={fld.isEditable}>
+                                          <lightning-input-field required={fld.isRequired} field-name={fld.fieldAPIName}
+                                            value={fld.fieldValue}>
+                                          </lightning-input-field>
+                                        </template>
+                                      </template>
+                                    </template>
+                                  </div>
+                                </div>
+                              </template>
+                            </div>
+                            <div class="slds-align_absolute-center">
+                              <lightning-button class="slds-m-around_small" label="Cancel" onclick={handleReset}>
+                              </lightning-button>
+                              <lightning-button class="slds-m-around_small" variant="brand" type="submit" name="update"
+                                label="Save"></lightning-button>
+                            </div>
+                          </template>
+                        </lightning-record-edit-form>
+                      </template>
+                    </template>
+                  </div>
+                </lightning-card>
+              </div>
+            </div>
+          </div>
+        </template>
+      </template>
+    </div>
+  </template>

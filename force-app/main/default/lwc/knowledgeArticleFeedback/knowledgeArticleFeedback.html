@@ -1,0 +1,39 @@
+<template>
+   <template if:true ={showFeedcmp}>
+      <lightning-card title = "Was this knowledge article helpful? Click an icon to submit feedback." class="slds-align_absolute-center">
+         <template if:false={displayFeedDetailsSection}>
+            <div class = "slds-align_absolute-center slds-p-around_xx-small">
+               <lightning-icon icon-name="utility:smiley_and_people" size="small" alternative-text="Like" name="Like" title="Like" class="green-icon" slot="actions" onclick={handleEmojiClick}></lightning-icon>
+               <strong class="slds-m-left_small"></strong>
+               <lightning-icon icon-name="utility:sentiment_neutral" size="small" alternative-text="Neutral" name="Neutral" title="Neutral" class="blue-icon" slot="actions" onclick={handleEmojiClick}></lightning-icon>
+               <strong class="slds-m-left_small"></strong>
+               <lightning-icon icon-name="utility:sentiment_negative" size="small" alternative-text="Dislike" name="Dislike" title="Dislike" class="red-icon" slot="actions" onclick={handleEmojiClick}></lightning-icon>
+            </div>
+         </template>
+         <template if:true={displayFeedDetailsSection}>
+            <div class="slds-align_absolute-center">
+               <p>
+                  The feedback you provide is used to improve the Zscaler Help Portal content only. <br/>
+                  If you are experiencing technical issues or want to provide feedback regarding <br/>
+                  the Zscaler service, you must submit a ticket. We honestly appreciate your feedback!
+               </p>
+            </div>
+            <div class = "slds-p-around_small">
+               <lightning-combobox
+                  name="feedbacktype"
+                  label="Select Feedback Type"
+                  value={value}
+                  options={options}
+                  onchange={handleFeedbackTypeChange}
+                  required={isRequired}>
+               </lightning-combobox>
+               <lightning-textarea name="comments" label="Comments" class="slds-m-left_xx-small" onchange={handleFeedbackCommentsChange} required={isRequired}></lightning-textarea>
+            </div>
+            <div class="slds-align_absolute-center">
+               <lightning-button label="Submit" name="submit_btn" alternative-text="Submit your feedback" variant="brand" onclick={submitFeedback}></lightning-button>&nbsp;&nbsp;
+               <lightning-button label="Cancel" name="cancel_btn" alternative-text="Cancel your feedback" variant="neutral" onclick={cancelFeedback}></lightning-button>
+            </div>
+         </template>
+      </lightning-card>
+   </template>
+</template>

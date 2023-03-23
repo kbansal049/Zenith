@@ -1,0 +1,40 @@
+<!--**********************************************************************************************************************
+* @CompName 	: AccountTrafficAlertBannerCmp
+* @Author   	: Priyanka J
+* @Date     	: 29 March, 2020
+* @Description	: Lightning component that display Account Banner Alert
+* @CR#			: 2145
+************************************************************************************************************ -->
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" 
+                controller="AccountTrafficAlertBannerController"
+                access="global" >
+    <!-- ATTRIBUTES START -->
+    <aura:attribute name="record" type="Account" />
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="wrpr" type="AccountTrafficAlertBannerController.DatesWrapper"/>
+    <aura:attribute name="showMsg" type="Boolean" default="false"/>
+    <!--<aura:attribute name="currentUser" type="User"/>-->
+    <aura:attribute name="trafficAlert" type="Boolean"/>
+    <!-- ATTRIBUTES END -->
+    
+    <force:recordData aura:id="recordLoader"
+                      recordId="{!v.recordId}"
+                      fields="Name,Bandwidth_LM_Vs_PM__c,Bandwidth_LM_Vs_6M_Ago__c,Bandwidth_LM_Vs_12M_Ago__c,First_Contract_Date__c,Bandwidth_LM_Vs_PM__c,Bandwidth_LM_Vs_6M_Ago__c,Bandwidth_LM_Vs_12M_Ago__c,Type"
+                      targetFields="{!v.record}"
+                      recordUpdated="{!c.recordUpdate}"
+                      /> 
+    
+    <aura:if isTrue="{!v.showMsg}">
+        <ui:message title="" severity="error" closable="false">
+            <td class="messageCell">
+                <Strong style="color:red">Traffic alert: {!v.trafficAlert}</Strong>
+                <p><b>{!v.record.Name}</b> is experiencing a significant reduction in traffic forwarded through Zscaler. 
+                    <b>{!v.wrpr.lastMonth}</b> Traffic went down by {!v.record.Bandwidth_LM_Vs_PM__c}% compared to 
+                    <b>{!v.wrpr.prevMonth}</b>, {!v.record.Bandwidth_LM_Vs_6M_Ago__c}% compared to 
+                    <b>{!v.wrpr.last6Month}</b>, {!v.record.Bandwidth_LM_Vs_12M_Ago__c}% compared to 
+                    <b>{!v.wrpr.last12Month}</b>. This persistent drop could indicate that 
+                    <b>{!v.record.Name}</b> is removing Zscaler from their network.</p>
+            </td>
+        </ui:message>
+    </aura:if>
+</aura:component>

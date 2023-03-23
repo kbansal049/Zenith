@@ -1,0 +1,22 @@
+<!--**********************************************************************************************************************
+* @ClassName 	: NFR_ApprovalCmp
+* @TestClass	: NFR_ApprovalControllerTest
+* @Author   	: Priyanka J
+* @Date     	: 28 Dec, 2020
+* @Description	: VF page that invokes NFR_ApprovalCmp via NFR_ApprovalApp in classic view
+************************************************************************************************************ -->
+<apex:page sidebar="false" showHeader="true" standardStylesheets="false" standardcontroller="NFR__c" extensions="NFR_ApprovalController">
+    <apex:includeLightning />
+    <apex:slds />
+    <div id="approvalPgId" />    
+    <script>
+    $Lightning.use("c:NFR_ApprovalApp", function() {
+        $Lightning.createComponent("c:NFR_ApprovalCmp",
+                                   { "recordId" : "{!$CurrentPage.parameters.Id}",
+                                     "fromVF"   : true
+                                   },
+                                   "approvalPgId", function(component) {                        
+                                   });
+    });
+    </script>
+</apex:page>

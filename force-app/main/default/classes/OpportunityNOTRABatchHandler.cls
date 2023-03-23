@@ -1,0 +1,98 @@
+public class OpportunityNOTRABatchHandler {
+    //public static Set<String> ForeCastCategorySet = new Set<String>{'Most Likely','Commit','Closed'};
+        
+    public Static List<Opportunity> beforeUpdate(Map<Id, Opportunity> newOpportunitiesMap){
+        List<Opportunity> oppToUpdate = new List<Opportunity>(); 
+        quarterDetailsInner currentQuarterDetails = getQuarter(system.today().month(), system.today().year());
+        
+        for(Opportunity oppRec : newOpportunitiesMap.values()){
+            if(oppRec.CloseDate != null && oppRec.Contract_End_Date_New__c != null  ){ //&& oppRec.Type == 'Existing Customer (Renewal)'
+               // if(!String.isBlank(oppRec.CRO_Forecast_Category__c)){
+                   // if(ForeCastCategorySet.contains(oppRec.CRO_Forecast_Category__c)){
+                        quarterDetailsInner closeDateQuarterDetails = getQuarter(oppRec.CloseDate.month(), oppRec.CloseDate.year());
+                        quarterDetailsInner contractEndDateQuarterDetails = getQuarter(oppRec.Contract_End_Date_New__c.month(), oppRec.Contract_End_Date_New__c.year());
+                        
+                        system.debug('the currentQuarterDetails details here' + currentQuarterDetails);
+                        system.debug('the currentQuarterDetails details here' + closeDateQuarterDetails);
+                        system.debug('the currentQuarterDetails details here' + contractEndDateQuarterDetails);
+                        // Removed "oppRec.Renewal_VP_In_my_Number__c" by Swathi CR:731
+                        if(closeDateQuarterDetails.quarterYear == contractEndDateQuarterDetails.quarterYear){
+                            if(closeDateQuarterDetails.quarterNumber == contractEndDateQuarterDetails.quarterNumber /*&& oppRec.Renewal_VP_In_my_Number__c*/){
+                                //if(closeDateQuarterDetails.quarterNumber == currentQuarterDetails.quarterNumber && closeDateQuarterDetails.quarterYear == currentQuarterDetails.quarterYear){
+                                    oppRec.NOTRA__c = 'On Time';
+                                //}
+                            } 
+                            else if(closeDateQuarterDetails.quarterNumber < contractEndDateQuarterDetails.quarterNumber){
+                                if(closeDateQuarterDetails.quarterNumber == currentQuarterDetails.quarterNumber){
+                                    //if(oppRec.Renewal_VP_In_my_Number__c)  {commented by Swathi CR:731
+                                    	oppRec.NOTRA__c = 'Future';
+                                        oppRec.Prior_Early__c = True;
+                                }
+                            }
+                            // Removed "oppRec.Renewal_VP_In_my_Number__c" by Swathi CR:731
+                            else if(closeDateQuarterDetails.quarterNumber > contractEndDateQuarterDetails.quarterNumber /*&& oppRec.Renewal_VP_In_my_Number__c*/){
+                                //if(contractEndDateQuarterDetails.quarterNumber == currentQuarterDetails.quarterNumber){
+                                    oppRec.NOTRA__c = 'Late';
+                                //}
+                            }
+                        }
+                        else{
+                            if(contractEndDateQuarterDetails.quarterYear > closeDateQuarterDetails.quarterYear){
+                                if(closeDateQuarterDetails.quarterNumber == currentQuarterDetails.quarterNumber){
+                                    //if(oppRec.Renewal_VP_In_my_Number__c)  {commented by Swathi CR:731
+                                    	oppRec.NOTRA__c = 'Future';
+                                        oppRec.Prior_Early__c = True;
+                                }
+                            }
+                            // Removed "oppRec.Renewal_VP_In_my_Number__c" by Swathi CR:731
+                            else if(contractEndDateQuarterDetails.quarterYear < closeDateQuarterDetails.quarterYear /*&& oppRec.Renewal_VP_In_my_Number__c*/){
+                                oppRec.NOTRA__c = 'Late';
+                            }
+                        }
+                   // }   
+               // }
+            }
+            oppToUpdate.add(oppRec);
+        }
+        return oppToUpdate;
+    }
+    
+    public static quarterDetailsInner getQuarter(Integer month, Integer year){
+        
+        quarterDetailsInner quarterDetails = new quarterDetailsInner();
+        
+        if(month == 11 || month == 12 || month == 1){
+            if(month == 11 || month == 12){
+                quarterDetails.quarterNumber = 2;
+                quarterDetails.quarterYear = year + 1;
+                return quarterDetails;
+            }
+            else{
+                quarterDetails.quarterNumber = 2;
+                quarterDetails.quarterYear = year;
+                return quarterDetails;
+            }
+        }
+        else if(month == 2 || month == 3 || month == 4){
+            quarterDetails.quarterNumber = 3;
+            quarterDetails.quarterYear = year;
+            return quarterDetails;
+        }
+        else if(month == 5 || month == 6 || month == 7){
+            quarterDetails.quarterNumber = 4;
+            quarterDetails.quarterYear = year;
+            return quarterDetails;  
+        }
+        else if(month == 8 || month == 9 || month == 10){
+            quarterDetails.quarterNumber = 1;
+            quarterDetails.quarterYear = year + 1;
+            return quarterDetails;
+        }
+        return quarterDetails;
+    }
+    
+    public class quarterDetailsInner{
+        public integer quarterNumber;
+        public integer quarterYear;
+    }
+}

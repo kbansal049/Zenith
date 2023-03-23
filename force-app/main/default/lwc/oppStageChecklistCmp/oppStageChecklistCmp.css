@@ -1,0 +1,29 @@
+.redItem{
+	border-color: rgb(221 219 218);
+    /*background: rgb(234 0 30);*/
+    color: rgb(234 0 30);
+}
+.greenItem{
+	border-color: rgb(221 219 218);
+	/*background: rgb(234 0 30);*/
+    color: rgb(69 198 90);
+}
+.hrLine{
+	margin: 0px 10px 10px 10px;
+	border: 0.5px solid #dddbda;
+	background: #dddbda;
+}
+.lineHeader{
+	color:#009CDA;
+	font-weight: bold;
+}
+.fieldValue{
+	color:black;
+}
+.app-icon {
+    --sds-c-icon-color-foreground-default: #45c65a;
+
+}
+.rej-icon {
+    --sds-c-icon-color-foreground-default: rgb(244 119 135);
+}

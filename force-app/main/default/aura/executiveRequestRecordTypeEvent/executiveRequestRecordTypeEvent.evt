@@ -1,0 +1,5 @@
+<aura:event type="APPLICATION" description="Event template">
+    <aura:attribute name="recordTypeSelectedId" type="String" description="User Selection" access="global" />
+    <aura:attribute name="recordTypeSelectedName" type="String" description="User Selection Name" access="global" />
+    <aura:attribute name="haveEditAccess" type="boolean" description="Have Edit Access" access="global" />
+</aura:event>

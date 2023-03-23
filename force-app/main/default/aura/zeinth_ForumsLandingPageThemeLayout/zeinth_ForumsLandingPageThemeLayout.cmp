@@ -1,0 +1,50 @@
+<aura:component implements="forceCommunity:themeLayout,forceCommunity:profileMenuInterface" access="global">
+    <!--<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>-->
+    <aura:attribute name="searchComponent" type="Aura.Component[]" />
+    <aura:attribute name="sidebarFooter" type="Aura.Component[]" />
+    <aura:attribute name="section1" type="Aura.Component[]" required="false" />
+    <aura:attribute name="communityStats" type="Aura.Component[]" required="false" />
+    <aura:attribute name="FeaturedContent" type="Aura.Component[]" required="false" />
+    
+    <aura:attribute name="navBar" type="Aura.Component[]" required="false" />
+    <aura:attribute name="profileMenu" type="Aura.Component[]" required="false" />
+     <aura:attribute name="announcement" type="Aura.Component[]" required="false" />
+     <aura:attribute name="breadcrumbs" type="Aura.Component[]" required="false" />
+    <aura:attribute name="header" type="Aura.Component[]" required="false" />
+     <aura:attribute name="topicList" type="Aura.Component[]" required="false" />
+     <aura:attribute name="activityFeed" type="Aura.Component[]" required="false" />
+     <aura:attribute name="featuredVideo" type="Aura.Component[]" required="false" />
+     <aura:attribute name="solutions" type="Aura.Component[]" required="false" />
+    <aura:attribute name="communityFooter" type="Aura.Component[]" required="false" />
+    
+    
+    <div class="slds-col  slds-size_1-of-1">
+      <c:zenith_HeaderAura navBar="{!v.navBar}" profileMenu="{!v.profileMenu}"></c:zenith_HeaderAura>
+    </div>
+    <div class="slds-col slds-size_1-of-1">
+        {!v.announcement}
+    </div>
+    <div class="slds-col slds-size_1-of-1">
+        {!v.header}
+    </div>   
+     <div class="slds-col slds-size_1_of-1">
+       {!v.breadcrumbs}
+   </div>
+    
+   <div class="slds-col slds-size_1_of-1">
+       {!v.topicList}
+   </div>
+    
+   <div class="slds-col colorGrey"  >
+    <div class="bodyDiv">
+        {!v.body}
+        </div>
+    </div>
+    
+    
+    <div class="slds-grid  lodge-grid" style="padding-top: 60px;">
+        <div class="slds-col ">
+            {!v.communityFooter} 
+        </div>
+    </div>
+</aura:component>

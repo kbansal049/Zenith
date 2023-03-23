@@ -1,0 +1,5 @@
+<apex:page standardController="Provisioning_Request__c" showHeader="false" lightningStylesheets="true" >
+<apex:slds />
+<div style="color:red;width:100%;text-align:center;" class="slds-hyphenate" title="{!Provisioning_Request__c.FailedReason__c}">{!Provisioning_Request__c.FailedReason__c}</div>
+
+</apex:page>

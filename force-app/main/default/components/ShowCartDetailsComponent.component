@@ -1,0 +1,2412 @@
+<!--
+@description       : 
+@author            : ChangeMeIn@UserSettingsUnder.SFDoc
+@group             : 
+@last modified on  : 04-28-2022
+@last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<apex:component access="global" controller="ShowCartItemsVFController">
+    <apex:includeScript id="jQuery" value="https://code.jquery.com/jquery-3.1.1.min.js" />
+    <script>
+    jQuery.noConflict();
+    jQuery(function($){
+        // The dollar sign will equal jQuery in this scope
+    });
+    
+    </script>
+    
+    <style>
+        .evencss {
+        background-color: #f0f0f0;
+        }
+        
+        .oddcss {
+        background-color: #ffffff;
+        }
+        
+        .evenCss,
+        .oddCss td {
+        border-right: 1px solid black;
+        }
+        
+        .evenCss,
+        .oddCss td:last-child {
+        border-right: 0px;
+        }
+        
+        .yearWiseSplitList .last,
+        .yearWiseSplitList .last {
+        font-weight: bold;
+        }
+        
+        .pgSecHeaderBlue .pbSubheader {
+        background-color: #009CDA!important;
+        }
+        
+        .pgSecHeaderBrown .pbSubheader {
+        background-color: #a55647!important;
+        }
+        
+        .pgSecHeaderBrown .pbSubsection, .pgSecHeaderBlue .pbSubsection, .instBase .pbSubsection{
+        overflow-x: scroll;
+        }
+        
+        .table-outer {
+        overflow-x: scroll;
+        max-width: 1465px!important;
+        }
+        
+        body .bPageBlock {
+        width: 1500px !important;
+        }
+        .pgSecHeaderBrown .pbSubsection, .pgSecHeaderBlue .pbSubsection, .instBase .pbSubsection{
+        overflow-x: unset;
+        }
+        
+        .alignTextRight{
+        text-align: right;
+        }
+        .alignTextCenter{
+        /* text-align: center; */
+        padding-left: 20px;
+        width: 70%;
+        max-width: 75%
+        }
+        .displayNone {
+        display : none;  
+        }
+        
+        tr.headerRow th {
+        font-weight: bold;
+        text-align: center; 
+        background-color: #929599 !important;
+        }
+        .bPageBlock .detailList .data2Col{
+        padding : 0px; !important
+        }
+        
+        table.list tr th, table.list tr td {
+        border: 1px solid grey !important;
+        }
+        
+    </style>
+    
+    <!-- Attributes -->
+    <apex:attribute name="InputProposal" description="This field is used to display list of Proposal products" type="string" assignTo="{!quoteId}" />
+    <apex:attribute name="InputInstanceURL" description="This field is used to get instance URL" type="string" assignTo="{!InstanceURL}" />
+    <apex:attribute name="InputApprovalRequest" description="This field is used to get Approval Request" type="ID" assignTo="{!ApprovalRequestId}" />
+    <apex:attribute name="InputApproverId" description="This field is used for Approval Request" type="ID" assignTo="{!ApproverId}" />
+    <apex:attribute name="InputIsAssignment" description="This field is used for Approval Request" type="Boolean" assignTo="{!IsAssignment}" />
+    <apex:attribute name="InputIsApproved" description="This field is used for Approval Request" type="Boolean" assignTo="{!IsApproved}" />
+    <apex:attribute name="InputIsApproveOrReject" description="This field is used for Approval Request" type="Boolean" assignTo="{!IsApproveOrReject}" />
+    <apex:attribute name="ShowApprovalSection" description="This field is used for Approval Request" type="Boolean" assignTo="{!IsShowApprovalSection}" />
+    
+    <apex:attribute name="ShowCartView" description="This field is used for Approval Request" type="Boolean" assignTo="{!IsShowCartView}" />
+    <apex:attribute name="EmailTemplateView" description="This field is used for Approval Request" type="Boolean" assignTo="{!IsEmailTemplateView}" />
+    
+    
+    <!-- Approvals Section on Email Template -->
+    <apex:outputPanel rendered="{!IsShowApprovalSection}">
+        <apex:outputPanel rendered="{!IsAssignment}">
+            <div style="font-size: 1.8em; text-align: center; font-weight: bold;"> Quote for : {!Quote.SBQQ__Account__r.Name}</div>
+            <br/>
+            <br/>
+            <table style="border: 1px solid black; border-collapse: collapse; width:100%" cellspacing="0" cellpadding="0">
+                <tbody>
+                    <tr style="background-color: #17770a; text-align: center; color: white; background-color: black;">
+                        <td>
+                            <b>To Approve : Reply with "Approved" or "Approve" or "Yes". To Reject : Reply with "Rejected" or "Reject"
+                                or "No". You can also add your comments in the next line.</b>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <br/>
+            <br/>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!IsApproved}">
+            <table style="border: 1px solid black; border-collapse: collapse; width:100%" cellspacing="0" cellpadding="0">
+                <tbody>
+                    <tr style="background-color: #17770a; text-align: center; color: white">
+                        <td>Your quote is now Approved!!!!</td>
+                    </tr>
+                </tbody>
+                
+            </table>
+            <br/>
+            <br/>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!AND(NOT(IsApproved),NOT(IsAssignment), NOT(IsApproveOrReject))}">
+            <table style="border: 1px solid black; border-collapse: collapse; width:100%" cellspacing="0" cellpadding="0">
+                <tbody>
+                    <tr>
+                        <td style="background-color: #8e0a05; text-align: center; color: white">This quote has been rejected by
+                            with following reason</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <br/>
+            <br/>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!AND(NOT(IsAssignment), NOT(IsApproveOrReject))}">
+            <b>This quote has the following exceptions for Approval:</b>
+            <br/>
+            
+            <br/>
+            <br/>
+        </apex:outputPanel>   
+        <apex:outputPanel >
+            <b>You are reviewing the following exceptions:</b>
+            <br/>
+            
+            <br/>
+            <br/>
+        </apex:outputPanel>
+        <apex:outputPanel >        
+            <b>The other expections on this quote are:</b>
+            <br/>
+            
+            <br/>
+            <br/>
+        </apex:outputPanel>
+        <b>Approval Request Reason: </b>
+        <br/>
+        <br/>
+        <br/>
+        <apex:outputPanel rendered="{!isPartnerSummit}" style="font-weight: bold;color: red;">This quote uses {!$Label.Partner_Program_Partner_Summit}
+            Program. Please <a href="https://drive.google.com/file/d/1q_bCD7MWnhGcvgP4TFi5WEQQU8zAHXLA/view"
+                               target="_blank">click here</a> to review the discount approval guidelines before you approve for pricing.
+        </apex:outputPanel>
+    </apex:outputPanel>
+    
+    
+    <apex:pageBlock id="block1">
+        <br/><br/>
+        <apex:form >
+            <apex:outputPanel rendered="{!showBtnOnQLE}">
+                <apex:slds />
+                <div class="slds-scope">
+                    <apex:commandButton action="{!onCancel}" value="Go to Cart" styleclass="slds-button slds-button_brand"></apex:commandButton>
+                </div>
+            </apex:outputPanel>
+        </apex:form>
+        <br/><br/>
+        <apex:outputPanel rendered="{!isTraditional}" layout="block">
+            <h1 style="color: red"> This Quote is built using {!$Label.Partner_Program_Traditional} Program and {!priceListName}.</h1>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!isSummitFederal}" layout="block">
+            <h1 style="color: red"> This Quote is built using {!$Label.Partner_Program_Summit_Federal} Program and {!priceListName}.</h1>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!isPartnerSummit}" layout="block">
+            <h1 style="color: red"> This Quote is built using {!$Label.Partner_Program_Partner_Summit} Program and {!priceListName}.</h1>
+        </apex:outputPanel>    
+        <apex:outputPanel rendered="{!isSummitDiscount}" layout="block">
+            <h1 style="color: red"> This Quote is built using {!$Label.Partner_Program_Summit_Discount} Program and {!priceListName}.</h1>    
+        </apex:outputPanel>
+        <br /><br />
+        
+        <!-- Quote Header Table on Details Tab --> 
+        <table style=" border-collapse: collapse; width:50%; border:1px solid black;" cellspacing="0" cellpadding="0">
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Account Name </td>
+                <td style="border: 1px solid black;">&nbsp;{!quote.SBQQ__Account__r.Name}</td>
+            </tr>
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Opportunity Owner </td>
+                <td style="border: 1px solid black;">&nbsp;{!quote.Opportunity_Owner__c}</td>
+            </tr>
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Type </td>
+                <td style="border: 1px solid black;">&nbsp;{!recordtypeName}</td>
+            </tr>
+            <!-- Added by Rakshitha CR#3507 -->
+            <apex:variable var="v" value="" rendered="{!NOT(ISBLANK(quote.Cloud_Type__c))}">
+                <tr style="border: 1px solid black; height: 20px;">
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Cloud Type</td>
+                    <td style="border: 1px solid black;">&nbsp;{!quote.Cloud_Type__c}</td>
+                </tr>
+            </apex:variable>
+            <!-- Added by Rakshitha CR#3507 -->
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Opportunity</td>
+                <td style="border: 1px solid black;">
+                    &nbsp;<a href="{!url}/{!quote.SBQQ__Opportunity2__r.Id}" style="font-weight: bold; color: #0047b3;">
+                    <apex:outputField value="{!quote.SBQQ__Opportunity2__r.Name}" />
+                    </a>
+                </td>
+            </tr>
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Quote</td>
+                <td style="border: 1px solid black;">
+                    &nbsp;<a href="{!url}/{!quote.Id}" style="font-weight: bold; color: #0047b3;">
+                    <apex:outputField value="{!quote.Name}" />
+                    </a>
+                </td>
+            </tr>
+            <!-- Newly added as per updated code in QA sandbox -->
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:20%;">&nbsp;Start Date</td>
+                <td style="border: 1px solid black;">
+                    &nbsp;<apex:outputField value="{!quote.SBQQ__StartDate__c}" />
+                </td>
+            </tr>
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:20%;">&nbsp;End Date</td>
+                <td style="border: 1px solid black;">
+                    &nbsp;<apex:outputField value="{!quote.SBQQ__EndDate__c}" />
+                </td>
+            </tr>
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Quote ACV</td>
+                <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!quote.ACV_New__c}" /></td>
+            </tr>
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;TCV</td>
+                <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!quote.TCV__c}" /></td>
+            </tr>
+            <!--apex:outputPanel rendered="{!isFy21SingleTier}"-->
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Net Variance</td>
+                <td style="border: 1px solid black;">&nbsp;
+                    <apex:outputPanel rendered="{!(isTraditional || isSummitFederal || isSummitDiscount)}">
+                        <apex:outputPanel rendered="{!IF(AND(quote.Net_variance_weighted_avg__c != null, quote.Net_variance_weighted_avg__c < 0), true,false)}" style="color: red;">
+                            <apex:outputField value="{!quote.Net_variance_weighted_avg__c}" />
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!IF(AND(quote.Net_variance_weighted_avg__c != null, quote.Net_variance_weighted_avg__c >= 0), true,false)}" style="color: green;">
+                            <apex:outputField value="{!quote.Net_variance_weighted_avg__c}" />
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </td>
+            </tr>
+            <!--/apex:outputPanel-->
+            
+            <!-- Newly added as per updated code in QA sandbox -->
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Reseller</td>
+                <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!quote.SBQQ__Partner__r.Name}" /></td>
+            </tr>
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:20%;">&nbsp;Distributor</td>
+                <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!quote.Bill_to__r.Name}" /></td>
+            </tr>
+            <!-- Ends -->        
+            <apex:outputPanel rendered="{!isRenewal}">
+                <tr style="border: 1px solid black; height: 20px;">
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Previous MRR</td>
+                    <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!quote.Previous_MRR_Approval__c}" /></td>
+                </tr>
+                <tr style="border: 1px solid black; height: 20px;">
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Current MRR</td>
+                    <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!quote.Current_Quote_MRR__c}" /></td>
+                </tr>
+                <tr style="border: 1px solid black; height: 20px;">
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;% Change</td>
+                    <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!quote.Renewal_MRR_Change_Approval__c}" /></td>
+                </tr>
+            </apex:outputPanel>
+            
+            <apex:outputPanel rendered="{!quote.Rep_Comp_Impacted__c == 'Yes'}">
+                <tr style="border: 1px solid black; height: 20px;"> 
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Message to SE</td>   
+                    <td style="border: 1px solid black; color: red;">&nbsp;{!$Label.Message_To_SE}</td> 
+                </tr>   
+            </apex:outputPanel>
+            
+            <!-- Adding Quote Table from Summary Tab -->
+            <apex:outputPanel rendered="{!isTraditional || isSummitFederal}">
+                <apex:outputPanel rendered="{!isFy21VolumeTier}">
+                    <tr style="border: 1px solid black; height: 20px;">
+                        <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Total Subscription Discount</td>
+                        <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!quote.Total_Discount_Without_Support__c}"/></td>
+                    </tr>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!isFy21SingleTier}">
+                    <tr style="border: 1px solid black; height: 20px;">
+                        <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Net Discount</td>
+                        <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!quote.Total_PUPY_Discount__c}" /></td>
+                    </tr>
+                </apex:outputPanel>
+                
+            </apex:outputPanel>
+            
+            <apex:outputPanel rendered="{!isPartnerSummit}">
+                <tr style="border: 1px solid black; height: 20px;">
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%; padding-left:2px; height: 30px;">Total Subscription Discount Without Support</td>
+                    <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!quote.Total_Discount_Without_Support__c}"/></td>
+                </tr>
+                <tr style="border: 1px solid black; height: 20px;">
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Net to Zscaler</td>
+                    <td style="border: 1px solid black;">&nbsp;</td>
+                </tr>
+                <tr style="border: 1px solid black; height: 20px;">
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Partner Pricing type</td>
+                    <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!quote.Partner_Program__c}" /></td>
+                </tr>
+            </apex:outputPanel>
+            
+            <apex:outputPanel rendered="{!isSummitDiscount}">
+                <tr style="border: 1px solid black; height: 20px;">
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%; padding-left:2px; height: 30px;">Total Subscription Discount Without Support</td>
+                    <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!quote.Total_Discount_Without_Support__c}"/></td>
+                </tr>
+                <tr style="border: 1px solid black; height: 20px;">
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Partner Pricing type</td>
+                    <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!quote.Partner_Program__c}" /></td>
+                </tr>
+            </apex:outputPanel>
+            <!-- End for Quote Table from Summary Tab -->
+            
+            <!-- Merge PPU Table with header Table -->
+            <apex:outputPanel rendered="{!IF(isRenewal && $Label.Show_PPU_Table == 'Yes', true, false)}">
+                <tr style="border: 1px solid black; height: 20px;">
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;PPU/Month</td>
+                    <td style="border: 1px solid black;">&nbsp;
+                        <apex:outputText value="${0, number, ###,###.##}">
+                            <apex:param value="{!IF(AND(NOT(ISNULL(quote.TCV__c)), NOT(ISNULL(quote.Number_of_Users__c)), quote.Number_of_Users__c > 0), (quote.TCV__c / quote.SBQQ__SubscriptionTerm__c) / quote.Number_of_Users__c, 0.0)}"/>
+                        </apex:outputText>
+                    </td>
+                </tr>
+                <tr style="border: 1px solid black; height: 20px;">
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Payment Term</td>
+                    <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!quote.SBQQ__PaymentTerms__c}" /></td>
+                </tr>
+                <tr style="border: 1px solid black; height: 20px;">
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Billing Frequency</td>
+                    <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!quote.SBQQ__BillingFrequency__c}" /></td>
+                </tr>
+                <tr style="border: 1px solid black; height: 20px;">
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Customer Sentiment</td>
+                    <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!quote.SBQQ__Account__r.Customer_Sentiment__c}" /></td>
+                </tr>
+                <tr style="border: 1px solid black; height: 20px;">
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Customer Success Stage</td>
+                    <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!quote.SBQQ__Account__r.Success_Stage__c}" /></td>
+                </tr>
+            </apex:outputPanel>
+            <!-- End of PPU Table -->
+            
+        </table>
+        <br /><br />
+        
+        <apex:outputPanel rendered="{!IsShowCartView}">
+            <!-- Quote Lines Table -->
+            <apex:outputPanel styleClass="pgSecHeaderBlue" layout="block">
+                <apex:pageBlockSection id="cartSec" columns="1" collapsible="true" showHeader="true" title="Products Available on the Cart for {!quote.Name}">
+                    <apex:outputPanel layout="block" id="allProd">                                                 
+                        <!-- New code collapsible table -->
+                        <!-- Cart Details: Traditional and Federal -->
+                        <apex:outputPanel rendered="{!isTraditional || isSummitFederal}">
+                            <div class="table-outer">   
+                                <apex:pageBlockTable value="{!wList}" var="parent" rowClasses="oddcss,evencss">
+                                    
+                                    <!-- <apex:column value="{!parent.parentRecord.SBQQ__ProductName__c}" headerValue="Product Name"/> -->
+                                    <apex:column value="{!parent.parentRecord.NS_Product_Name__c}" headerValue="Product Name"/> <!-- CR# 4221 -->
+                                    
+                                    
+                                    
+                                    <!-- <apex:column value="{!parent.parentRecord.SBQQ__ProductCode__c}" headerValue="SKU"/> -->
+                                    <apex:column value="{!parent.parentRecord.Product_Name_for_GSA__c}" headerValue="SKU"/> <!-- CR# 4221 CR# 4647-->
+                                    
+                                    <!--<apex:column styleClass="alignTextRight" headerValue="List Price" rendered="{!IF(AND(isFy21SingleTier,isTraditional),true,false)}"> -->
+                                    <apex:column styleClass="alignTextRight" headerValue="List Price">    
+                                        <apex:outputText value="{0, number,currency}" >
+                                            <apex:param value="{!parent.parentRecord.SBQQ__ListPrice__c}" />
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                  <!--  <apex:column styleClass="alignTextRight" headerValue="List Price" rendered="{!IF(isFy21SingleTier && isSummitFederal,true,false)}">   
+                                        <apex:outputText value="{0, number,currency}" rendered="{!IF(AND(isFy21SingleTier,isSummitFederal),true,false)}">
+                                            <apex:param value="{!parent.parentRecord.SBQQ__ListPrice__c}" />
+                                        </apex:outputText>
+                                    </apex:column>-->
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Base Extended Price" rendered="{!IF(AND(isFy21SingleTier,isSummitFederal),true,false)}">
+                                        
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Base_Extended_Price__c != null,true,false)}" value="{0, number,currency}">
+                                            <apex:param value="{!parent.parentRecord.Base_Extended_Price__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Base_Extended_Price__c == null,true,false)}">
+                                            $0.00 
+                                        </apex:outputText>
+                                        
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" value="{!parent.parentRecord.SBQQ__EffectiveQuantity__c}" headerValue="Quantity" />
+                                    
+                                    <apex:column value="{!parent.parentRecord.SBQQ__StartDate__c}" headerValue="Start Date" />
+                                    <apex:column value="{!parent.parentRecord.SBQQ__EndDate__c}" headerValue="End Date"/>
+                                    <apex:column styleClass="alignTextRight" value="{!parent.parentRecord.SBQQ__SubscriptionTerm__c}" headerValue="Term" />
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Base Extended Price" rendered="{!IF(AND(isFy21SingleTier,isTraditional),true,false)}">
+                                        
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Base_Extended_Price__c != null,true,false)}" value="{0, number,currency}">
+                                            <apex:param value="{!parent.parentRecord.Base_Extended_Price__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Base_Extended_Price__c == null,true,false)}">
+                                            $0.00 
+                                        </apex:outputText>
+                                        
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Adjustment" rendered="{!isSummitFederal}">
+                                        <apex:outputText value="{0,number,0.00}%" rendered="{!IF(AND(parent.parentRecord.SBQQ__Discount__c != null,parent.parentRecord.SBQQ__ProductCode__c != 'Z-Credit'),true,false)}">
+                                            <apex:param value="{!parent.parentRecord.SBQQ__Discount__c}"/>
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Volume Discount" rendered="{!isFy21SingleTier && isTraditional}">
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Volume_Disc__c != null ,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!parent.parentRecord.Volume_Disc__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Volume_Disc__c== null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Partner Disc" rendered="{!IF(isTraditional && isFy21VolumeTier,true,false)}">
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.PartnerDisc__c != null,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!parent.parentRecord.PartnerDisc__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.PartnerDisc__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Partner Disc" rendered="{!IF(isTraditional && isFy21SingleTier,true,false)}">
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.PartnerDisc__c != null,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!parent.parentRecord.PartnerDisc__c }" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.PartnerDisc__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Deal Reg (Sourced) Disc" rendered="{!IF(isRenewal == false,true,false)}">
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Deal_Reg_Sourced_Discount__c != null,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!parent.parentRecord.Deal_Reg_Sourced_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Deal_Reg_Sourced_Discount__c == null,true,false)}">
+                                            0.00%
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Deal Reg (Teaming - Reseller) Disc" rendered="{!IF(isRenewal == false,true,false)}">
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Deal_Reg_Teaming_Reseller_Discount__c != null,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!parent.parentRecord.Deal_Reg_Teaming_Reseller_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Deal_Reg_Teaming_Reseller_Discount__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    <!-- added by Rakshitha CR# 4405-->
+                                    <apex:column styleClass="alignTextRight" headerValue="Deal Reg (Teaming - Upsell) Disc" rendered="{!IF(isOrangePartnerUpsellDiscount == true,true,false)}">
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Deal_Reg_Teaming_Upsell_Discount__c != null,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!parent.parentRecord.Deal_Reg_Teaming_Upsell_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Deal_Reg_Teaming_Upsell_Discount__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    <!--end-->
+                                    <apex:column styleClass="alignTextRight" headerValue="Internal List Price" rendered="{!IF(isTraditional && isFy21SingleTier,true,false)}">
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Internal_List_Price__c != null,true,false)}" value="{0, number,currency}">
+                                            <apex:param value="{!parent.parentRecord.Internal_List_Price__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Internal_List_Price__c == null,true,false)}">
+                                            $0.00
+                                        </apex:outputText>
+                                    </apex:column>
+                                    <apex:column styleClass="alignTextRight" headerValue="Fulfillment Discount" rendered="{!isSummitFederal}">
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Fulfillment_Discount__c != null,true,false)}" value="{0,number,0.00}%">
+                                            <apex:param value="{!parent.parentRecord.Fulfillment_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Fulfillment_Discount__c == null,true,false)}">
+                                            0.00%
+                                        </apex:outputText>
+                                    </apex:column>
+                                    <apex:column styleClass="alignTextRight" headerValue="Distributor Discount" rendered="{!isSummitFederal}">
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Distributor_Discount__c != null,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!parent.parentRecord.Distributor_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Distributor_Discount__c == null,true,false)}">
+                                            0.00%
+                                        </apex:outputText>
+                                    </apex:column>
+                                    <apex:column styleClass="alignTextRight" headerValue="Deployment Discount" rendered="{!isSummitFederal}">
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Deployment_Discount__c != null,true,false)}" value="{0,number,0.00}%">
+                                            <apex:param value="{!parent.parentRecord.Deployment_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Deployment_Discount__c == null,true,false)}">
+                                            0.00%
+                                        </apex:outputText>
+                                    </apex:column>
+                                    <apex:column styleClass="alignTextRight" headerValue="Total Co-sell Discount" rendered="{!isSummitFederal}">
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Co_sell_Discount__c != null,true,false)}" value="{0, number, 0.00}%">
+                                            <apex:param value="{!parent.parentRecord.Co_sell_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Co_sell_Discount__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    <!-- added by Rakshitha CR# 4405-->
+                                    <apex:column styleClass="alignTextRight" headerValue="Contractual / Incentive Discount" rendered="{!IF(isOrangePartnerContractedDiscount == true,true,false)}">
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Contractual_Incentive_Discount__c != null,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!parent.parentRecord.Contractual_Incentive_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Contractual_Incentive_Discount__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    <!--end-->
+                                    <apex:column styleClass="alignTextRight" value="{!parent.parentRecord.SBQQ__NetTotal__c }" headerValue="Net Price"> 
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Adjustment" rendered="{!isTraditional}">
+                                        <apex:outputText value="{0,number,0.00}%" rendered="{!IF(AND(parent.parentRecord.SBQQ__Discount__c != null,parent.parentRecord.SBQQ__ProductCode__c != 'Z-Credit'),true,false)}">
+                                            <apex:param value="{!parent.parentRecord.SBQQ__Discount__c}"/>
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" value="{!parent.parentRecord.ACV_New__c}" headerValue="ACV" />
+                                    <apex:column styleClass="alignTextRight" value="{!parent.parentRecord.MRR_New__c}" headerValue="MCV" />
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Finance MRR">
+                                        <apex:outputText value="${0,number,###,###,###,##0.00}">
+                                            <apex:param value="{!parent.parentRecord.Finance_MRR__c}" />
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Net PUPY">
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Net_PUPY__c != null,true,false)}" value="{0, number,currency}">
+                                            <apex:param value="{!parent.parentRecord.Net_PUPY__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Net_PUPY__c == null,true,false)}">
+                                            $0.00
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" rendered="{!IF(isFy21SingleTier != null && isFy21SingleTier == true,true,false)}">
+                                        <apex:facet name="header">Recommended PUPY</apex:facet>
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Recomm_Net__c != null,true,false)}" value="{0, number,currency}">
+                                            <apex:param value="{!parent.parentRecord.Recomm_Net__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Recomm_Net__c == null,true,false)}">
+                                            $0.00
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Net Variance">
+                                        <apex:outputPanel rendered="{!IF(parent.parentRecord.Net_Variance__c != null,true,false)}">
+                                            <apex:outputText rendered="{!IF(AND(NOT(ISBLANK(parent.parentRecord.Recomm_Net__c)),parent.parentRecord.Recomm_Net__c > parent.parentRecord.Net_PUPY__c),true,false)}" value="{0, number,0.00}%" style="color: red">
+                                                <apex:param value="{!parent.parentRecord.Net_Variance__c}" />
+                                            </apex:outputText>                                           
+                                            <apex:outputText rendered="{!IF(IF(ISBLANK(parent.parentRecord.Recomm_Net__c) ,0<=parent.parentRecord.Net_PUPY__c,parent.parentRecord.Recomm_Net__c <= parent.parentRecord.Net_PUPY__c),true,false)}" value="{0, number,0.00}%" style="color: green">
+                                                <apex:param value="{!parent.parentRecord.Net_Variance__c}" />
+                                            </apex:outputText>                                           
+                                        </apex:outputPanel>
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Net_Variance__c == null,true,false)}">
+                                            0.00%
+                                        </apex:outputText>                                        
+                                    </apex:column>
+                                </apex:pageBlockTable>
+                            </div>
+                        </apex:outputPanel>
+                        
+                        <!-- Cart Details: Summit - Discount-->
+                        <apex:outputPanel rendered="{!isSummitDiscount}">
+                            <div class="table-outer">
+                                <apex:pageBlockTable value="{!wList}" var="parent" rowClasses="oddcss,evencss">
+                                    
+                                    <!-- <apex:column value="{!parent.parentRecord.SBQQ__ProductName__c}" headerValue="Product Name"/> -->
+                                    <apex:column value="{!parent.parentRecord.NS_Product_Name__c}" headerValue="Product Name"/> <!-- CR# 4221 -->
+                                    
+                                    <!-- <apex:column value="{!parent.parentRecord.SBQQ__ProductCode__c}" headerValue="SKU"/> -->
+                                    <apex:column value="{!parent.parentRecord.Product_Name_for_GSA__c}" headerValue="SKU"/> <!-- CR# 4221 CR# 4647-->
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="List Price">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!parent.parentRecord.SBQQ__ListPrice__c}" />
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Recommended Retail Price">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!parent.parentRecord.Recommended_Retail_Price__c}" />
+                                        </apex:outputText>
+                                    </apex:column>
+                                    <apex:column styleClass="alignTextRight" value="{!parent.parentRecord.SBQQ__EffectiveQuantity__c}" headerValue="Quantity" />
+                                    <apex:column value="{!parent.parentRecord.SBQQ__StartDate__c}" headerValue="Start Date" />
+                                    <apex:column value="{!parent.parentRecord.SBQQ__EndDate__c}" headerValue="End Date"/>
+                                    <apex:column styleClass="alignTextRight" value="{!parent.parentRecord.SBQQ__SubscriptionTerm__c}" headerValue="Term" />
+                                    
+                                    <apex:column styleClass="alignTextRight" value="{!parent.parentRecord.Base_Extended_Price__c}" headerValue="Base Extended Price" />
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Adjustment">
+                                        <apex:outputText value="{0,number,0.00}%" rendered="{!IF(AND(parent.parentRecord.SBQQ__Discount__c != null,parent.parentRecord.SBQQ__ProductCode__c != 'Z-Credit'),true,false)}">
+                                            <apex:param value="{!parent.parentRecord.SBQQ__Discount__c}"/>
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="ZSRP">
+                                        <apex:outputText value="${0,number,###,###,###,##0.00}" rendered="{!IF(parent.parentRecord.ZSRP__c != null,true,false)}">
+                                            <apex:param value="{!parent.parentRecord.ZSRP__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.ZSRP__c == null,true,false)}">
+                                            $0.00
+                                        </apex:outputText>
+                                    </apex:column>    
+                                    <apex:column styleClass="alignTextRight" headerValue="Total Co-sell Discount" >
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Co_sell_Discount__c != null,true,false)}" value="{0, number, 0.00}%">
+                                            <apex:param value="{!parent.parentRecord.Co_sell_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Co_sell_Discount__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" value="{!parent.parentRecord.SBQQ__NetTotal__c }" headerValue="Net Price" />
+                                    
+                                    <apex:column styleClass="alignTextRight" value="{!parent.parentRecord.ACV_New__c}" headerValue="ACV"/>
+                                    <apex:column styleClass="alignTextRight" value="{!parent.parentRecord.MRR_New__c}" headerValue="MCV" />
+                                    <apex:column styleClass="alignTextRight" headerValue="Finance MRR">
+                                        <apex:outputText value="${0,number,###,###,###,##0.00}">
+                                            <apex:param value="{!parent.parentRecord.Finance_MRR__c}" />
+                                        </apex:outputText>
+                                    </apex:column>   
+                                    <apex:column styleClass="alignTextRight" value="{!parent.parentRecord.Net_PUPY__c}" headerValue="Net PUPY" />
+                                    <apex:column styleClass="alignTextRight" value="{!parent.parentRecord.Recomm_Net__c}" headerValue="Recommended PUPY" />
+                                    <apex:column styleClass="alignTextRight" headerValue="Net Variance">
+                                        <apex:outputPanel rendered="{!IF(parent.parentRecord.Net_Variance__c != null,true,false)}">
+                                            <apex:outputText rendered="{!IF(AND(NOT(ISNULL(parent.parentRecord.Recomm_Net__c)),parent.parentRecord.Recomm_Net__c > parent.parentRecord.Net_PUPY__c),true,false)}" value="{0, number,0.00}%" style="color: red">
+                                                <apex:param value="{!parent.parentRecord.Net_Variance__c}" />
+                                            </apex:outputText>                                           
+                                            <apex:outputText rendered="{!IF(IF(ISNULL(parent.parentRecord.Recomm_Net__c),0 <= parent.parentRecord.Net_PUPY__c,parent.parentRecord.Recomm_Net__c <= parent.parentRecord.Net_PUPY__c),true,false)}" value="{0, number,0.00}%" style="color: green">
+                                                <apex:param value="{!parent.parentRecord.Net_Variance__c}" />
+                                            </apex:outputText>                                           
+                                        </apex:outputPanel>
+                                        <apex:outputText rendered="{!IF(parent.parentRecord.Net_Variance__c == null,true,false)}">
+                                            0.00%
+                                        </apex:outputText>                                        
+                                    </apex:column>
+                                </apex:pageBlockTable>
+                            </div>
+                        </apex:outputPanel>
+                        
+                    </apex:outputPanel>
+                </apex:pageBlockSection>
+            </apex:outputPanel>
+            
+            <br /><br />
+        </apex:outputPanel>  
+        
+        <!-- Cart Details Table from Details Tab -->        
+        <apex:outputPanel rendered="{!IF(hasSupportLine && isFy21SingleTier, true, false)}"><b>
+            This cart has Premium Support line with Net Price :&nbsp;<apex:outputText value="${0,number,##,###.##}"><apex:param value="{!supportNetPrice}"/></apex:outputText><apex:outputPanel rendered="{!supportDiscount > 0}"> and Total Discount :&nbsp;<apex:outputText value="{0,number,0.00}%"><apex:param value="{!supportDiscount}"/></apex:outputText></apex:outputPanel>
+            </b>
+            <br/>
+            <br/>
+        </apex:outputPanel>
+        
+        <!-- Traditional or Federal Volume -->
+        <apex:outputPanel rendered="{!IsEmailTemplateView}">
+            <apex:outputPanel rendered="{!IF(AND(OR(isTraditional,isSummitFederal),!isFy21SingleTier), true,false)}">
+                <div class="table-outer">
+                    <b>Cart Details:</b>
+                    <br/>
+                    <br/>
+                    <table border="1" style="border-collapse: collapse; width: 100%">
+                        <tr style="font-weight:bold; text-align: center; background-color: #929599;">
+                            <td style="width: 15%;">Product Name</td>
+                            <td>SKU</td>
+                            <td>List Price</td>
+                            <td>Quantity</td>
+                            <td>Start Date</td>
+                            <td>End Date</td>
+                            <td>Term</td>
+                            <td>Current PPU</td>
+                            <td>Partner Discount</td>
+                            <td>Total Discount</td> 
+                            <td>Net Price</td>
+                            <td>MCV</td>
+                        </tr>
+                        <apex:repeat value="{!ListOfQuoteLineDetails}" var="Item">
+                            <tr>
+                                <td>
+                                    <apex:outputPanel rendered="{!IF(Item.Show_Ramp__c == false, true, false)}">
+                                        <!-- <apex:outputField value="{!Item.SBQQ__ProductName__c}" /> -->
+                                        <apex:outputField value="{!Item.NS_Product_Name__c}" /> <!-- CR# 4221 CR# 4647-->
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel >
+                                        <apex:outputField value="{!Item.Product_Name_for_GSA__c}" /> <!-- CR# 4221 CR# 4647-->
+                                    </apex:outputPanel>
+                                </td>
+                                 <td style="text-align: right;">
+                                    <apex:outputPanel >
+                                        <apex:outputField value="{!Item.SBQQ__ListPrice__c}" /> <!-- CR# 4221 CR# 4647-->
+                                    </apex:outputPanel>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText value="{0, number,###,###,##0}">
+                                        <apex:param value="{!Item.SBQQ__EffectiveQuantity__c}" />
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: center;">
+                                    <apex:outputField value="{!Item.SBQQ__StartDate__c}" />
+                                </td>
+                                <td style="text-align: center;">
+                                    <apex:outputField value="{!Item.SBQQ__EndDate__c}" />
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputField value="{!Item.SBQQ__SubscriptionTerm__c}" />
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputField value="{!Item.Net_PUPY__c}" />
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.PartnerDisc__c != null,true,false)}" value="{0, number, 0.00}%">
+                                        <apex:param value="{!Item.PartnerDisc__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.PartnerDisc__c == null,true,false)}">
+                                        0.00%
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.SBQQ__TotalDiscountRate__c != null,true,false)}" value="{0, number, 0.00}%">
+                                        <apex:param value="{!Item.SBQQ__TotalDiscountRate__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.SBQQ__TotalDiscountRate__c == null,true,false)}">
+                                        0.00%
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputPanel rendered="{!IF(AND(Item.SBQQ__NetTotal__c  != null, Item.SBQQ__NetTotal__c  < 0), true,false)}" style="color: red;">
+                                        
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!Item.SBQQ__NetTotal__c }" />
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!IF(AND(Item.SBQQ__NetTotal__c  != null, Item.SBQQ__NetTotal__c  >= 0), true,false)}">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!Item.SBQQ__NetTotal__c }" />
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                </td>                        
+                                <td style="text-align: right;">
+                                    <apex:outputPanel rendered="{!IF(AND(Item.MRR_New__c != null,Item.MRR_New__c < 0),true,false)}" style="color: red;">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!Item.MRR_New__c}" />
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!IF(AND(Item.MRR_New__c != null,Item.MRR_New__c >= 0),true,false)}">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!Item.MRR_New__c}" />
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                        </apex:repeat>
+                        <tr style="font-weight:bold; text-align: center; background-color: #929599;">
+                            <td colspan="5">Totals:</td>
+                            <td></td><!--IBA-4029-->
+                                <td></td><!--IBA-4029-->
+                            <td style="text-align: right;">                                
+                                <apex:outputText value="${0,number,##,###.##}">
+                                    <apex:param value="{!totalPPU}"/>
+                                </apex:outputText>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td style="text-align: right;">
+                                <apex:outputText value="${0,number,###,###,###,##0.00}">
+                                    <apex:param value="{!totalNetPrice}"/>
+                                </apex:outputText>
+                            </td>
+                            <td style="text-align: right;">
+                                <apex:outputText value="${0,number,##,###.##}">
+                                    <apex:param value="{!totalMRR}"/>
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <br/>
+                <br/>
+            </apex:outputPanel> 
+            
+            
+            <!-- Federal Single Tier -->
+            <apex:outputPanel rendered="{!IF(isSummitFederal && isFy21SingleTier,true,false)}">
+                <div class="table-outer">
+                    <b>Cart Details:</b>
+                    <br/>
+                    <br/>
+                    <table border="1" style="border-collapse: collapse; width: 100%">
+                        <tr style="font-weight:bold; text-align: center; background-color: #929599;">
+                            <td>Product Name</td>
+                            <td>SKU</td>
+                            <td>List Price</td>
+                            <td>Base Extended Price</td>
+                            <td>Quantity</td>
+                            <td>Start Date</td>
+                            <td>End Date</td>
+                            <td>Term</td>
+                            <td>Rep Adjustment</td>
+                            <td>Price with Adjustment</td>
+                            <td>Deal Reg (Sourced) Disc</td>
+                            <td>Deal Reg (Teaming-Reseller) Disc</td>
+                            <td>Fulfillemnt Discount</td> 
+                            <td>Distributor Discount</td>     
+                            <td>Deployment Discount</td>   
+                            <td>Total Co-Sell Discount</td>                
+                            <td>Net Price</td>
+                            <td>Total Discount</td>
+                            <td>ACV</td>
+                            <td>MCV</td>
+                        </tr>
+                        <apex:repeat value="{!ListOfQuoteLineDetails}" var="Item">
+                            <tr>
+                                <td>
+                                    <apex:outputPanel rendered="{!IF(Item.Show_Ramp__c == false, true, false)}">
+                                        <!-- <apex:outputField value="{!Item.SBQQ__ProductName__c}" /> -->
+                                        <apex:outputField value="{!Item.NS_Product_Name__c}" /> <!-- CR# 4221 CR# 4647-->
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel >
+                                        <!-- <apex:outputField value="{!Item.SBQQ__ProductCode__c}" /> -->
+                                        <apex:outputField value="{!Item.Product_Name_for_GSA__c}" /> <!-- CR# 4221 CR# 4647-->
+                                    </apex:outputPanel>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.SBQQ__ListPrice__c != null,true,false)}" value="{0, number,currency}">
+                                        <apex:param value="{!Item.SBQQ__ListPrice__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.SBQQ__ListPrice__c == null,true,false)}">
+                                        $0.00 
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.Base_Extended_Price__c != null,true,false)}" value="{0, number,currency}">
+                                        <apex:param value="{!Item.Base_Extended_Price__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.Base_Extended_Price__c == null,true,false)}">
+                                        $0.00 
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText value="{0, number,###,###,##0}">
+                                        <apex:param value="{!Item.SBQQ__EffectiveQuantity__c}" />
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: center;">
+                                    <apex:outputField value="{!Item.SBQQ__StartDate__c}" />
+                                </td>
+                                <td style="text-align: center;">
+                                    <apex:outputField value="{!Item.SBQQ__EndDate__c}" />
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputField value="{!Item.SBQQ__SubscriptionTerm__c}" />
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText value="{0,number,0.00}%" rendered="{!IF(AND(Item.SBQQ__Discount__c != null,Item.SBQQ__ProductCode__c != 'Z-Credit'),true,false)}">
+                                        <apex:param value="{!Item.SBQQ__Discount__c}"/>
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: center;">
+                                    <apex:outputText rendered="{!IF(Item.Price_After_Adjustment__c != null,true,false)}" value="{0, number,currency}">
+                                        <apex:param value="{!Item.Price_After_Adjustment__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.Price_After_Adjustment__c == null,true,false)}">
+                                        $0.00 
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.Deal_Reg_Sourced_Discount__c != null,true,false)}" value="{0, number, 0.00}%">
+                                        <apex:param value="{!Item.Deal_Reg_Sourced_Discount__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.Deal_Reg_Sourced_Discount__c == null,true,false)}">
+                                        0.00%
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.Deal_Reg_Teaming_Reseller_Discount__c != null,true,false)}" value="{0, number, 0.00}%">
+                                        <apex:param value="{!Item.Deal_Reg_Teaming_Reseller_Discount__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.Deal_Reg_Teaming_Reseller_Discount__c == null,true,false)}">
+                                        0.00%
+                                    </apex:outputText>
+                                </td>                      
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.Fulfillment_Discount__c != null,true,false)}" value="{0, number, 0.00}%">
+                                        <apex:param value="{!Item.Fulfillment_Discount__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.Fulfillment_Discount__c == null,true,false)}">
+                                        0.00%
+                                    </apex:outputText>
+                                </td>                        
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.Distributor_Discount__c != null,true,false)}" value="{0, number,0.00}%">
+                                        <apex:param value="{!Item.Distributor_Discount__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.Distributor_Discount__c == null,true,false)}">
+                                        0.00%
+                                    </apex:outputText>
+                                </td>                        
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.Deployment_Discount__c != null,true,false)}" value="{0, number, 0.00}%">
+                                        <apex:param value="{!Item.Deployment_Discount__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.Deployment_Discount__c == null,true,false)}">
+                                        0.00%
+                                    </apex:outputText>
+                                </td> 
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.Co_sell_Discount__c != null,true,false)}" value="{0, number, 0.00}%">
+                                        <apex:param value="{!Item.Co_sell_Discount__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.Co_sell_Discount__c == null,true,false)}">
+                                        0.00%
+                                    </apex:outputText>
+                                </td>                       
+                                <td style="text-align: right;">
+                                    <apex:outputPanel rendered="{!IF(AND(Item.SBQQ__NetTotal__c  != null, Item.SBQQ__NetTotal__c  < 0), true,false)}" style="color: red;">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!Item.SBQQ__NetTotal__c }" />
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!IF(AND(Item.SBQQ__NetTotal__c  != null, Item.SBQQ__NetTotal__c  >= 0), true,false)}">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!Item.SBQQ__NetTotal__c }" />
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.SBQQ__TotalDiscountRate__c != null,true,false)}" value="{0, number, 0.00}%">
+                                        <apex:param value="{!Item.SBQQ__TotalDiscountRate__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.SBQQ__TotalDiscountRate__c == null,true,false)}">
+                                        0.00%
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: right;">  
+                                    <apex:outputPanel rendered="{!IF(AND(Item.ACV_New__c != null,Item.ACV_New__c < 0),true,false)}" style="color: red;">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!Item.ACV_New__c}" />
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!IF(AND(Item.ACV_New__c != null,Item.ACV_New__c >= 0),true,false)}">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!Item.ACV_New__c}" />
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputPanel rendered="{!IF(AND(Item.MRR_New__c != null,Item.MRR_New__c < 0),true,false)}" style="color: red;">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!Item.MRR_New__c}" />
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!IF(AND(Item.MRR_New__c != null,Item.MRR_New__c >= 0),true,false)}">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!Item.MRR_New__c}" />
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                </td>
+                                
+                            </tr>
+                        </apex:repeat>
+                        <tr style="font-weight:bold; text-align: center; background-color: #929599;">
+                            <td colspan="9">Totals:</td>
+                            <td style="text-align: right;">
+                                <apex:outputText value="${0,number,###,###,###,##0.00}">
+                                    <apex:param value="{!totalPriceWithAdjustment}"/>
+                                </apex:outputText>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td style="text-align: right;">
+                                <apex:outputText value="${0,number,###,###,###,##0.00}">
+                                    <apex:param value="{!totalNetPrice}"/>
+                                </apex:outputText>
+                            </td>
+                            <td></td>
+                            <td style="text-align: right;">
+                                <apex:outputText value="${0,number,###,###,###,##0.00}">
+                                    <apex:param value="{!totalACV}"/>
+                                </apex:outputText>
+                            </td>
+                            <td style="text-align: right;">
+                                <apex:outputText value="${0,number,##,###.##}">
+                                    <apex:param value="{!totalMRR}"/>
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <br/>
+                <br/>
+            </apex:outputPanel>
+            
+            
+            <apex:outputPanel rendered="{!IF(isTraditional && isFy21SingleTier,true,false)}">
+                <div class="table-outer">
+                    <b>Cart Details:</b>
+                    <br/>
+                    <br/>
+                    <table border="1" style="border-collapse: collapse; width: 100%">
+                        <tr style="font-weight:bold; text-align: center; background-color: #929599;">
+                            <td>Product Name</td>
+                            <td>SKU</td>
+                            <td>List Price</td>
+                            <td>Quantity</td>
+                            <td>Start Date</td>
+                            <td>End Date</td>
+                            <td>Term</td>
+                            <td>Base Extended Price</td>
+                            <td>Volume Discount</td>
+                            <td>Partner Discount</td>
+                            <td>Deal Reg (Sourced) Discount</td>
+                            <td>Deal Reg (Teaming-Reseller) Discount</td>                   
+                            <!-- added by Rakshitha CR# 4405-->
+                            <apex:outputPanel rendered="{!IF(isOrangePartnerUpsellDiscount == true,true,false)}">
+                                <td>Deal Reg (Teaming-Upsell) Discount</td>
+                            </apex:outputPanel>
+                            <!--end-->                
+                            <td>Standard Price</td>
+                            <td>Rep Adjustment</td>
+                            <!-- added by Rakshitha CR# 4405-->
+                            <apex:outputPanel rendered="{!IF(isOrangePartnerContractedDiscount == true,true,false)}">
+                                <td>Contractual / Incentive Discount</td>
+                            </apex:outputPanel>
+                            <!--end--> 
+                            <td>Total Discount</td>
+                            <td>Net Price</td>
+                            <td>ACV</td>
+                            <td>MCV</td>
+                        </tr>
+                        <apex:repeat value="{!ListOfQuoteLineDetails}" var="Item">
+                            <tr>
+                                <td>
+                                    <apex:outputPanel rendered="{!IF(Item.Show_Ramp__c == false, true, false)}">
+                                        <!-- <apex:outputField value="{!Item.SBQQ__ProductName__c}" /> -->
+                                        <apex:outputField value="{!Item.NS_Product_Name__c}" /> <!-- CR# 4221 CR# 4647-->
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel >
+                                        <!-- <apex:outputField value="{!Item.SBQQ__ProductCode__c}" /> -->
+                                        <apex:outputField value="{!Item.Product_Name_for_GSA__c}" /> <!-- CR# 4221 CR# 4647-->
+                                    </apex:outputPanel>
+                                </td>
+                                 <td style="text-align: right;">
+                                    <apex:outputPanel >
+                                        <apex:outputField value="{!Item.SBQQ__ListPrice__c}" /> <!-- CR# 4221 CR# 4647-->
+                                    </apex:outputPanel>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText value="{0, number,###,###,##0}">
+                                        <apex:param value="{!Item.SBQQ__EffectiveQuantity__c}" />
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: center;">
+                                    <apex:outputField value="{!Item.SBQQ__StartDate__c}" />
+                                </td>
+                                <td style="text-align: center;">
+                                    <apex:outputField value="{!Item.SBQQ__EndDate__c}" />
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputField value="{!Item.SBQQ__SubscriptionTerm__c}" />
+                                </td>
+                                
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.Base_Extended_Price__c != null,true,false)}" value="{0, number,currency}">
+                                        <apex:param value="{!Item.Base_Extended_Price__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.Base_Extended_Price__c == null,true,false)}">
+                                        $0.00 
+                                    </apex:outputText>
+                                </td>
+                                
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.Volume_Disc__c != null,true,false)}" value="{0, number, 0.00}%">
+                                        <apex:param value="{!Item.Volume_Disc__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.Volume_Disc__c == null,true,false)}">
+                                        0.00%
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.PartnerDisc__c != null,true,false)}" value="{0, number, 0.00}%">
+                                        <apex:param value="{!Item.PartnerDisc__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.PartnerDisc__c == null,true,false)}">
+                                        0.00%
+                                    </apex:outputText>
+                                </td>                                                          
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.Deal_Reg_Sourced_Discount__c != null,true,false)}" value="{0, number, 0.00}%">
+                                        <apex:param value="{!Item.Deal_Reg_Sourced_Discount__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.Deal_Reg_Sourced_Discount__c == null,true,false)}">
+                                        0.00%
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.Deal_Reg_Teaming_Reseller_Discount__c != null,true,false)}" value="{0, number, 0.00}%">
+                                        <apex:param value="{!Item.Deal_Reg_Teaming_Reseller_Discount__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.Deal_Reg_Teaming_Reseller_Discount__c == null,true,false)}">
+                                        0.00%
+                                    </apex:outputText>
+                                </td>                       
+                                <!-- added by Rakshitha CR# 4405-->
+                                <apex:outputPanel rendered="{!IF(isOrangePartnerUpsellDiscount != null && isOrangePartnerUpsellDiscount == true,true,false)}">
+                                    <td style="text-align: right;">
+                                        <apex:outputText rendered="{!IF(Item.Deal_Reg_Teaming_Upsell_Discount__c != null,true,false)}" value="{0, number, 0.00}%">
+                                            <apex:param value="{!Item.Deal_Reg_Teaming_Upsell_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(Item.Deal_Reg_Teaming_Upsell_Discount__c == null,true,false)}">
+                                            0.00%
+                                        </apex:outputText>
+                                    </td>
+                                </apex:outputPanel>
+                                <!--end-->                   
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.Internal_List_Price__c != null,true,false)}" value="{0, number,currency}">
+                                        <apex:param value="{!Item.Internal_List_Price__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.Internal_List_Price__c == null,true,false)}">
+                                        $0.00
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText value="{0,number,0.00}%" rendered="{!IF(AND(Item.SBQQ__Discount__c != null,Item.SBQQ__ProductCode__c != 'Z-Credit'),true,false)}">
+                                        <apex:param value="{!Item.SBQQ__Discount__c}"/>
+                                    </apex:outputText>
+                                </td>
+                                <!-- added by Rakshitha CR# 4405-->
+                                <apex:outputPanel rendered="{!IF(isOrangePartnerContractedDiscount != null && isOrangePartnerContractedDiscount == true,true,false)}">
+                                    <td style="text-align: right;">
+                                        <apex:outputText rendered="{!IF(Item.Contractual_Incentive_Discount__c != null,true,false)}" value="{0, number, 0.00}%">
+                                            <apex:param value="{!Item.Contractual_Incentive_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(Item.Contractual_Incentive_Discount__c == null,true,false)}">
+                                            0.00%
+                                        </apex:outputText>
+                                    </td>
+                                </apex:outputPanel>
+                                <!--end-->
+                                <td style="text-align: right;">
+                                    <apex:outputText value="{0, number, 0.00}%">
+                                        <apex:param value="{!Item.Total_base_discount__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.Total_base_discount__c == null,true,false)}">
+                                        0.00%
+                                    </apex:outputText>
+                                </td>
+                                
+                                <td style="text-align: right;">
+                                    <apex:outputPanel rendered="{!IF(AND(Item.SBQQ__NetTotal__c  != null, Item.SBQQ__NetTotal__c  < 0), true,false)}" style="color: red;">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!Item.SBQQ__NetTotal__c }" />
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!IF(AND(Item.SBQQ__NetTotal__c  != null, Item.SBQQ__NetTotal__c  >= 0), true,false)}">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!Item.SBQQ__NetTotal__c }" />
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputPanel rendered="{!IF(AND(Item.ACV_New__c != null,Item.ACV_New__c < 0),true,false)}" style="color: red;">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!Item.ACV_New__c}" />
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!IF(AND(Item.ACV_New__c != null,Item.ACV_New__c >= 0),true,false)}">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!Item.ACV_New__c}" />
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputPanel rendered="{!IF(AND(Item.MRR_New__c != null,Item.MRR_New__c < 0),true,false)}" style="color: red;">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!Item.MRR_New__c}" />
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!IF(AND(Item.MRR_New__c != null,Item.MRR_New__c >= 0),true,false)}">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!Item.MRR_New__c}" />
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                </td>
+                                
+                            </tr>
+                        </apex:repeat>
+                        <tr style="font-weight:bold; text-align: center; background-color: #929599;">
+                            <td colspan="6">Totals:</td>
+                            <td></td><!--IBA-4029-->
+                            <td style="text-align: right;">
+                                <apex:outputText value="${0,number,###,###,###,##0.00}">
+                                    <apex:param value="{!totalBaseExtendedPrice}"/>
+                                </apex:outputText>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <apex:outputPanel rendered="{!IF(isRenewal != null && isRenewal == true,true,false)}">
+                                <td></td>
+                            </apex:outputPanel>
+                            <td></td>
+                            <td></td>
+                            <apex:outputPanel rendered="{!IF(isOrangePartnerUpsellDiscount == true,true,false)}">
+                                <td></td>
+                            </apex:outputPanel>
+                            <td style="text-align: right;">
+                                <apex:outputText value="${0,number,###,###,###,##0.00}">
+                                    <apex:param value="{!totalStandardPrice}"/>
+                                </apex:outputText>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <apex:outputPanel rendered="{!IF(isOrangePartnerContractedDiscount == true,true,false)}">
+                                <td></td>
+                            </apex:outputPanel>
+                            <td style="text-align: right;">
+                                <apex:outputText value="${0,number,###,###,###,##0.00}">
+                                    <apex:param value="{!totalNetPrice}"/>
+                                </apex:outputText>
+                            </td>
+                            <td style="text-align: right;">
+                                <apex:outputText value="${0,number,###,###,###,##0.00}">
+                                    <apex:param value="{!totalACV}"/>
+                                </apex:outputText>
+                            </td>
+                            <td style="text-align: right;">
+                                <apex:outputText value="${0,number,##,###.##}">
+                                    <apex:param value="{!totalMRR}"/>
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <br/>
+                <br/>
+            </apex:outputPanel>
+            
+            <!-- Submit Discount -->
+            <apex:outputPanel rendered="{!isSummitDiscount}">
+                <div class="table-outer">
+                    <b>Cart Details:</b>
+                    <br/>
+                    <br/>
+                    <table border="1" style="border-collapse: collapse; width: 100%">
+                        <tr style="font-weight:bold; text-align: center; background-color: #929599;">
+                            <td>Product Name</td>
+                            <td>SKU</td>
+                            <td>List Price</td>
+                            <apex:outputPanel rendered="{!IF(isFy21VolumeTier != null && isFy21VolumeTier == true,False,True)}">
+                                <td>Volume Discount</td>
+                                <td>Recommended Retail Price</td>
+                            </apex:outputPanel>
+                            <td>Quantity</td>
+                            <td>Start Date</td>
+                            <td>End Date</td>
+                            <td>Term</td>
+                            <td>Base Extended Price</td>
+                            <td>Adjustment</td>
+                            <td>ZSRP</td>
+                            <td>Customer Discount</td>
+                            <td>Deal Reg (Sourced) Discount</td>
+                            <td>Deal Reg (Teaming-Reseller) Discount</td>
+                            <td>Fulfilment Discount</td>
+                            <td>Distributor Discount</td>
+                            <td>Deployment Discount</td>
+                            <td>Co-sell Discount</td>
+                            <td>Net Price</td>
+                            <td>ACV</td>
+                            <td>MCV</td>
+                        </tr>
+                        <apex:repeat value="{!ListOfQuoteLineDetails}" var="Item">
+                            <tr>
+                                <td>
+                                    <apex:outputPanel rendered="{!IF(Item.Show_Ramp__c == false, true, false)}">
+                                        <!-- <apex:outputField value="{!Item.SBQQ__ProductName__c}" /> -->
+                                        <apex:outputField value="{!Item.NS_Product_Name__c}" /> <!-- CR# 4221 -->
+                                    </apex:outputPanel>
+                                </td>
+                                <td>
+                                    <apex:outputPanel >
+                                        <!-- <apex:outputField value="{!Item.SBQQ__ProductCode__c}" /> -->
+                                        <apex:outputField value="{!Item.Product_Name_for_GSA__c}" /> <!-- CR# 4221 CR# 4647-->
+                                    </apex:outputPanel>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText value="{0, number,currency}">
+                                        <apex:param value="{!Item.SBQQ__ListPrice__c}" />
+                                    </apex:outputText>
+                                </td>
+                                <apex:outputPanel rendered="{!IF(isFy21VolumeTier != null && isFy21VolumeTier == true,False,True)}">
+                                    <td style="text-align: right;">
+                                        <apex:outputText rendered="{!IF(Item.Volume_Disc__c != null,true,false)}" value="{0, number, 0.00}%">
+                                            <apex:param value="{!Item.Volume_Disc__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(Item.Volume_Disc__c == null,true,false)}">
+                                            0.00%
+                                        </apex:outputText>
+                                    </td>
+                                    <td style="text-align: right;">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!Item.Recommended_Retail_Price__c}" />
+                                        </apex:outputText>
+                                    </td>
+                                </apex:outputPanel>
+                                <td style="text-align: right;">
+                                    <apex:outputText value="{0, number,###,###,##0}">
+                                        <apex:param value="{!Item.SBQQ__EffectiveQuantity__c}" />
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: center;">
+                                    <apex:outputField value="{!Item.SBQQ__StartDate__c}" /> 
+                                </td>
+                                <td style="text-align: center;">
+                                    <apex:outputField value="{!Item.SBQQ__EndDate__c}" />
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputField value="{!Item.SBQQ__SubscriptionTerm__c}" />
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText value="{0, number,currency}">
+                                        <apex:param value="{!Item.Base_Extended_Price__c}" />
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText value="{0,number,0.00}%" rendered="{!IF(AND(Item.SBQQ__Discount__c != null,Item.SBQQ__ProductCode__c != 'Z-Credit'),true,false)}">
+                                        <apex:param value="{!Item.SBQQ__Discount__c}"/>
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText value="${0,number,###,###,###,##0.00}" rendered="{!IF(Item.ZSRP__c != null,true,false)}">
+                                        <apex:param value="{!Item.ZSRP__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.ZSRP__c == null,true,false)}">
+                                        $0.00
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.SBQQ__TotalDiscountRate__c != null,true,false)}" value="{0, number, 0.00}%">
+                                        <apex:param value="{!Item.SBQQ__TotalDiscountRate__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.SBQQ__TotalDiscountRate__c == null,true,false)}">
+                                        0.00%
+                                    </apex:outputText>
+                                </td>
+                                
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.Deal_Reg_Sourced_Discount__c != null,true,false)}" value="{0, number, 0.00}%">
+                                        <apex:param value="{!Item.Deal_Reg_Sourced_Discount__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.Deal_Reg_Sourced_Discount__c == null,true,false)}">
+                                        0.00%
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.Deal_Reg_Teaming_Reseller_Discount__c != null,true,false)}" value="{0, number, 0.00}%">
+                                        <apex:param value="{!Item.Deal_Reg_Teaming_Reseller_Discount__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.Deal_Reg_Teaming_Reseller_Discount__c == null,true,false)}">
+                                        0.00%
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.Fulfillment_Discount__c != null,true,false)}" value="{0, number, 0.00}%">
+                                        <apex:param value="{!Item.Fulfillment_Discount__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.Fulfillment_Discount__c == null,true,false)}">
+                                        0.00%
+                                    </apex:outputText>
+                                </td>
+                                
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.Distributor_Discount__c != null,true,false)}" value="{0, number,0.00}%">
+                                        <apex:param value="{!Item.Distributor_Discount__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.Distributor_Discount__c == null,true,false)}">
+                                        0.00%
+                                    </apex:outputText>
+                                </td> 
+                                
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.Deployment_Discount__c != null,true,false)}" value="{0, number, 0.00}%">
+                                        <apex:param value="{!Item.Deployment_Discount__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.Deployment_Discount__c == null,true,false)}">
+                                        0.00%
+                                    </apex:outputText>
+                                </td>
+                                
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.Co_sell_Discount__c != null,true,false)}" value="{0, number, 0.00}%">
+                                        <apex:param value="{!Item.Co_sell_Discount__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.Co_sell_Discount__c == null,true,false)}">
+                                        0.00%
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText value="{0, number,currency}">
+                                        <apex:param value="{!Item.SBQQ__NetTotal__c}" />
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputField value="{!Item.ACV_New__c}" />
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputField value="{!Item.MRR_New__c}" />
+                                </td>
+                            </tr>
+                        </apex:repeat>
+                        <tr style="font-weight:bold; text-align: center; background-color: #929599;">
+                            <apex:outputPanel rendered="{!IF(!isFy21VolumeTier,true,false)}">
+                                <td colspan="9">Totals:</td>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!IF(isFy21VolumeTier,true,false)}">
+                                <td colspan="7">Totals:</td>
+                            </apex:outputPanel>
+                            <td style="text-align: right;">
+                                <apex:outputText value="${0,number,###,###,###,##0.00}">
+                                    <apex:param value="{!totalBaseExtendedPrice}"/>
+                                </apex:outputText>
+                            </td>
+                            <td></td>
+                            <td style="text-align: right;">
+                                <apex:outputText value="${0,number,###,###,###,##0.00}">
+                                    <apex:param value="{!totalZSRP}"/>
+                                </apex:outputText>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td> 
+                            <td></td>
+                            
+                            <td style="text-align: right;">
+                                <apex:outputText value="${0,number,###,###,###,##0.00}">
+                                    <apex:param value="{!totalNetPrice}"/>
+                                </apex:outputText>
+                            </td>
+                            <td style="text-align: right;">
+                                <apex:outputText value="${0,number,###,###,###,##0.00}">
+                                    <apex:param value="{!totalACV}"/>
+                                </apex:outputText>
+                            </td>
+                            <td style="text-align: right;">
+                                <apex:outputText value="${0,number,##,###.##}">
+                                    <apex:param value="{!totalMRR}"/>
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </apex:outputPanel>
+        </apex:outputPanel>
+        
+        
+        <!-- Per Unit Recurring SKU Table -->
+        <apex:outputPanel rendered="{!IF(hasRecurringLines && isFy21SingleTier, true, false)}">
+            <div class="table-outer">
+                <br/><br/>
+                <b>Per Unit - Recurring Upsell SKUs:</b>
+                <br/><br/>
+                <table border="1" style="border-collapse: collapse; width: 100%">
+                    <tr style="color:#FFFFFF; font-weight:bold; text-align: center; background-color: #0b6ef0; ">
+                        <td style="color:#FFFFFF;">Product Name</td>
+                        <td style="color:#FFFFFF;">SKU</td>
+                        <td style="color:#FFFFFF;">Pricing Meter</td>
+                        <td style="color:#FFFFFF;">Quantity</td>
+                        <td style="color:#FFFFFF;">Start Date</td>
+                        <td style="color:#FFFFFF;">End Date</td>
+                        <td style="color:#FFFFFF;">List Price</td>
+                        <apex:outputPanel rendered="{!isSummitDiscount}">
+                            <td style="color:#FFFFFF;">Recommended Retail Price</td>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!isSummitDiscount}">
+                            <td style="color:#FFFFFF;">ZSRP</td>
+                            <td style="color:#FFFFFF;">Partner Discount</td>
+                        </apex:outputPanel>
+                        <td style="color:#FFFFFF;">Net PUPY</td>
+                        <td style="color:#FFFFFF;">Recommended PUPY</td>
+                        <td style="color:#FFFFFF;">Net Variance</td>
+                        <td style="color:#FFFFFF;">Customer Discount</td>
+                    </tr>
+                    
+                    <apex:repeat value="{!ListOfRecurringLineItems}" var="Item">
+                        <tr>
+                            <td>
+                                <apex:outputPanel rendered="{!IF(Item.Show_Ramp__c == false, true, false)}">
+                                    <apex:outputField value="{!Item.SBQQ__ProductName__c}" />
+                                </apex:outputPanel>    
+                            </td>
+                            <td>
+                                <apex:outputPanel >
+                                    <apex:outputField value="{!Item.Product_Name_for_GSA__c}" />
+                                </apex:outputPanel>
+                            </td>
+                            <td>
+                                <apex:outputPanel >
+                                    <apex:outputField value="{!Item.SBQQ__Product__r.Pricing_Meter__c}" />
+                                </apex:outputPanel>
+                            </td>
+                            <td style="text-align: right;">
+                                <apex:outputText value="{0, number,###,###,##0}">
+                                    <apex:param value="{!Item.SBQQ__EffectiveQuantity__c}" />
+                                </apex:outputText>
+                            </td>
+                            <td style="text-align: center;">
+                                <apex:outputField value="{!Item.SBQQ__StartDate__c}" /> 
+                            </td>
+                            <td style="text-align: center;">
+                                <apex:outputField value="{!Item.SBQQ__EndDate__c}" />
+                            </td>
+                            <td style="text-align: right;">
+                                <apex:outputText value="{0, number,currency}">
+                                    <apex:param value="{!Item.SBQQ__ListPrice__c}" />
+                                </apex:outputText>
+                            </td>
+                            <apex:outputPanel rendered="{!isSummitDiscount}">
+                                <td style="text-align: right;">
+                                    <apex:outputText value="{0, number,currency}">
+                                        <apex:param value="{!Item.Recommended_Retail_Price__c}" />
+                                    </apex:outputText>
+                                </td>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!isSummitDiscount}">
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.ZSRP__c != null,true,false)}" value="${0,number,###,###,###,##0.00}">
+                                        <apex:param value="{!Item.ZSRP__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.ZSRP__c == null,true,false)}">
+                                        $0.00
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.Co_sell_Discount__c != null,true,false)}" value="{0, number, 0.00}%">
+                                        <apex:param value="{!Item.Co_sell_Discount__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.Co_sell_Discount__c == null,true,false)}">
+                                        0.00%
+                                    </apex:outputText>
+                                </td>
+                            </apex:outputPanel>  <!-- Adding output panel -->
+                            <td style="text-align: right;">
+                                <apex:outputText value="{0, number,currency}">
+                                    <apex:param value="{!Item.Net_PUPY__c}" />
+                                </apex:outputText>
+                            </td>
+                            <td style="text-align: right;">
+                                <apex:outputText value="{0, number,currency}">
+                                    <apex:param value="{!Item.Recomm_Net__c}" />
+                                </apex:outputText>
+                            </td>
+                            <td style="text-align: right;">
+                                <apex:outputPanel rendered="{!IF(Item.Net_Variance__c != null,true,false)}">
+                                    <apex:outputPanel rendered="{!Item.Net_PUPY__c < Item.Recomm_Net__c}" style="color: red;">
+                                        <apex:outputText value="{0, number,0.00}%">
+                                            <apex:param value="{!Item.Net_Variance__c}" />
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!Item.Net_PUPY__c >= Item.Recomm_Net__c}" style="color: green;">
+                                        <apex:outputText value="{0, number,0.00}%">
+                                            <apex:param value="{!Item.Net_Variance__c}" />
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!IF(Item.Net_Variance__c == null,true,false)}">
+                                    0.00%
+                                </apex:outputPanel>
+                            </td>
+                            
+                            <td style="text-align: right;">
+                                <apex:outputText value="{0,number,0.00}%">
+                                    <apex:param value="{!Item.SBQQ__TotalDiscountRate__c}" />
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </apex:repeat>
+                </table>
+            </div>
+            
+            <br/><br/>
+        </apex:outputPanel>
+        
+        <apex:outputPanel rendered="{!IF(hasRecurringRenewalLines && isFy21SingleTier, true, false)}">
+            <div class="table-outer">
+                <br/>
+                <br/>
+                <b>Per Unit - Recurring Renewal SKUs:</b>
+                <br/>
+                <br/>
+                <table border="1" style="border-collapse: collapse; width: 100%">
+                    <tr style="color:#FFFFFF; font-weight:bold; text-align: center; background-color: #0b6ef0; ">
+                        <td style="color:#FFFFFF;">Product Name</td>
+                        <td style="color:#FFFFFF;">SKU</td>
+                        <td style="color:#FFFFFF;">Pricing Meter</td>
+                        <td style="color:#FFFFFF;">Quantity</td>
+                        <td style="color:#FFFFFF;">Start Date</td>
+                        <td style="color:#FFFFFF;">End Date</td>
+                        <td style="color:#FFFFFF;">List Price</td>
+                        <apex:outputPanel rendered="{!isSummitDiscount}">
+                            <td style="color:#FFFFFF;">Recommended Retail Price</td>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!isSummitDiscount}">
+                            <td style="color:#FFFFFF;">ZSRP</td>
+                            <td style="color:#FFFFFF;">Partner Discount</td>
+                        </apex:outputPanel>
+                        <td style="color:#FFFFFF;">Net PUPY</td>
+                        <td style="color:#FFFFFF;">Recommended PUPY</td>
+                        <td style="color:#FFFFFF;">Old PUPY</td>
+                        <td style="color:#FFFFFF;">Net Variance</td>
+                        <td style="color:#FFFFFF;">Customer Discount</td>
+                    </tr>
+                    
+                    <apex:repeat value="{!listOfRecurringRenewalLineItems}" var="Item">
+                        <tr>
+                            <td>
+                                <apex:outputPanel rendered="{!IF(Item.Show_Ramp__c == false, true, false)}">
+                                    <apex:outputField value="{!Item.SBQQ__ProductName__c}" />
+                                </apex:outputPanel>    
+                            </td>
+                            <td>
+                                <apex:outputPanel >
+                                    <apex:outputField value="{!Item.Product_Name_for_GSA__c}" />
+                                </apex:outputPanel>
+                            </td>
+                            <td>
+                                <apex:outputPanel >
+                                    <apex:outputField value="{!Item.SBQQ__Product__r.Pricing_Meter__c}" />
+                                </apex:outputPanel>
+                            </td>
+                            <td style="text-align: right;">
+                                <apex:outputText value="{0, number,###,###,##0}">
+                                    <apex:param value="{!Item.SBQQ__EffectiveQuantity__c}" />
+                                </apex:outputText>
+                            </td>
+                            <td style="text-align: center;">
+                                <apex:outputField value="{!Item.SBQQ__StartDate__c}" /> 
+                            </td>
+                            <td style="text-align: center;">
+                                <apex:outputField value="{!Item.SBQQ__EndDate__c}" />
+                            </td>
+                            <td style="text-align: right;">
+                                <apex:outputText value="{0, number,currency}">
+                                    <apex:param value="{!Item.SBQQ__ListPrice__c}" />
+                                </apex:outputText>
+                            </td>
+                            <apex:outputPanel rendered="{!isSummitDiscount}">
+                                <td style="text-align: right;">
+                                    <apex:outputText value="{0, number,currency}">
+                                        <apex:param value="{!Item.Recommended_Retail_Price__c}" />
+                                    </apex:outputText>
+                                </td>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!isSummitDiscount}">
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.ZSRP__c != null,true,false)}" value="${0,number,###,###,###,##0.00}">
+                                        <apex:param value="{!Item.ZSRP__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.ZSRP__c == null,true,false)}">
+                                        $0.00
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.Co_sell_Discount__c != null,true,false)}" value="{0, number, 0.00}%">
+                                        <apex:param value="{!Item.Co_sell_Discount__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.Co_sell_Discount__c == null,true,false)}">
+                                        0.00%
+                                    </apex:outputText>
+                                </td>
+                            </apex:outputPanel>
+                            
+                            <td style="text-align: right;">
+                                <apex:outputText value="{0, number,currency}">
+                                    <apex:param value="{!Item.Net_PUPY__c}" />
+                                </apex:outputText>
+                            </td>
+                            <td style="text-align: right;">
+                                <apex:outputText value="{0, number,currency}">
+                                    <apex:param value="{!Item.Recomm_Net__c}" />
+                                </apex:outputText>
+                            </td>
+                            <td style="text-align: right;">
+                                <apex:outputText value="{0, number,currency}">
+                                    <apex:param value="{!Item.Original_PUPY__c}" />
+                                </apex:outputText>
+                            </td>
+                            <td style="text-align: right;">
+                                <apex:outputPanel rendered="{!IF(Item.Net_PUPY__c != null && Item.Recomm_Net__c != null,true,false)}">
+                                    <apex:outputPanel rendered="{!Item.Net_PUPY__c < Item.Recomm_Net__c}" style="color: red;">
+                                        <apex:outputText value="{0, number,0.00}%">
+                                            <apex:param value="{!Item.Net_Variance__c}" />
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!Item.Net_PUPY__c >= Item.Recomm_Net__c}" style="color: green;">
+                                        <apex:outputText value="{0, number,0.00}%">
+                                            <apex:param value="{!Item.Net_Variance__c}" />
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </td>
+                            
+                            <td style="text-align: right;">
+                                <apex:outputText value="{0,number,0.00}%">
+                                    <apex:param value="{!Item.SBQQ__TotalDiscountRate__c}" />
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </apex:repeat>
+                </table>
+                
+            </div>  
+            <br/><br/>  
+        </apex:outputPanel>    
+        
+        <!-- Per Unit - OneTime/Credit SKUs Table -->
+        <apex:outputPanel rendered="{!IF(hasOneTimeLines && isFy21SingleTier, true, false)}">
+            <div class="table-outer">
+                <b>Per Unit - OneTime/Credit SKUs:</b>
+                <br/><br/>
+                <table border="1" style="border-collapse: collapse; width: 100%">
+                    <tr style="font-weight:bold; text-align: center; background-color: #e6a417;">
+                        <td style="color:antiquewhite;">Product Name</td>
+                        <td style="color:antiquewhite;">SKU</td>
+                        <td style="color:antiquewhite;">Pricing Meter</td>
+                        <td style="color:antiquewhite;">Quantity</td>
+                        <td style="color:antiquewhite;">Term</td>
+                        <td style="color:antiquewhite;">List Price</td>
+                        <apex:outputPanel rendered="{!isSummitDiscount}">
+                            <td style="color:antiquewhite;">Recommended Retail Price</td>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!isSummitDiscount}">
+                            <td style="color:antiquewhite;">ZSRP</td>
+                            <td style="color:antiquewhite;">Partner Discount</td>
+                        </apex:outputPanel>
+                        <td style="color:antiquewhite;">Net PUPY</td>
+                        <td style="color:antiquewhite;">Recommended PUPY</td>
+                        <td style="color:antiquewhite;">Customer Discount</td>
+                    </tr>
+                    <apex:repeat value="{!ListOfOneTimeLineItems}" var="Item">
+                        <tr>
+                            <td>
+                                <apex:outputPanel rendered="{!IF(Item.Show_Ramp__c == false, true, false)}">
+                                    <apex:outputField value="{!Item.SBQQ__ProductName__c}" />
+                                </apex:outputPanel>
+                            </td>
+                            <td>
+                                <apex:outputPanel >
+                                    <apex:outputField value="{!Item.Product_Name_for_GSA__c}" />
+                                </apex:outputPanel>
+                            </td>
+                            <td>
+                                <apex:outputPanel >
+                                    <apex:outputField value="{!Item.SBQQ__Product__r.Pricing_Meter__c}" />
+                                </apex:outputPanel>
+                            </td>
+                            <td style="text-align: right;">
+                                <apex:outputText value="{0, number,###,###,##0}">
+                                    <apex:param value="{!Item.SBQQ__EffectiveQuantity__c}" />
+                                </apex:outputText>
+                            </td>
+                            <td style="text-align: right;">
+                                <apex:outputField value="{!Item.SBQQ__SubscriptionTerm__c}" />
+                            </td>
+                            <td style="text-align: right;">
+                                <apex:outputText value="{0, number,currency}">
+                                    <apex:param value="{!Item.SBQQ__ListPrice__c}" />
+                                </apex:outputText>
+                            </td>
+                            <apex:outputPanel rendered="{!isSummitDiscount}">
+                                <td style="text-align: right;">
+                                    <apex:outputText value="{0, number,currency}">
+                                        <apex:param value="{!Item.Recommended_Retail_Price__c}" />
+                                    </apex:outputText>
+                                </td>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!isSummitDiscount}">
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.ZSRP__c != null,true,false)}" value="${0,number,###,###,###,##0.00}">
+                                        <apex:param value="{!Item.ZSRP__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.ZSRP__c == null,true,false)}">
+                                        $0.00
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText rendered="{!IF(Item.Co_sell_Discount__c != null,true,false)}" value="{0, number, 0.00}%">
+                                        <apex:param value="{!Item.Co_sell_Discount__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(Item.Co_sell_Discount__c == null,true,false)}">
+                                        0.00%
+                                    </apex:outputText>
+                                </td>
+                                <!-- </apex:outputPanel>-->  <!-- Added line -->
+                                <td style="text-align: right;">
+                                    <apex:outputText value="{0, number,currency}">
+                                        <apex:param value="{!Item.Net_PUPY__c}" />
+                                    </apex:outputText>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputText value="{0, number,currency}">
+                                        <apex:param value="{!Item.Recomm_Net__c}" />
+                                    </apex:outputText>
+                                </td>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!isTraditional || isSummitFederal}">
+                                <td style="text-align: right;">
+                                    <apex:outputPanel rendered="{!isFy21SingleTier}">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!Item.Net_PUPY__c}" />
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!isFy21VolumeTier}">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!Item.Net_PUPY__c}" />
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                </td>
+                                <td style="text-align: right;">
+                                    <apex:outputPanel rendered="{!isFy21SingleTier}">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!Item.Recomm_Net__c}" />
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!isFy21VolumeTier}">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!Item.Recomm_Net__c}" />
+                                        </apex:outputText>
+                                    </apex:outputPanel>
+                                </td>
+                            </apex:outputPanel>
+                            <td style="text-align: right;">
+                                <apex:outputText value="{0,number,0.00}%">
+                                    <apex:param value="{!Item.SBQQ__TotalDiscountRate__c}" />
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </apex:repeat>
+                </table>
+            </div>
+            
+            <br/>
+            <br/>
+        </apex:outputPanel>
+        
+        <!-- Custom Billing Schedule Table --> 
+        <apex:outputPanel rendered="{!IsShowCartView}"> 
+            <apex:outputPanel rendered="{!IF(quote.SBQQ__BillingFrequency__c == 'Custom Schedule',true,false)}" styleClass="pgSecHeaderBrown">
+                
+                <apex:pageBlockSection columns="1" collapsible="false" showHeader="true" title="Custom Billing Schedules for {!quote.Name}">
+                    <div>
+                        <apex:pageBlockTable value="{!lstBillingSchedules}" var="objBillSchedule" rowClasses="oddcss,evencss">
+                            <apex:column value="{!objBillSchedule.Name}" headerValue="Schedule Number" />
+                            <apex:column value="{!objBillSchedule.Billing_Date__c}" headerValue="Billing Date" />
+                            <apex:column value="{!objBillSchedule.Amount__c}" headerValue="Amount" />
+                            <apex:column value="{!objBillSchedule.Quote__r.Name}" headerValue="Quote" />
+                        </apex:pageBlockTable> 
+                    </div>
+                </apex:pageBlockSection>
+                
+            </apex:outputPanel>
+        </apex:outputPanel>
+        
+        
+        <!-- Install Base Table -->
+        <!-- Asset line Item [Legacy] -->
+        <!-- Added Condition to display these tables for Amendement and Renewals -->
+        <apex:outputPanel rendered="{!IsShowCartView}">
+            
+            <apex:outputPanel rendered="{!IF(OR(isRenewal,isAmendement), true,false)}">
+                <apex:outputPanel styleClass="instBase" rendered="{!subscriptionsListTraditional.size > 0}" layout="block">
+                    <br/>
+                    <apex:pageBlockSection id="instBase" columns="1" collapsible="false" showHeader="true" title="Install Base for {!quote.SBQQ__Account__r.Name} with {!$Label.Partner_Program_Traditional} Model">
+                       <apex:outputPanel layout="block">
+                            <div class="table-outer">
+                                
+                                <apex:pageBlockTable value="{!subscriptionsListTraditional}" var="var" rowClasses="oddcss,evencss">
+                                    <!-- <apex:column value="{!Var.SBQQ__ProductName__c}" headerValue="Product Name" /> -->
+                                    <apex:column value="{!Var.NS_Product_Name__c}" headerValue="Product Name" /> <!-- CR# 4221 -->
+                                    <!-- <apex:column headerValue="SKU" value="{!var.Product_Code__c}" /> -->
+                                    
+                                  <!--  <apex:column headerValue="SKU" value="{!var.Product_Name_for_GSA__c}" /> <!-- CR# 4221 CR# 4647-->
+                                    <apex:column value="{!var.Product_Name_for_GSA__c}" headerValue="SKU" />
+                                    <apex:column value="{!var.SBQQ__ListPrice__c}" headerValue="List Price" /> 
+                                    <apex:column headerValue="Quantity" styleClass="alignTextRight">
+                                        <apex:outputText value="{0, number}">
+                                            <apex:param value="{!var.SBQQ__Quantity__c}" />
+                                        </apex:outputText>
+                                    </apex:column>
+                                    <apex:column value="{!var.SBQQ__StartDate__c}" headerValue="Start Date" />
+                                    <apex:column value="{!var.SBQQ__EndDate__c}" headerValue="End Date" />
+                                    <apex:column headerValue="Term" value="{!var.Subscription_Term__c}" styleClass="alignTextRight" />
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Base Extended Price" rendered="{!IF(isFy21SingleTier != null && isFy21SingleTier == true,true,false)}">
+                                        <apex:outputText rendered="{!IF(var.Base_Extended_Price__c != null,true,false)}" value="{0, number,currency}">
+                                            <apex:param value="{!var.Base_Extended_Price__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Base_Extended_Price__c == null,true,false)}">
+                                            $0.00 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column headerValue="Volume Discount" styleClass="alignTextRight" rendered="{!IF(isFy21SingleTier != null && isFy21SingleTier == true,true,false)}">
+                                        <apex:outputText rendered="{!IF(var.Volume_Disc__c != null ,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!var.Volume_Disc__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Volume_Disc__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column headerValue="Partner Disc" styleClass="alignTextRight" rendered="{!IF(isFy21SingleTier != null && isFy21SingleTier == true,false,true)}">
+                                        <apex:outputText rendered="{!IF(var.Partner_Disc__c != null,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!var.Partner_Disc__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Partner_Disc__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column headerValue="Partner Disc" styleClass="alignTextRight" rendered="{!IF(isFy21SingleTier != null && isFy21SingleTier == true,true,false)}">
+                                        <apex:outputText rendered="{!IF(var.Partner_Disc__c  != null,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!var.Partner_Disc__c }" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Partner_Disc__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Deal Reg (Sourced) Disc" rendered="{!IF(isFy21SingleTier != null && isFy21SingleTier == true && isRenewal == false,false,true)}">
+                                        
+                                        <apex:outputText rendered="{!IF(var.Deal_Reg_Sourced_Discount__c != null,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!var.Deal_Reg_Sourced_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Deal_Reg_Sourced_Discount__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Deal Reg (Sourced) Disc" rendered="{!IF(isFy21SingleTier != null && isFy21SingleTier == true && isRenewal == false,true,false)}">
+                                        <apex:outputText rendered="{!IF(var.Deal_Reg_Sourced_Discount__c != null,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!var.Deal_Reg_Sourced_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Deal_Reg_Sourced_Discount__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Deal Reg (Teaming - Reseller) Disc" rendered="{!IF(isPartnerSummit == false && isRenewal == false,true,false)}">
+                                        
+                                        <apex:outputText rendered="{!IF(var.Deal_Reg_Teaming_Reseller_Discount__c != null,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!var.Deal_Reg_Teaming_Reseller_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Deal_Reg_Teaming_Reseller_Discount__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    <!-- added by Rakshitha CR# 4405-->
+                                    <apex:column styleClass="alignTextRight" headerValue="Deal Reg (Teaming - Upsell) Disc" rendered="{!IF(isOrangePartnerUpsellDiscount ==  true,true,false)}">
+                                        
+                                        <apex:outputText rendered="{!IF(var.Deal_Reg_Teaming_Upsell_Discount__c  != null,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!var.Deal_Reg_Teaming_Upsell_Discount__c    }" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Deal_Reg_Teaming_Upsell_Discount__c  == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    <!--end-->                                                           
+                                    <apex:column styleClass="alignTextRight" headerValue="Internal List Price" rendered="{!IF(isFy21SingleTier != null && isFy21SingleTier == true,true,false)}">
+                                        <apex:outputText rendered="{!IF(var.Internal_List_Price__c != null,true,false)}" value="{0, number,currency}">
+                                            <apex:param value="{!var.Internal_List_Price__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Internal_List_Price__c == null,true,false)}">
+                                            $0.00
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Adjustment" value="{!var.SBQQ__Discount__c}"/>
+                                    <!-- added by Rakshitha CR# 4405-->
+                                    <apex:column styleClass="alignTextRight" headerValue="Contractual / Incentive Discount" rendered="{!IF(isOrangePartnerContractedDiscount ==  true,true,false)}">
+                                        <apex:outputText rendered="{!IF(var.Contractual_Incentive_Discount__c != null,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!var.Contractual_Incentive_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Contractual_Incentive_Discount__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    <!--end-->
+                                    <apex:column styleClass="alignTextRight" headerValue="Total Discount" rendered="true">
+                                        <apex:outputText rendered="{!IF(var.Total_base_discount__c!=null,true,false)}"  value="{0, number,0.00}%">
+                                            <apex:param value="{!var.Total_base_discount__c}"/>
+                                        </apex:outputText>     
+                                        <apex:outputText rendered="{!IF(AND(var.Total_Discount__c!=null,var.Total_base_discount__c ==null) ,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!var.Total_Discount__c}" />
+                                        </apex:outputText>
+                                    </apex:column>
+                                    <apex:column styleClass="alignTextRight" headerValue="Net Price">
+                                        <apex:outputText rendered="{!IF(var.Net_Total__c != null,true,false)}" value="{0, number,currency}">
+                                            <apex:param value="{!var.Net_Total__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Net_Total__c == null,true,false)}">
+                                            $0.00
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" value="{!var.ACV_New__c}" headerValue="ACV" />
+                                    <apex:column styleClass="alignTextRight" value="{!var.MRR_New__c}" headerValue="MRR" />
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Recommended NET" rendered="{!IF(isFy21SingleTier != null && isFy21SingleTier == true,true,false)}">
+                                        <apex:outputText rendered="{!IF(var.Recomm_Net__c != null,true,false)}" value="{0, number,currency}">
+                                            <apex:param value="{!var.Recomm_Net__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Recomm_Net__c == null,true,false)}">
+                                            $0.00
+                                        </apex:outputText>
+                                    </apex:column>
+                                    <apex:column styleClass="alignTextRight" value="{!var.Net_to_Zscaler__c}" headerValue="Net to Zscaler" rendered="{!IF(isFy21SingleTier != null && isFy21SingleTier == true,true,false)}">
+                                    </apex:column>
+                                </apex:pageBlockTable>
+                            </div>
+                        </apex:outputPanel>
+                    </apex:pageBlockSection>
+                </apex:outputPanel>
+                
+                <!-- Asset line Item [Summit-Discount] -->
+                <apex:outputPanel rendered="{!subscriptionsListSummitDiscount.size > 0}" layout="block">
+                    <br/>
+                    <apex:pageBlockSection columns="1" collapsible="false" showHeader="true" title="Install Base for {!quote.SBQQ__Account__r.Name} with {!$Label.Partner_Program_Summit_Discount} Model">
+                        <apex:outputPanel layout="block">
+                            <div class="table-outer">
+                                
+                                <apex:pageBlockTable value="{!subscriptionsListSummitDiscount}" var="var" rowClasses="oddcss,evencss">
+                                    <!-- <apex:column value="{!Var.SBQQ__ProductName__c}" headerValue="Product Name" /> -->
+                                    <apex:column value="{!Var.NS_Product_Name__c}" headerValue="Product Name" /> <!-- CR# 4221 -->
+                                    <!-- <apex:column value="{!var.Product_Code__c}" headerValue="SKU" /> -->
+                                    <apex:column value="{!var.Product_Name_for_GSA__c}" headerValue="SKU" /> <!-- CR# 4221 CR# 4647-->
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="List Price">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!var.SBQQ__ListPrice__c}" />
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Volume Discount" rendered="{!IF(isFy21VolumeTier != null && isFy21VolumeTier == true,False,True)}">
+                                        <apex:outputText rendered="{!IF(var.Volume_Disc__c != null ,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!var.Volume_Disc__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Volume_Disc__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Recommended Retail Price" rendered="{!IF(isFy21VolumeTier != null && isFy21VolumeTier == true,False,True)}">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!var.Recommended_Retail_Price__c}" />
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Quantity">
+                                        <apex:outputText value="{0, number}">
+                                            <apex:param value="{!var.SBQQ__Quantity__c}" />
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column value="{!var.SBQQ__StartDate__c}" headerValue="Start Date" />
+                                    <apex:column value="{!var.SBQQ__EndDate__c}" headerValue="End Date" />
+                                    <apex:column styleClass="alignTextRight" value="{!var.Subscription_Term__c}" headerValue="Term" />
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Base Extended Price">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!var.Base_Extended_Price__c}" />
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column headerValue="Adjustment" value="{!var.SBQQ__Discount__c}"/>
+                                    <apex:column styleClass="alignTextRight" value="{!var.ZSRP__c}" headerValue="ZSRP" />
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Customer Discount" value="{!var.Total_Discount__c}" />
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Deal Reg (Sourced) Discount" rendered="{!IF(isRenewal == true,false,true)}">
+                                        <apex:outputText rendered="{!IF(var.Deal_Reg_Sourced_Discount__c != null ,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!var.Deal_Reg_Sourced_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Deal_Reg_Sourced_Discount__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Deal Reg (Teaming - Reseller) Discount" rendered="{!IF(isRenewal == true,false,true)}">
+                                        <apex:outputText rendered="{!IF(var.Deal_Reg_Teaming_Reseller_Discount__c != null ,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!var.Deal_Reg_Teaming_Reseller_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Deal_Reg_Teaming_Reseller_Discount__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>                                
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Fulfilment Discount">
+                                        <apex:outputText rendered="{!IF(var.Fulfillment_Discount__c != null ,true,false)}" value="{0, number, 0.00}%">
+                                            <apex:param value="{!var.Fulfillment_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Fulfillment_Discount__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Distributor Discount">
+                                        <apex:outputText rendered="{!IF(var.Distributor_Discount__c != null ,true,false)}" value="{0, number, 0.00}%">
+                                            <apex:param value="{!var.Distributor_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Distributor_Discount__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Deployment Discount">
+                                        <apex:outputText rendered="{!IF(var.Deployment_Discount__c != null ,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!var.Deployment_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Deployment_Discount__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Co-sell Discount">
+                                        <apex:outputText rendered="{!IF(var.Co_sell_Discount__c != null ,true,false)}" value="{0, number, 0.00}%">
+                                            <apex:param value="{!var.Co_sell_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Co_sell_Discount__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Net Price" value="{!var.Net_Total__c}" />
+                                    <apex:column styleClass="alignTextRight" value="{!var.ACV_New__c}" headerValue="ACV" />
+                                    <apex:column styleClass="alignTextRight" value="{!var.MRR_New__c}" headerValue="MRR" />
+                                </apex:pageBlockTable>
+                            </div>
+                        </apex:outputPanel>
+                    </apex:pageBlockSection>
+                </apex:outputPanel>
+                
+                <!-- Asset line Item [Federal] -->
+                <apex:outputPanel rendered="{!subscriptionsListFederal.size > 0}" layout="block">
+                    <br/>
+                    <apex:pageBlockSection columns="1" collapsible="false" showHeader="true" title="Install Base for {!quote.SBQQ__Account__r.Name} with {!$Label.Partner_Program_Summit_Federal} Model">
+                        <apex:outputPanel layout="block">
+                            <div class="table-outer">
+                                
+                                <apex:pageBlockTable value="{!subscriptionsListFederal}" var="var" rowClasses="oddcss,evencss">
+                                    <!-- <apex:column value="{!Var.SBQQ__ProductName__c}" headerValue="Product Name" /> -->
+                                    <apex:column value="{!Var.NS_Product_Name__c}" headerValue="Product Name" /> <!-- CR# 4221 -->
+                                    <!-- <apex:column value="{!var.Product_Code__c}" headerValue="SKU" /> -->
+                                    <apex:column value="{!var.Product_Name_for_GSA__c}" headerValue="SKU" /> <!-- CR# 4221 CR# 4647 -->
+                                    <apex:column styleClass="alignTextRight" headerValue="List Price">
+                                        <apex:outputText value="{0, number,currency}">
+                                            <apex:param value="{!var.SBQQ__ListPrice__c}" />
+                                        </apex:outputText>
+                                    </apex:column>
+                                    <apex:column styleClass="alignTextRight" headerValue="Quantity">
+                                        <apex:outputText value="{0, number}">
+                                            <apex:param value="{!var.SBQQ__Quantity__c}" />
+                                        </apex:outputText>
+                                    </apex:column>
+                                    <apex:column value="{!var.SBQQ__StartDate__c}" headerValue="Start Date" />
+                                    <apex:column value="{!var.SBQQ__EndDate__c}" headerValue="End Date" />
+                                    <apex:column styleClass="alignTextRight" value="{!var.Subscription_Term__c}" headerValue="Term" />
+                                    
+                                    <apex:column value="{!var.SBQQ__Discount__c}" headerValue="Adjustment" />
+                                    
+                                    <apex:column value="{!var.Price_After_Adjustment__c}" headerValue="Price with Adjustment" />
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Deal Reg (Sourced) Discount" rendered="{!IF(isRenewal == true,false,true)}">
+                                        <apex:outputText rendered="{!IF(var.Deal_Reg_Sourced_Discount__c != null ,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!var.Deal_Reg_Sourced_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Deal_Reg_Sourced_Discount__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Deal Reg (Teaming - Reseller) Discount" rendered="{!IF(isRenewal == true,false,true)}">
+                                        <apex:outputText rendered="{!IF(var.Deal_Reg_Teaming_Reseller_Discount__c != null ,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!var.Deal_Reg_Teaming_Reseller_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Deal_Reg_Teaming_Reseller_Discount__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>                                 
+                                    </apex:column>
+                                    
+                                    <!--<apex:column styleClass="alignTextRight" headerValue="Renewal Deal Reg Discount" rendered="{!IF(isRenewal == true,true,false)}">
+                                        <apex:outputText rendered="{!IF(var.Renewal_Deal_Reg_Discount__c != null ,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!var.Renewal_Deal_Reg_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Renewal_Deal_Reg_Discount__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>-->
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Fulfilment Discount">
+                                        <apex:outputText rendered="{!IF(var.Fulfillment_Discount__c != null ,true,false)}" value="{0, number, 0.00}%">
+                                            <apex:param value="{!var.Fulfillment_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Fulfillment_Discount__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    <apex:column styleClass="alignTextRight" headerValue="Distributor Discount">
+                                        <apex:outputText rendered="{!IF(var.Distributor_Discount__c != null,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!var.Distributor_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Distributor_Discount__c == null,true,false)}">
+                                            0.00%
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Deployment Discount">
+                                        <apex:outputText rendered="{!IF(var.Deployment_Discount__c != null ,true,false)}" value="{0, number,0.00}%">
+                                            <apex:param value="{!var.Deployment_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Deployment_Discount__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    
+                                    <apex:column styleClass="alignTextRight" headerValue="Total Co-sell Discount">
+                                        <apex:outputText rendered="{!IF(var.Co_sell_Discount__c != null ,true,false)}" value="{0,number,0.00}%">
+                                            <apex:param value="{!var.Co_sell_Discount__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Co_sell_Discount__c == null,true,false)}">
+                                            0.00% 
+                                        </apex:outputText>
+                                    </apex:column>
+                                    <apex:column styleClass="alignTextRight" headerValue="Net Price" value="{!var.Net_Total__c}" />
+                                    <apex:column styleClass="alignTextRight" headerValue="Total Discount" value="{!var.Total_Discount__c}"/>
+                                    <apex:column styleClass="alignTextRight" value="{!var.ACV_New__c}" headerValue="ACV" />
+                                    <apex:column styleClass="alignTextRight" value="{!var.MRR_New__c}" headerValue="MRR" />
+                                    <apex:column styleClass="alignTextRight" headerValue="Recommended NET" rendered="{!IF(isFy21SingleTier != null && isFy21SingleTier == true,true,false)}">
+                                        <apex:outputText rendered="{!IF(var.Recomm_Net__c != null,true,false)}" value="{0, number,currency}">
+                                            <apex:param value="{!var.Recomm_Net__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Recomm_Net__c == null,true,false)}">
+                                            $0.00
+                                        </apex:outputText>
+                                    </apex:column>
+                                    <apex:column styleClass="alignTextRight" headerValue="Net PUPY" rendered="{!IF(isFy21SingleTier != null && isFy21SingleTier == true,true,false)}">
+                                        
+                                        <apex:outputText rendered="{!IF(var.Net_PUPY__c != null,true,false)}" value="{0, number,currency}">
+                                            <apex:param value="{!var.Net_PUPY__c}" />
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(var.Net_PUPY__c == null,true,false)}">
+                                            $0.00
+                                        </apex:outputText>
+                                    </apex:column>
+                                    <apex:column styleClass="alignTextRight" headerValue="Net Variance">                                       
+                                        <apex:outputPanel rendered="{!IF(var.Net_Variance__c != null,true,false)}">
+                                            <apex:outputText rendered="{!IF(var.Recomm_Net__c > var.Net_PUPY__c,true,false)}" value="{0, number,0.00}%" style="color: red">
+                                                <apex:param value="{!var.Net_Variance__c}" />
+                                            </apex:outputText>
+                                            <apex:outputText rendered="{!IF(var.Recomm_Net__c <= var.Net_PUPY__c,true,false)}" value="{0, number,0.00}%" style="color: green">
+                                                <apex:param value="{!var.Net_Variance__c}" />
+                                            </apex:outputText>
+                                        </apex:outputPanel>
+                                        <apex:outputText rendered="{!IF(var.Net_Variance__c == null,true,false)}">
+                                            0.00%
+                                        </apex:outputText>                                       
+                                    </apex:column>
+                                </apex:pageBlockTable>
+                            </div>
+                        </apex:outputPanel>
+                    </apex:pageBlockSection>
+                </apex:outputPanel>
+                
+            </apex:outputPanel> 
+            
+        </apex:outputPanel>
+        <!-- End of Install Base Tables -->  
+        
+        <!-- Year SplitWise -->
+        <apex:outputPanel styleClass="pgSecHeaderBrown" rendered="{!IF(quote.Document_Type__c != '',true,false)}" layout="block">
+            <apex:pageBlockSection id="yearWiseSplit" columns="1" collapsible="false" showHeader="true" title="Year Wise Split for {!quote.Name}">
+                <apex:pageBlockTable styleClass="yearWiseSplitList" value="{!yearWiseSplit.splitEntries}" var="yws" rowClasses="oddcss,evencss">
+                    <apex:column value="{!yws.productName}" headerValue="Product Name" />
+                    <apex:column value="{!yws.productCode}" headerValue="Product Code" />
+                    <apex:column headerValue="Quantity">
+                        <apex:outputText value="{0, number}">
+                            <apex:param value="{!IF(NOT(ISBLANK(yws.quantity)), yws.quantity, '')}" />
+                        </apex:outputText>
+                    </apex:column>
+                    <apex:column headerValue="{!yearWiseSplit.year1YearValue}">
+                        <apex:outputText value="{0, number,currency}">
+                            <apex:param value="{!IF(NOT(ISBLANK(yws.year1Cost)), yws.year1Cost, 0.0)}" />
+                        </apex:outputText>
+                    </apex:column>
+                    <apex:column headerValue="{!yearWiseSplit.year2YearValue}" rendered="{!quote.Number_Of_Year_Wise_Split_Years__c >= 2}">
+                        <apex:outputText value="{0, number,currency}">
+                            <apex:param value="{!IF(NOT(ISBLANK(yws.year2Cost)), yws.year2Cost, 0.0)}" />
+                        </apex:outputText>
+                    </apex:column>
+                    <apex:column headerValue="{!yearWiseSplit.year3YearValue}" rendered="{!quote.Number_Of_Year_Wise_Split_Years__c >= 3}">
+                        <apex:outputText value="{0, number,currency}">
+                            <apex:param value="{!IF(NOT(ISBLANK(yws.year3Cost)), yws.year3Cost, 0.0)}" />
+                        </apex:outputText>
+                    </apex:column>
+                    <apex:column headerValue="{!yearWiseSplit.year4YearValue}" rendered="{!quote.Number_Of_Year_Wise_Split_Years__c >= 4}">
+                        <apex:outputText value="{0, number,currency}">
+                            <apex:param value="{!IF(NOT(ISBLANK(yws.year4Cost)), yws.year4Cost, 0.0)}" />
+                        </apex:outputText>
+                    </apex:column>
+                    <apex:column headerValue="{!yearWiseSplit.year5YearValue}" rendered="{!quote.Number_Of_Year_Wise_Split_Years__c >= 5}">
+                        <apex:outputText value="{0, number,currency}">
+                            <apex:param value="{!IF(NOT(ISBLANK(yws.year5Cost)), yws.year5Cost, 0.0)}" />
+                        </apex:outputText>
+                    </apex:column>
+                    <apex:column headerValue="{!yearWiseSplit.year6YearValue}" rendered="{!quote.Number_Of_Year_Wise_Split_Years__c >= 6}">
+                        <apex:outputText value="{0, number,currency}">
+                            <apex:param value="{!IF(NOT(ISBLANK(yws.year6Cost)), yws.year6Cost, 0.0)}" />
+                        </apex:outputText>
+                    </apex:column>
+                    <apex:column headerValue="{!yearWiseSplit.year7YearValue}" rendered="{!quote.Number_Of_Year_Wise_Split_Years__c == 7}">
+                        <apex:outputText value="{0, number,currency}">
+                            <apex:param value="{!IF(NOT(ISBLANK(yws.year7Cost)), yws.year7Cost, 0.0)}" />
+                        </apex:outputText>
+                    </apex:column>
+                    <apex:column headerValue="Total">
+                        <apex:outputText value="{0, number,currency}" style="font-weight: bold;">
+                            <apex:param value="{!IF(NOT(ISBLANK(yws.total)), yws.total, 0.0)}" />
+                        </apex:outputText>
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:outputPanel>
+        
+        <apex:pageBlockSection title="Test" rendered="false"></apex:pageBlockSection>
+        <script>
+        twistSection(document.getElementById('{!$Component.block1.cartSec}').getElementsByTagName('img')[0])
+        </script>
+    </apex:pageBlock>
+    
+</apex:component>

@@ -1,0 +1,88 @@
+<template>
+    <lightning-card title="Significant Customer Interaction Details">
+        <lightning-record-edit-form object-api-name={objectApiName}
+        record-id={sciRecId}
+        onsubmit={onSCIFormSubmit}
+            onsuccess={handleSuccess}
+             >
+            <lightning-layout multiple-rows=true>
+                <lightning-accordion allow-multiple-sections-open active-section-name={activeSections}>
+                    <lightning-accordion-section name="A" label="Information">
+                        <div class="slds-wrap slds-grid">
+                            <div class="slds-hide"><lightning-input-field field-name="Account_Name__c" value={accountRecId}></lightning-input-field></div>
+                            <lightning-layout-item padding="around-medium" size="6">
+                                <lightning-input-field field-name="Date__c" value={selectedDate}></lightning-input-field>
+                            </lightning-layout-item>
+                            
+                            <lightning-layout-item padding="around-medium" size="6">
+                                <lightning-combobox name="recordTypes" label="SCI Type"
+                                    variant="label-inline" required value={privateselectedRecordTypeId}
+                                    placeholder="Select SCI Type" options={options} onchange={handleRecordTypeChange}>
+                                </lightning-combobox>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-medium" size="6">
+                                <lightning-input-field id="MeetingLoaction"  required value={selectedMeetingLocation} onchange={onMeetingLocChange} field-name="Meeting_Location__c"></lightning-input-field>
+                            </lightning-layout-item>
+                        </div>
+                    </lightning-accordion-section>
+                    <lightning-accordion-section name="B" label="Meeting Notes">
+                        <div class="slds-wrap slds-grid">
+                            <lightning-layout-item padding="around-medium" size="12">
+                                <lightning-input-field required value={selectedMeetingNotes} field-name="Meeting_Notes__c" onchange={onMeetingNotesChange}></lightning-input-field>
+                            </lightning-layout-item>
+                        </div>
+                    </lightning-accordion-section>
+                    <!-- <lightning-accordion-section name="C" label="Associations">
+                        <div class="slds-wrap slds-grid">
+                            <lightning-layout-item padding="around-medium" size="6">
+                                <lightning-input-field field-name="Account_Name__c" value={accountRecId}></lightning-input-field>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-medium" size="6">
+                                <lightning-input-field field-name="Zscaler_CXO_Advisor__c"></lightning-input-field>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-medium" size="6">
+                                <lightning-input-field field-name="Opportunity_Name__c"></lightning-input-field>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-medium" size="6">
+                                <lightning-input-field field-name="Lead__c"></lightning-input-field>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-medium" size="6">
+                                <lightning-input-field field-name="Deal_Reg__c"></lightning-input-field>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-medium" size="6">
+                                <lightning-input-field field-name="Campaign__c"></lightning-input-field>
+                            </lightning-layout-item>
+                        </div>
+                    </lightning-accordion-section> -->
+                </lightning-accordion>
+                
+            </lightning-layout>
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading"></lightning-spinner>
+            </template>
+            
+           <div if:false={isLoaded}>
+                <lightning-button
+                    class="slds-m-around_medium"
+                    onclick={handleCancel}
+                    label="Cancel"
+                ></lightning-button>
+                <lightning-button
+                    class="slds-m-around_medium"
+                    type="submit"               
+                    variant="brand"
+                    label="Next"
+                    
+                ></lightning-button>
+           </div>
+           <div class="slds-m-around_large">
+                <div if:true={isLoaded} class="slds-is-relative">
+                    <lightning-spinner
+                        alternative-text="Loading..." variant="brand">
+                    </lightning-spinner>
+                </div>
+            </div>
+        </lightning-record-edit-form>
+    </lightning-card>
+    <c-custom-toast-component auto-close-time="3000"></c-custom-toast-component>
+</template>

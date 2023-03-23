@@ -1,0 +1,65 @@
+<template>
+    <template if:true={loading}>
+        <div class="slds-spinner_container">
+            <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+        </div>
+    </template>
+    
+    <h3 class="slds-section-title--divider slds-m-bottom--small" style="background-color: #E6E8E3;color: black;">
+        <b>Co-Sell Activities</b>
+        <div class="slds-float_right">
+            <template if:true={showaddnew}>
+                <a onclick={addNewCosell} style="color: black;"><b>Add New</b></a>
+            </template>
+        </div>
+    </h3>
+    <template if:true={errmsg}>
+        <div class="slds-box slds-theme_error" style="margin-bottom:5px;">
+            {errmsg}
+        </div>
+    </template>
+    <div class="slds-align--absolute-center">
+        <template if:true={isCosellPresent}>
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered"
+                style="width:70%">
+                <thead>
+                    <tr class="slds-line-height_reset slds-text-title_caps">
+                        <th style="text-align:center;" class="" scope="col">
+                            <div class="slds-truncate" title="Activity">Activity Type</div>
+                        </th>
+                        <th style="text-align:center;" class="" scope="col">
+                            <div class="slds-truncate" title="Partner">Partner</div>
+                        </th>
+                        <th style="text-align:center;" class="" scope="col">
+                            <div class="slds-truncate" title="Contact">Contact</div>
+                        </th>
+                        <th style="text-align:center;" class="" scope="col">
+                            <div class="slds-truncate" title="Status">Status</div>
+                        </th>
+                        <th style="text-align:center;" class="" scope="col">
+                            <div class="slds-truncate" title="Actions">Actions</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={coselllst} for:item="cosellrec">
+                        <c-cosell-record-display key={cosellrec.rec.Id} record={cosellrec.rec}
+                            onsuccessonsave={reloadData} onerroronsave={showerror}
+                            oncompletesuccess={refreshentirecomponent} show-invite={cosellrec.showInvite}
+                            show-withdraw={cosellrec.showWithdraw} show-complete={cosellrec.showComplete}>
+                        </c-cosell-record-display>
+                    </template>
+                </tbody>
+            </table>
+        </template>
+        <template if:false={isCosellPresent}>
+            There are no 'Co-Sell Activities' associated with this Opportunity.
+        </template>
+    </div>
+    <div class="slds-m-bottom--medium"></div>
+    <template if:true={showCreation}>
+        <c-create-co-sell-record opp-id={recId} has-a-winvite={hasAWinvite} has-p-o-cinvite={hasPOCinvite} has-aw-pov-invite={hasAWPOVinvite}
+            onclosemodal={closeModal} onreloadcosell={reloadData}>
+        </c-create-co-sell-record>
+    </template>
+</template>

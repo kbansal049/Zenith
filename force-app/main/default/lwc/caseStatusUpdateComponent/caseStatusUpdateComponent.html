@@ -1,0 +1,249 @@
+<template>
+    <div class="slds-box slds-box_small">
+        <template if:true={showcommentmandatorymessage}>
+            <div class="slds-box slds-theme_error" style="margin-bottom:5px;">
+                {errmsg}
+            </div>
+        </template>
+        <template if:true={shownotresolvedmessage}>
+            <div class="slds-box slds-theme_error" style="margin-bottom:5px;">
+                {notresolvederrmsg}
+            </div>
+        </template>
+        <template if:true={loadData}>
+            <lightning-record-edit-form density="comfy" record-id={recordId} object-api-name="Case"
+                onsuccess={handleSuccess} onsubmit={handleSubmit} onerror={handleError} record-type-id={recordTypeId}>
+                <lightning-messages></lightning-messages>
+                <div>
+                    <lightning-layout-item size="12" padding="around-medium">
+                        <lightning-input-field class="Status" field-name='Status' required onchange={statuschange}>
+                        </lightning-input-field>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" padding="around-medium">
+                        <lightning-input-field class="Product_New__c" field-name='Product_New__c'>
+                        </lightning-input-field>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" padding="around-medium">
+                        <lightning-input-field class="Case_Category__c" field-name='Case_Category__c' required>
+                        </lightning-input-field>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" padding="around-medium">
+                        <lightning-input-field class="Case_Sub_Category__c" field-name='Case_Sub_Category__c'
+                            required>
+                        </lightning-input-field>
+                    </lightning-layout-item>
+                    <!--Commented for IBA-837
+                    <lightning-layout-item size="12" padding="around-medium">
+                        <lightning-input-field class="Resolution_Summary__c" field-name='Resolution_Summary__c' required>
+                        </lightning-input-field>
+                    </lightning-layout-item>
+                    Added by Anup - CR#2831  - Start
+                    <lightning-layout-item size="12" padding="around-medium">
+                        <lightning-input-field class="Aisera_Entity__c" field-name='Aisera_Entity__c'>
+                        </lightning-input-field>
+                    </lightning-layout-item>
+                    Added by Anup - CR#2831 End-->
+                    <lightning-layout-item size="12" padding="around-medium">
+                        <lightning-input-field class="Resolution_State__c" field-name='Resolution_State__c' required>
+                        </lightning-input-field>
+                    </lightning-layout-item>
+                    <!--Added by Anup - CR#2758 - Start-->
+                    <template if:true={showclosedetails}>
+                    <template if:true={showResFields}>
+                        <lightning-layout-item size="12" padding="around-medium">
+                            <lightning-input-field class="Resolution_Type__c" field-name='Resolution_Type__c' onchange={resolutionTypeChange} required>
+                            </lightning-input-field>
+                        </lightning-layout-item>
+                        <template if:true={showResTypeInternet}> 
+                            <div class="slds-box slds-theme_warning" style="margin-bottom: 5px;">
+                                <b>Please select one of option for 'Resolution Category' :-</b> <br/> <br/>
+                                <b>ISP Route Changes/Peering Issue </b>- If the issue was related to ISP route changes or peering issues <br/>
+                                <b>Geo Political Issues</b> - If the customer experienced issues due to Geopolitical issues. Such as China, Russia etc. <br/>
+                                <b>Destination Based Block</b> - If the destination web admin has blocked our IP address ranges <br/>
+                                <b>Packet loss (Towards customer/ Destination website)</b> - If there was any packet loss in the path, it can either be related to packet loss on towards the customer or packet loss from the customers network to us. Also, it would include packet loss towards the destination website. <br/>
+                                <b>DDoS</b> - If we had an DDoS attack on one of our datacenters and the customer experienced issues. <br/>
+                            </div>
+                        </template>
+                        <template if:true={showResTypeCustomer}> 
+                            <div class="slds-box slds-theme_warning" style="margin-bottom: 5px;">
+                                <b>Please select one of option for 'Resolution Category' :-</b> <br/> <br/>
+                                <b>Zscaler Configuration (Admin Portal)</b> - If the issue was fixed by changing the customer’s config (resources or policies) on the Admin UI. This included errors as well as best practices not followed <br/>
+                                <b>Network Configuration (Router/Firewall)</b> - Customer’s LAN had a network or configuration problem. Examples: missing routes, firewall rules, packet loss, incorrect PBR, etc. This included errors as well as best practices not followed <br/>
+                                <b>Application Issue/Configuration/3rd party app Integration issues</b> - Problems fixed by changing a specific application (configuration or network/transport/TLS related) or browser on the user’s system. Examples: Outlook, Certificate Stores, VPN Clients, Anti-virus, etc. <br/>
+                                <b>Endpoint and Identity Management</b> - Problems fixed by changing something on Identity providers, Domain Controller or other endpoint management solutions <br/>
+                                <b>Partner Integrations</b> - Problem was fixed by suggesting changes to partners portal (i.e., Azure, AWS, SD-WAN etc.). <br/>
+                                <b>OS Issues</b> - Problems related to OS configuration, drivers, system software on the end user’s Operating system. <br/>
+                                <b>Customer Education</b> - Problem or question resolved by sharing documentation, explaining product functionality, or correcting misunderstanding of product functionality. Config change not needed <br/>   
+                                <b>No Customer Response</b> - Customer stopped responding to the case <br/>
+                                <b>Unknown Problem Cleared</b> - Customer resolved issue or was a transient issue and the root cause is unknown <br/>
+                            </div>
+                        </template>
+                        <template if:true={showResTypeZscaler}> 
+                            <div class="slds-box slds-theme_warning" style="margin-bottom: 5px;">
+                                <b>Please select one of option for 'Resolution Category' :-</b> <br/> <br/>
+                                <b>Documentation Gap</b> - Documentation is outdated or missing in the help portal <br/>
+                                <b>Ops Configuration (Config Change)</b> - OPS needs to perform a change (i.e., Feature Bit, DB patch, GEO Override etc.). This includes RSH issues like false positives <br/>
+                                <b>DC Infrastructure/Capacity/ISP</b> - Problem is related to a capacity issue on a data center or bandwidth limitation on a data center or data center ISP routing/congestion <br/>
+                                <b>Product Defect</b> - Product defect or if the product is not working as expected that requires a code change <br/>
+                                <b>Zscaler Maintenance</b> - If the customer had an outage due to Maintenance on Zscaler <br/>
+                                <b>Enhancement Request</b> - If the customer requests for a feature that is not currently available on Zscaler <br/>
+                            </div>
+                        </template>
+                        <lightning-layout-item size="12" padding="around-medium">
+                            <lightning-input-field class="Resolution_Category__c" field-name='Resolution_Category__c' required>
+                            </lightning-input-field>
+                        </lightning-layout-item>
+                    </template>
+                        <lightning-layout-item size="12" padding="around-medium">
+                            <lightning-input-field class="Resolution_Details__c" field-name='Resolution_Details__c' value={detailsTemplate} required>
+                            </lightning-input-field>
+                        </lightning-layout-item>
+                    <template if:true={showKnowledgeArticleOption}> 
+                        <lightning-layout-item size="12" padding="around-medium">
+                            <lightning-input-field class="Create_New_Knowledge_Article__c" field-name='Create_New_Knowledge_Article__c' onchange={changeKnowledge} required>
+                            </lightning-input-field>
+                        </lightning-layout-item>
+                    </template>
+                    <template if:true={showLinkArticleValidation}> 
+                        <div class="slds-box slds-theme_warning" style="margin-bottom: 5px;">
+                            Please attach a Knowledge article before closing the case. To attach a knowledge article, go to Knowledge widget located on the top left panel, search for a relevant article, click '▼' (down arrow) and select Attach. Attached Knowledge articles can be viewed in the 'Knowledge Tab'. 
+                        </div>
+                    </template>
+                    <template if:true={showJustification}>
+                        <lightning-layout-item size="12" padding="around-medium">
+                            <lightning-input-field class="No_Knowledge_Article_Justification__c" field-name='No_Knowledge_Article_Justification__c' required>
+                            </lightning-input-field>
+                        </lightning-layout-item>
+                    </template>
+                    <template if:true={showHelpPortalField}>
+                        <div class="slds-box slds-theme_warning" style="margin-bottom: 5px;">
+                            Please provide the help portal documentation or external references link(s)  that you have recommended to customer. If there are multiple links, separate them by comma in below field.
+                        </div>
+                        <lightning-layout-item size="12" padding="around-medium">
+                            <lightning-input-field class="Help_Portal_document__c" field-name='Help_Portal_document__c' required>
+                            </lightning-input-field>
+                        </lightning-layout-item>
+                    </template>
+                    </template>
+                    <!--Added by Anup - CR#2758 End-->
+                </div>
+            </lightning-record-edit-form>
+        </template>
+        
+        <template if:false={loading}>
+            <hr style="margin-top: 10px; margin-bottom:10px;">
+            <div class="slds-box slds-box_small" style="text-align: right;border: 0px; border-radius: 0px;">
+                <lightning-button class="slds-m-right_small" variant="brand" onclick={savecase} name="save"
+                    label="Save Details">
+                </lightning-button>
+                <lightning-button variant="neutral" name="cancel" label="Cancel" onclick={cancelCase}>
+                </lightning-button>
+            </div>
+        </template>
+        <template if:true={loading}>
+            <div class="slds-spinner_container">
+                <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+            </div>
+        </template>
+    </div>
+    
+    <template if:true={showKnowledgeModal}>
+            
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open slds-modal_medium">
+            <div class="slds-modal__container">
+                <template if:true={loadingKnowledge}>
+                    <!--<div class="slds-spinner_container">-->
+                        <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+                    <!--</div>-->
+                </template>
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close"
+                            alternative-text="close"
+                            variant="inverse"
+                            size="small" ></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Review And Create New Knowledge: {recordTypeName}</h2>
+                </header>
+                
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <template if:true={kbError}>
+                        <div class="slds-box slds-theme_error" style="margin-bottom:5px;">
+                            {kbErrorMsg}
+                        </div>
+                    </template>
+                    <lightning-record-edit-form class="knowledgeForm" density="comfy" record-id={recordId1} record-type-id={kbRecordTypeId} object-api-name="KB__kav"
+                    onsuccess={handleKBSuccess} onload={handleKbOnLoad} onerror={handleKbEditError} onsubmit={handleKBSubmit}>
+                    <lightning-messages></lightning-messages>
+                        <lightning-layout-item size="12" padding="around-medium">
+                            <lightning-input-field class="Title" field-name='Title' value={issueSummary} required>
+                            </lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="12" padding="around-medium">
+                            <lightning-input-field class="UrlName" field-name='UrlName' value={urlName}>
+                            </lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="12" padding="around-medium">
+                            <lightning-input-field class="Summary" field-name='Summary' value={issueSummary} required>
+                            </lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="12" padding="around-medium">
+                            <lightning-input-field class="Product_Applicable__c" field-name='Product_Applicable__c' value={product} required>
+                            </lightning-input-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="12" padding="around-medium">
+                            <lightning-input-field class="Details__c" field-name='Details__c' value={kbResolutionDetails} required>
+                            </lightning-input-field>
+                        </lightning-layout-item>
+                        <!--<template if:false={isProblemType}>
+                            <lightning-layout-item size="12" padding="around-medium">
+                                <lightning-input-field field-name='Question__c' required>
+                                </lightning-input-field>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" padding="around-medium">
+                                <lightning-input-field field-name='Answer__c' required>
+                                </lightning-input-field>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" padding="around-medium">
+                                <lightning-input-field field-name='Issue_Summary__c' value={issueSummary} required>
+                                </lightning-input-field>
+                            </lightning-layout-item>
+                        </template>
+    
+                        <template if:true={isProblemType}>
+                            <lightning-layout-item size="12" padding="around-medium">
+                                <lightning-input-field field-name='Description__c' value={issueSummary} required>
+                                </lightning-input-field>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" padding="around-medium">
+                                <lightning-input-field field-name='Cause__c' required>
+                                </lightning-input-field>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" padding="around-medium">
+                                <lightning-input-field field-name='Troubleshooting_Steps__c' required>
+                                </lightning-input-field>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" padding="around-medium">
+                                <lightning-input-field field-name='Solution__c' required>
+                                </lightning-input-field>
+                            </lightning-layout-item>
+                        </template>-->
+                        <!--<div class="slds-align_absolute-center">
+                            <lightning-button class="slds-m-around_small" label="Cancel" onclick={closeModal}>
+                            </lightning-button>
+                            <lightning-button class="slds-m-around_small" variant="brand" type="submit" name="Save"
+                                label="Save"></lightning-button>
+                        </div>-->
+                    </lightning-record-edit-form>
+                    
+                </div>
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Cancel</button>
+                    <button class="slds-button slds-button_brand" onclick={handleKBSubmit} title="Save">Save</button>               
+                </footer>        
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    </template>

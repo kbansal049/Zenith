@@ -1,0 +1,5 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction,lightning:actionOverride,force:hasSObjectName" access="global" >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <c:significantCustomerInteractionWizard  recordId="{!v.recordId}"/>
+
+</aura:component>

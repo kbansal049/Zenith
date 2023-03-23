@@ -1,0 +1,167 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 08-24-2022
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<template>
+   <lightning-card>
+      <div class="slds-p-horizontal_small">
+         <div class="progressIndicator slds-p-vertical_medium" style="height: 50px;margin-top: 20px;">
+         <lightning-progress-indicator current-step={currentStep} type="path" variant="base">
+            <lightning-progress-step value="1" label="Request Tenant"></lightning-progress-step>
+            <lightning-progress-step value="2" label="Product Selection"></lightning-progress-step>
+            <lightning-progress-step value="3" label="Review"></lightning-progress-step>
+         </lightning-progress-indicator>
+      </div>
+
+      <!--Step 1 : PG Details-->
+      <template if:true={showFirstStep}>
+         <div class="stepOne">
+               <div class="slds-p-around_medium">
+                  <div class="slds-form">
+                     <h3 class="slds-section-title--divider slds-m-bottom--small" style="background-color: #D0E0EB;color: black;">
+                           <b>Contact Details</b>
+                     </h3>
+                     <table>
+                        <tr>
+                           <td>
+                              <b> Select Contact</b>
+                           </td>
+                           <td>
+                              <c-generic-search-component
+                                 obj-name="Contact"
+                                 icon-name="standard:Contact"
+                                 label-name=""
+                                 placeholder="Type Contact Name" 
+                                 fields={fields}
+                                 display-fields={displayFields}
+                                 onlookup={handleContactSelected}
+                                 value-id={selectedcontact}
+                                 filter={filterClause}>
+                           </c-generic-search-component>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td></td>
+                           <td style="color: green;">
+                              <p>Tenant will be created for {selectedContactName}</p><br/>
+                           </td>
+                        </tr>
+                     </table>
+                     <br/>
+                     <h3 class="slds-section-title--divider slds-m-bottom--small" style="background-color: #D0E0EB;color: black;">
+                        <b>Tenant Details</b>
+                     </h3>
+                        
+                     <lightning-dual-listbox name="prcreationfor"
+                        label="Product Line for Tenant"
+                        source-label="Available"
+                        selected-label="Selected"
+                        field-level-help="Select product line"
+                        options={productlineOptions}
+                        value={selectedProdLine} 
+                        variant="label-inline"
+                        required =true
+                        min=1
+                        size="4"
+                        onchange={handlePlChange}>
+                     </lightning-dual-listbox>
+                     <b>
+                        <lightning-input label="Domain" type="text" id="domain" value={domain} onchange={handleDomain} required="true" variant="label-inline"></lightning-input>
+                     </b>
+                     <template if:true={isZIA}>
+                        <lightning-combobox
+                           name="ziaCloud"
+                           value={preferredZIA}
+                           placeholder="Select Cloud"
+                           options={ziaCloudOptions}
+                           onchange={handleZiaCloudChange} required="true" label="Preferred ZIA Cloud" variant="label-inline">
+                        </lightning-combobox>
+                     </template>
+                     <template if:true={isZPA}>
+                        <lightning-combobox
+                           name="zpaCloud"
+                           value={preferredZPA}
+                           placeholder="Select Cloud"
+                           options={zpaCloudOptions}
+                           onchange={handleZpaCloudChange} required="true" label="Preferred ZPA Cloud" variant="label-inline">
+                        </lightning-combobox>
+                     </template>
+                     <template if:true={showAssociatedCloud}>
+                        <lightning-combobox
+                           name="ziaCloudForZPA"
+                           value={associatedZiaCloudValue}
+                           placeholder="Associated ZIA Cloud"
+                           options={associatedZiaCloudsOptions}
+                           onchange={handleAssociatedZIACloudChange} 
+                           required="true" 
+                           label="Associated ZIA Cloud" 
+                           variant="label-inline">
+                        </lightning-combobox>
+                     </template>
+                  </div>
+               </div>
+               <div class="slds-var-m-left_x-small slds-clearfix" style="text-align: center;">
+                  <lightning-button  label="Cancel" title="Cancel" variant="brand" class="slds-m-left_x-small" onclick={handleCancelNavigate}></lightning-button>
+                  <lightning-button label="Add Products" title="AddProducts" variant="brand" onclick={handleDisplayProducts} class="slds-m-left_x-small"></lightning-button>
+               </div>
+            </div>
+         </template>
+         <template if:true={showSecondStep}>
+            <div class="stepTwo" style="position: relative;">
+               <div class="slds-p-around_medium slds-text-align_center slds-text-heading_small slds-text-color_error">
+                  <b>Select Products.</b>
+               </div>
+               <template if:true={selectedProdLine}>
+                  <lightning-accordion allow-multiple-sections-open active-section-name={activeLineTypeSections}>
+                     <template for:each={selectedProdLine} for:item="prLine">
+                           <lightning-accordion-section name={prLine} label={prLine} style="background-color: lightgrey; font-weight: bold;margin-top: 10px;" key={prLine}>
+                              <c-p-g-product-selection-component 
+                                 product-line={prLine} 
+                                 pgproduct={pgProduct} 
+                                 onskuvaluechange={handleskuchange} 
+                                 onproductvaluechange={handleproductvaluechange}
+                                 price-list={priceList}>
+                              </c-p-g-product-selection-component>
+                           </lightning-accordion-section>
+                     </template>
+                  </lightning-accordion>
+               </template>
+            </div>
+            <br/>
+            <div class="slds-m-vertical_small slds-clearfix" style="text-align: center;">
+               <lightning-button label="Back" title="Back" onclick={handleBacktonewTenantButton} class="slds-m-left_x-small"></lightning-button>
+               <lightning-button label="Cancel" title="Cancel" onclick={handleCancelNavigate} class="slds-m-left_x-small"></lightning-button>
+               <lightning-button label="Submit For Provisioning" title="submitForProvisioning" variant="brand" onclick={validateShowSubmitForProvisioningButton} class="slds-m-left_x-small"></lightning-button>
+            </div>
+            <lightning-spinner alternative-text="Loading" size="small" if:true={isSaveinProcess}></lightning-spinner>
+         </template>
+      </div>
+      <template if:true={showThirdStep}>
+         <div class="stepThree">
+            <div class="slds-m-top_small slds-clearfix" style="text-align: center;">
+               <p class="slds-text-color_success">
+                  Your request has been submitted successfully, you will receive a confirmation email with details.
+               </p>
+            </div>
+            <br/>
+            <div class="slds-form">
+               <lightning-datatable 
+                  data-id="createdPG4"
+                  key-field="Id"
+                  data={provisioningGroup} 
+                  columns={createdProvisioningGroup} 
+                  hide-checkbox-column="true">
+               </lightning-datatable>
+            </div>
+            <br/>
+            <div class="slds-m-top_small slds-clearfix" style="text-align: center;">
+               <lightning-button label="Back to Manage Provisioning" title="ManageProvisioning" onclick={handleCancelNavigate} class="slds-m-left_x-small"></lightning-button>
+            </div>
+         </div>
+      </template>
+   </lightning-card>
+   <c-custom-toast-component auto-close-time="3000"></c-custom-toast-component>
+</template>

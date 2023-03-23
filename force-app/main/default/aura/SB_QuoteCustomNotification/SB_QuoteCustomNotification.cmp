@@ -1,0 +1,11 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId" access="global">
+    <aura:attribute name="quoteId" type="Id" access="global"/>
+	<!--<aura:attribute name="message" type="String" default="{!$Label.c.SB_QuoteNotificationMessage}" access="global"/>-->
+    <aura:attribute name="message" type="String" access="global"/>
+    <aura:attribute name="backgroundColour" type="String" access="global"/>
+	<div class="notifyCSS">
+        <div class="errorMessage">
+            <lightning:formattedText value="{!v.message}" />
+        </div>
+    </div>
+</aura:component>

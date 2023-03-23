@@ -1,0 +1,160 @@
+<template>
+    <lightning-card title="Technology Partner Usage">
+        <template for:each={dataObjects} for:item="segment">
+            <div key={segment.key}>
+                <ul class="slds-accordion">
+                    <li class="slds-accordion__list-item">
+                        <section data-key={segment.key} class="slds-accordion__section slds-is-close">
+                            <div class="slds-accordion__summary" style="background-color:rgb(243, 242, 242)">
+                                <h2 class="slds-accordion__summary-heading">
+                                    <div>
+                                        <template if:true={segment.recordsAvailable}>
+                                            <button class="slds-button slds-button_reset slds-accordion__summary-action"
+                                                data-id={segment.key} title={segment.key}
+                                                onclick={handleAccordionSectionClick}>
+                                                <lightning-icon class="slds-p-around_xx-small" icon-name="utility:add"
+                                                    size="xx-small">
+                                                </lightning-icon>
+                                            </button>
+                                        </template>
+                                    </div>
+                                    <span
+                                        class="slds-p-around_xx-small slds-accordion__summary-content">{segment.key}</span>
+                                </h2>
+                                <div>
+                                    <lightning-button data-id={segment.segmentString} variant="brand"
+                                        label={label.AddPartnerSolutionBeingUsed_ButtonLabel}
+                                        title={label.AddPartnerSolutionBeingUsed_ButtonLabel}
+                                        onclick={handleAddSolutionPartnerClick}
+                                        class="slds-p-around_xx-small slds-float_right">
+                                    </lightning-button>
+                                </div>
+                            </div>
+                            <div class="slds-accordion__content">
+                                <c-custom-data-table class="slds-max-medium-table_stacked" key-field="Id"
+                                    data={segment.value} columns={columns} onvaluechange={handleValueChange}
+                                    oncellchange={handleCellChange} show-row-number-column="false"
+                                    onrowaction={handleRowAction} data-record="Id" hide-checkbox-column="true"
+                                    draft-values={draftValues} onsave={handleSave}>
+                                </c-custom-data-table>
+                            </div>
+                        </section>
+                    </li>
+                </ul>
+            </div>
+        </template>
+        <div class="showSpinner" if:true={showSpinner}>
+            <lightning-spinner alternative-text="Loading" variant="brand"></lightning-spinner>
+        </div>
+    </lightning-card>
+
+    <!-- START Custom Modal Pop-Up for LWC Record Edit Form-->
+    <template if:true={showModal}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Header Start -->
+                <header class="slds-modal__header">
+                    <lightning-button-icon class="slds-modal__close" title="Close" icon-name="utility:close"
+                        icon-class="slds-button_icon-inverse" onclick={handleModalDialogClose}></lightning-button-icon>
+
+                    <h2 class="slds-text-heading_medium slds-hyphenate header-string">
+                        {modalHeaderString}
+                    </h2>
+                </header>
+                <!-- Header End -->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <lightning-record-edit-form record-id={techPartnerUsageRecordId}
+                        object-api-name={techPartnerUsageObjectApiName} onload={handleOnLoadEvent}
+                        onsubmit={handleOnSubmitEvent} onsuccess={handleOnSuccessEvent} onerror={handleOnErrorEvent}>
+
+                        <lightning-messages> </lightning-messages>
+
+                        <template for:each={fieldAPINameList_RecordEditForm} for:item="fieldAPIName">
+                            <ul key={fieldAPIName}>
+                                <lightning-input-field data-id={fieldAPIName} field-name={fieldAPIName}
+                                    variant="label-inline" onchange={handleFieldChange}></lightning-input-field>
+                            </ul>
+                        </template>
+
+                        <lightning-combobox name="Org Id" label="Org Id" dropdown-alignment="auto"
+                            variant="label-inline" value={orgIdComboBoxValue} placeholder="Select Org Id"
+                            options={orgIdComboBoxOptions} onchange={handleOrgIdChange}></lightning-combobox>
+
+                        <lightning-button class="slds-m-top_small" variant="brand" type="submit"
+                            name={recordEditFormSubmitButtonName} label={recordEditFormSubmitButtonName}>
+                        </lightning-button>
+                    </lightning-record-edit-form>
+                </div>
+            </div>
+            <template if:true={isSpinnerVisible}>
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </template>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    <!-- END Custom Modal Pop-Up for LWC Record Edit Form-->
+
+
+    <!-- START Delete Confirmation Pop-Up -->
+    <template if:true={showDeleteConfirmationModal}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_small"
+            aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <!-- <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Close">
+                        <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                            <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                        </svg>
+                        <span class="slds-assistive-text">Close</span>
+                    </button> -->
+                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Are you sure you want to delete ?
+                    </h2>
+                    <h2 id="modal-heading-02" class="slds-modal__title slds-hyphenate">
+                        <template if:true={multipleRecordsToDelete}>
+                            (Duplicate records found, please use checkbox column to select and delete)
+                        </template>
+                    </h2>
+                </header>
+                <template if:true={multipleRecordsToDelete}>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+
+                        <c-custom-data-table class="slds-max-medium-table_stacked" key-field="Id"
+                            data={recordsToDeleteData} columns={recordsToDeleteColumns} show-row-number-column="false"
+                            data-record="Id" onrowselection={handleMutipleRowDeleteAction}>
+                        </c-custom-data-table>
+
+                    </div>
+                </template>
+                <footer class="slds-modal__footer">
+                    <lightning-button class="slds-p-around_xx-small" title="No" label="No" size="small"
+                        variant="neutral" onclick={handleDeleteConfirmationNo}>
+                    </lightning-button>
+                    <template if:false={multipleRecordsToDelete}>
+                        <lightning-button class="slds-p-around_xx-small" title="Yes" label="Yes" size="small"
+                            variant="brand" onclick={handleDeleteConfirmationYes}>
+                        </lightning-button>
+                    </template>
+                    <template if:true={multipleRecordsToDelete}>
+                        <lightning-button class="slds-p-around_xx-small" title="Delete" label="Delete Selected Row"
+                            size="small" variant="brand" icon-name="utility:delete" icon-position="right"
+                            onclick={deleteContactRowAction}>
+                        </lightning-button>
+                    </template>
+                </footer>
+                <template if:true={isSpinnerVisible}>
+                    <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+                </template>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    <!-- END Delete Confirmation Pop-Up -->
+
+
+    <template if:true={isSpinnerVisible}>
+        <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+    </template>
+
+</template>

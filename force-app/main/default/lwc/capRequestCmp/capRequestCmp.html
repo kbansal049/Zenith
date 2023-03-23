@@ -1,0 +1,257 @@
+<template>
+    <template if:true ={saveSpinner}>
+        <lightning-spinner style="z-index:999;" alternative-text="loading"></lightning-spinner>
+        <div style="z-index:998;" class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    <!-- Modal to render the fields -->
+    <template if:true={modalLoaded}>
+        <lightning-card class="slds-p-around_x-small">
+            <div class="slds-p-around_small">
+                <div class="generic-margin">
+                    <div if:true={displayPath}>
+                        <lightning-progress-indicator current-step={pathCurrentStatus} type="path" variant="base">
+                            <template for:each={statusSteps} for:item="step">
+                                <lightning-progress-step label={step.label} value={step.value} key={step.label}></lightning-progress-step>
+                            </template>
+                        </lightning-progress-indicator>
+                    </div>
+
+                    <div if:true={displaySubStatusPath}>
+                        <br/>
+                        <lightning-progress-indicator current-step={currentSubStatus} type="path" variant="base">
+                            <template for:each={subStatusSteps} for:item="subStep">
+                                <lightning-progress-step label={subStep.label} value={subStep.value} key={subStep.label}></lightning-progress-step>
+                            </template>
+                        </lightning-progress-indicator>
+                    </div>
+                    
+                    <div if:true={statusIsSubmitted}>
+                        <br/>
+                        <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                            <span class="slds-assistive-text">warning</span>
+                            <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Description of icon when needed">
+                                <lightning-icon icon-name="utility:warning" alternative-text="Warning" size="small" title="small size"></lightning-icon>
+                            </span>&nbsp;
+                            <h2>This CAP Request is pending in approval.</h2>    
+                        </div>
+                    </div>
+        
+                    <div if:true={statusIsRejected}>
+                        <br/>
+                        <div class="slds-align_absolute-center" style="height:5rem">
+                            <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                                <span class="slds-assistive-text">warning</span>
+                                <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Description of icon when needed">
+                                    <lightning-icon icon-name="utility:warning" alternative-text="Warning" size="small" title="small size"></lightning-icon>
+                                </span>&nbsp;
+                                <h2>This CAP Request has been rejected by the approver. Do you want to send it back to new Status to make ammendments?</h2>  
+                            </div>
+                            <br/>
+                        </div>
+                        <div class="slds-align_absolute-center">
+                            <lightning-button variant="brand"  name="Reset CAP Request" type="submit" label="Reset CAP Request" onclick={handleCAPRequestReset}></lightning-button>
+                        </div>
+                    </div>
+        
+                    <div if:true={statusIsClosed}>
+                        <br/>
+                        <div class="slds-align_absolute-center" style="height:5rem">
+                            <div class="slds-notify slds-notify_alert slds-alert_offline" role="alert">
+                                <span class="slds-assistive-text">Information</span>
+                                <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Description of icon when needed">
+                                    <lightning-icon icon-name="utility:warning" alternative-text="Warning" size="small" title="small size"></lightning-icon>
+                                </span>&nbsp;
+                                <h2>This CAP Request has been Closed!</h2>  
+                            </div>
+                            <br/>
+                        </div>
+                    </div>
+                </div>
+        
+                <lightning-record-edit-form class="recEditForm"
+                                            object-api-name="CAP_Request__c"
+                                            record-id={recordId}
+                                            onsubmit={handleSubmit}
+                                            onsuccess={handleSuccess}
+                                            density="comfy"
+                                            onerror={handleError}>
+                    <lightning-messages></lightning-messages>
+        
+                    <div class="slds-section slds-is-open" >
+                        <template for:each={pageLayoutSectionFld.lstSections} for:item="section" for:index="sectionIndex">
+                            <div key={section}>
+                                <template if:true={section.label} >
+                                    <template if:true={section.lstFields}>
+                                        <div class="slds-p-top_medium">
+                                            <h3 class="slds-section__title slds-p-left_small header slds-theme_shade" style="font-weight: bold;">
+                                                {section.label}
+                                            </h3>
+                                        </div>
+                                    </template>
+                                </template>
+                                <lightning-layout multiple-rows>
+                                    <template  for:each={section.lstFields} for:item="field" for:index="fieldIndex">
+                                        <template if:true={field.fieldName}>
+                                            <lightning-layout-item  key={field} size="6" flexibility="auto" padding="around-small">
+                                                <template if:false={field.hasCustomLabel}>
+                                                    <lightning-input-field class="picklist-container" field-name={field.fieldName} value={field.fieldValue} required={field.isRequired} disabled={field.isReadOnly}></lightning-input-field>
+                                                </template>
+                                                <template if:true={field.hasCustomLabel}>
+                                                    <label class="slds-form-element__label" for="ownerId">CAP Requestor</label>
+                                                    <lightning-input-field data-id="ownerId" class="picklist-container" field-name={field.fieldName} value={field.fieldValue} required={field.isRequired} disabled={field.isReadOnly} variant="label-hidden"></lightning-input-field>
+                                                </template>
+                                            </lightning-layout-item>
+                                        </template>
+                                    </template>
+                                </lightning-layout>
+                            </div>
+                        </template>
+                    </div>
+                    <input type="submit" class="hidden-row" />
+                </lightning-record-edit-form>
+        
+                <div if:true={displayDailyNotes}>
+                    <div style="background-color: lightgrey;padding:5px;"><strong>CAP Interactions</strong></div>
+                    <div if:true={isDailyNotesEmpty} class="slds-align_absolute-center">
+                        <lightning-icon icon-name="utility:info" alternative-text="Information" size="small" title="small size"></lightning-icon>&nbsp;
+                        No CAP Interactions exist for this CAP Request
+                    </div>
+                    <div if:false={isDailyNotesEmpty}>
+                        <lightning-datatable key-field="id" show-row-number-column="true" hide-checkbox-column="true" data={dataDailyNotes} columns={columnsDailyNotes}></lightning-datatable>
+                        <br/>
+                    </div>
+                </div>
+            </div>
+            <div slot="footer">
+                <span if:false={statusIsClosed}>
+                    <span if:false={statusIsRejected}>
+                        <span if:false={statusIsSubmitted}>
+                            <span if:true={isClosurePopup}>
+                                <lightning-button variant="outline-brand"  name="Save and Exit" type="submit" label="Save and Exit" onclick={handleSaveAndExit}></lightning-button>&nbsp;
+                                <lightning-button variant="brand"  name="Close CAP Request" type="submit" label="Close CAP Request" onclick={handleCloseRequest}></lightning-button>&nbsp;
+                            </span>
+                            <span if:false={isClosurePopup}>
+                                <lightning-button variant="outline-brand"  name="Save and Exit" type="submit" label="Save and Exit" onclick={handleSaveAndExit}></lightning-button>&nbsp;
+                                <span if:true={displayDailyNotes}>
+                                    <lightning-button variant="brand" name="Save" type="submit" label="Save" onclick={handleSaveAndRefresh}></lightning-button>&nbsp;
+                                </span>
+                                <span if:false={isResolvedNext}>
+                                    <span if:false={statusIsResolved}>
+                                        <lightning-button variant="brand"  name="Save and Next" type="submit" label="Save and Next" onclick={handleSaveAndNext}></lightning-button>&nbsp;
+                                    </span>
+                                    <span if:true={statusIsResolved}>
+                                        <lightning-button variant="brand"  name="Resolved" type="submit" label="Resolved" onclick={handleSaveAndNext}></lightning-button>&nbsp;
+                                    </span>
+                                </span>
+                                <span if:true={isResolvedNext}>
+                                    <lightning-button variant="brand"  name="Move to Resolved" type="submit" label="Move to Resolved" onclick={handleMoveToResovled}></lightning-button>&nbsp;
+                                </span>
+                            </span>
+                        </span> 
+                        <span if:true={statusIsSubmitted}>
+                            <lightning-button variant="brand"  name="Approve" type="submit" label="Approve" onclick={handleApprove}></lightning-button>&nbsp;
+                            <lightning-button variant="destructive"  name="Save and Next" type="submit" label="Reject" onclick={handleReject}></lightning-button>&nbsp;
+                        </span> 
+                    </span>
+                    <span>
+                        <lightning-button label="Cancel" variant="neutral" onclick={handleCancel}></lightning-button>
+                    </span>
+                </span>
+                <span if:true={statusIsClosed}>
+                    <lightning-button label="Back to CAP Request" variant="neutral" onclick={handleCancel}></lightning-button>
+                </span>
+            </div>
+        </lightning-card>
+    </template>
+    <!-- Modal to render the fields -->
+    <!-- Modal for Confirmation Dialog-->
+    <template if:true={confirmationModalLoaded}>
+        <section style="z-index:9999;" role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+            <div class="slds-modal__container" style="max-height:340px; max-width:300px; margin-top:10%; ">
+                <header class="slds-modal__header">
+                    <span if:true={approvalStageIsSubmission}>
+                        <span if:false={isClosurePopup}>
+                            <h2 class="slds-p-top--small slds-p-horizontal--medium slds-p-bottom--small slds-text-heading--medium" style="text-align: center;">Submit CAP Request</h2>
+                        </span>
+                    </span>
+                    <span if:true={isClosurePopup}>
+                        <h2 class="slds-p-top--small slds-p-horizontal--medium slds-p-bottom--small slds-text-heading--medium" style="text-align: center;">Close CAP Request</h2>
+                    </span>
+                </header>
+                <div class="slds-modal__content" id="modal-content-id-3" style="border: 1px solid lightgrey;height:240px;padding:5px;">
+                    <span if:true={approvalStageIsSubmission}>
+                        <span if:false={isClosurePopup}>
+                            <br/>
+                            <div class="slds-text-align_center">CAP Request has been saved. Do you want to submit it for Approval?</div>
+                        </span>
+                    </span>
+                    <span if:true={isClosurePopup}>
+                        <br/>
+                        <div class="slds-text-align_center">Are you sure you want to close this CAP Request? You won't be able to modify it later.</div>
+                    </span>
+                </div>
+                <div class="slds-modal__footer">
+                    <span if:true={approvalStageIsSubmission}>
+                        <span if:false={isClosurePopup}>
+                            <lightning-button label="Cancel" variant="neutral" onclick={handleCancel}></lightning-button>
+                            &nbsp;
+                            <lightning-button variant="brand"  name="Submit" label="Submit" onclick={checkIfUserCanSubmitHandler}></lightning-button>&nbsp; 
+                        </span>
+                    </span>
+                    <span if:true={isClosurePopup}>
+                        <lightning-button label="Cancel" variant="neutral" onclick={handleCancelClosed}></lightning-button>
+                        &nbsp;
+                        <lightning-button variant="brand"  name="Mark as Closed" label="Mark as Closed" onclick={handleSaveAndNext}></lightning-button>&nbsp;
+                    </span>
+                    <!--<lightning-button variant="brand"  name="Submit" label="Submit" onclick={showCommentForApproval}></lightning-button>-->
+                </div>
+            </div>
+        </section>
+        <div style="z-index:9998;" class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    <!--Modal for Confirmation Dialog-->
+    <!--Modal for Adding Comments--> 
+    <template if:true={commentModalLoaded}>
+        <section style="z-index:9999;" role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+            <div class="slds-modal__container" style="max-height:400px; max-width:300px; margin-top:10%; ">
+                <header class="slds-modal__header">
+                    <div if:true={isApproveClicked}>
+                        <h2 class="slds-p-top--small slds-p-horizontal--medium slds-p-bottom--small slds-text-heading--medium" style="text-align: center;">Approve CAP Request</h2>
+                    </div>
+                    <div if:false={isApproveClicked}>
+                        <h2 class="slds-p-top--small slds-p-horizontal--medium slds-p-bottom--small slds-text-heading--medium" style="text-align: center;">Reject CAP Request</h2>
+                    </div>
+                </header>
+                <div class="slds-modal__content" id="modal-content-id-4" style="border: 1px solid lightgrey;max-height:400px;padding:15px;">
+                    <div if:true={isApproveClicked}>
+                        <div class="slds-text-align_center">Are you sure you want to Approve this CAP Request?</div>
+                        <br/>
+                    </div>
+                    <div if:false={isApproveClicked}>
+                        <div class="slds-text-align_center">Are you sure you want to Reject this CAP Request?</div>
+                        <br/>
+                        <lightning-textarea label="Comments" required="true" onchange={handleCommentsChange} max-length="255"> </lightning-textarea>
+                    </div>
+                </div>
+                <div class="slds-modal__footer">
+                    <!--<span if:true={approvalStageIsSubmission}>
+                        <lightning-button variant="brand"  name="Submit" label="Submit" onclick={handleSubmitForApproval}></lightning-button>&nbsp; 
+                    </span>-->
+                    <span if:false={approvalStageIsSubmission}>
+                        <span if:true={isApproveClicked}>
+                            <lightning-button variant="brand"  name="Approve" label="Approve" onclick={handleApproval}></lightning-button>&nbsp; 
+                        </span>
+                        <span if:false={isApproveClicked}>
+                            <lightning-button variant="brand"  name="Reject" label="Reject" onclick={handleRejection}></lightning-button>&nbsp;
+                        </span>
+                    </span>
+                    <span>
+                        <lightning-button label="Cancel" variant="neutral" onclick={handleApprovalCancel}></lightning-button>
+                    </span>
+                </div>
+            </div>
+        </section>
+        <div style="z-index:9998;" class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    <!--Modal for Adding Comments-->
+</template>

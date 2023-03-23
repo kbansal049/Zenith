@@ -1,0 +1,235 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 07-12-2022
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<template>
+    <c-custom-toast-component auto-close-time="3000"></c-custom-toast-component>
+    <lightning-card variant="Narrow" title={cloudName} icon-name="standard:account">
+        <template if:true={oppId}>
+            <lightning-button label="Back to Manage Provisioning" slot="actions" onclick={handleManageProvisioningNavigate} class="slds-p-right_small"></lightning-button>
+        </template>
+        <lightning-button label="Go to Tenant" slot="actions" onclick ={navigateToCloudRecord} class="slds-p-right_small"></lightning-button>
+        <div class="slds-m-around_medium">
+            <lightning-button label="Expand All" variant="brand-outline" value="Expand All PRGs" class="slds-m-around_small" onclick={handleExpandAllPRGs} disabled={isExpandAllButtonDisabled}></lightning-button>
+            <lightning-button label="Collapse All" variant="brand-outline" value="Collapse All PRGs" class="slds-m-around_small" onclick={handleCollapseAllPRGs} disabled={isCollapseAllButtonDisabled}></lightning-button>
+        </div>
+        <div class="slds-p-horizontal_small">
+            <template if:true={existingPGRecords}>
+                <ul class="slds-timeline">
+                    <template for:each={existingPGRecords} for:item="currentItem">
+                        <li key={currentItem.prg.Id}>
+                            <div data-target-id={currentItem.prg.Id} class={currentItem.prg.provisioningProcessSLDS}>
+                                <span class="slds-assistive-text">{currentItem.prg.Name}</span>
+                                <div class="slds-media">
+                                    <div class="slds-media__figure">
+                                        <button class="slds-button slds-button_icon" title="Toggle button for PRG details display/hide" aria-controls={currentItem.prg.Id} aria-expanded=true data-name={currentItem.prg.Id} onclick={handlePRGDetailsExpandedBtn}>
+                                            <template if:true={currentItem.prg.isExpanded}>
+                                                <lightning-icon icon-name="utility:chevrondown" alternative-text="Expand/Collapse" size="x-small"></lightning-icon>
+                                            </template>
+                                            <template if:false={currentItem.prg.isExpanded}>
+                                                <lightning-icon icon-name="utility:chevronright" alternative-text="Expand/Collapse" size="x-small"></lightning-icon>
+                                            </template>
+                                        </button>
+                                        <template if:true={currentItem.prg.isNewTenantPP}>
+                                            <div class="slds-icon_container slds-icon-standard-task slds-timeline__icon" title="new tenant">
+                                                <lightning-icon icon-name="utility:check" alternative-text="New Tenant" size="small"></lightning-icon>
+                                            </div>
+                                        </template>
+                                        <template if:true={currentItem.prg.isAddSkuPP}>
+                                            <div class="slds-icon_container slds-icon-standard-log-a-call slds-timeline__icon" title="add sku">
+                                                <lightning-icon icon-name="utility:add" alternative-text="Add Sku" size="small"></lightning-icon>
+                                            </div>
+                                        </template>
+                                        <template if:true={currentItem.prg.isChangePlanformSkuPP}>
+                                            <div class="slds-icon_container slds-icon-standard-email slds-timeline__icon" title="change platform sku">
+                                                <lightning-icon icon-name="utility:change_request" alternative-text="Change Platform SKU" size="small"></lightning-icon>
+                                            </div>
+                                        </template>
+                                        <template if:true={currentItem.prg.isDecommissionPP}>
+                                            <div class="slds-icon_container slds-icon-standard-event slds-timeline__icon" title="decommission">
+                                                <lightning-icon icon-name="utility:clear" alternative-text="Decommission" size="small"></lightning-icon>
+                                            </div>
+                                        </template>
+                                        <template if:true={currentItem.prg.isExtensionPP}>
+                                            <div class="slds-icon_container slds-icon-standard-task slds-timeline__icon" title="extension">
+                                                <lightning-icon icon-name="utility:lightning_extension" alternative-text="Extension" size="small"></lightning-icon>
+                                            </div>
+                                        </template>
+                                        <template if:true={currentItem.prg.isAssociateZiaPP}>
+                                            <div class="slds-icon_container slds-icon-standard-log-a-call slds-timeline__icon" title="associate zia">
+                                                <lightning-icon icon-name="utility:relate" alternative-text="Associate ZIA" size="small"></lightning-icon>
+                                            </div>
+                                        </template>
+                                        <template if:true={currentItem.prg.isConvertTrialToSubscriptionPP}>
+                                            <div class="slds-icon_container slds-icon-standard-email slds-timeline__icon" title="convert trial to subscription">
+                                                <lightning-icon icon-name="utility:change_record_type" alternative-text="Convert Trial to Subscription" size="small"></lightning-icon>
+                                            </div>
+                                        </template>
+                                        <template if:true={currentItem.prg.isSplitPRGForRampsPP}>
+                                            <div class="slds-icon_container slds-icon-standard-event slds-timeline__icon" title="split prg for ramps">
+                                                <lightning-icon icon-name="utility:percent" alternative-text="Split PRG for Ramps" size="small"></lightning-icon>
+                                            </div>
+                                        </template>
+                                        <template if:true={currentItem.prg.isCloudRefreshPP}>
+                                            <div class="slds-icon_container slds-icon-standard-task slds-timeline__icon" title="cloud refresh">
+                                                <lightning-icon icon-name="utility:refresh" alternative-text="Cloud Refresh" size="small"></lightning-icon>
+                                            </div>
+                                        </template>
+                                        <template if:true={currentItem.prg.isAddFeaturePP}>
+                                            <div class="slds-icon_container slds-icon-standard-log-a-call slds-timeline__icon" title="add feature">
+                                                <lightning-icon icon-name="utility:attach" alternative-text="Add feature" size="small"></lightning-icon>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    <div class="slds-media__body">
+                                        <div class="slds-grid slds-grid_align-spread slds-timeline__trigger">
+                                            <div class="slds-grid slds-grid_vertical-align-center slds-truncate_container_75 slds-no-space">
+                                                <h3 class="slds-truncate" title="Review proposals for EBC deck with larger team and have marketing review this">
+                                                    <a href={currentItem.prgURL} target="_blank">
+                                                        <strong>{currentItem.prg.Name}&nbsp; - &nbsp;{currentItem.prg.RecordType.Name} &nbsp;[ {currentItem.prg.Provisioning_Process__c} ]</strong>
+                                                    </a>
+                                                </h3>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <span class="slds-m-horizontal_xx-small">
+                                                <strong>Requested By:</strong>&nbsp;{currentItem.prg.CreatedBy.Name}<br/>&nbsp;
+                                                <strong>Start Date:</strong>&nbsp;<lightning-formatted-date-time value={currentItem.prg.Start_Date__c}></lightning-formatted-date-time><br/>&nbsp;
+                                                <strong>End Date:</strong>&nbsp;<lightning-formatted-date-time value={currentItem.prg.End_Date__c}></lightning-formatted-date-time>
+                                            </span>
+                                            <span class="slds-float_right">
+                                                <template if:true={isUtilityBtnsEnabled}>
+                                                    <template if:true={currentItem.prg.Opportunity__r.SBQQ__PrimaryQuote__c}>
+                                                        <lightning-button-icon icon-name="utility:cart" alternative-text="show cart" title="Show Cart" value={currentItem.prg.Opportunity__r.SBQQ__PrimaryQuote__c} onclick={navigateToShowCart} class="slds-m-left_x-small"></lightning-button-icon>
+                                                    </template>
+                                                    <template if:false={currentItem.prg.Opportunity__r.SBQQ__PrimaryQuote__c}>
+                                                        <lightning-button-icon icon-name="utility:cart" alternative-text="show cart" title="Show Cart" value={currentItem.prg.Opportunity__r.SBQQ__PrimaryQuote__c} class="slds-m-left_x-small" disabled></lightning-button-icon>
+                                                    </template>
+                                                    <template if:true={currentItem.prg.Opportunity__r.Netsuite_Sales_Order_Number__c}>
+                                                        <lightning-button-icon icon-name="utility:fulfillment_order" alternative-text="netsuite sales order" title="Netsuite Sales Order" value={currentItem.prg.Opportunity__r.Netsuite_Sales_Order_Link__c} onclick={navigateToWebPage} class="slds-m-left_x-small"></lightning-button-icon>
+                                                    </template>
+                                                    <template if:false={currentItem.prg.Opportunity__r.Netsuite_Sales_Order_Number__c}>
+                                                        <lightning-button-icon icon-name="utility:fulfillment_order" alternative-text="netsuite sales order" title="Netsuite Sales Order" value={currentItem.prg.Opportunity__r.Netsuite_Sales_Order_Link__c} class="slds-m-left_x-small" disabled></lightning-button-icon>
+                                                    </template>
+                                                </template>
+
+                                                <!-- Disaply ZSCM Tenant Link page for both Trail & Subscribed Tenants -->
+                                                <template if:true={currentItem.prg.ZSCM_Tenant_Link__c}>
+                                                    <lightning-button-icon icon-name="utility:new_window" alternative-text="zscm tenant page" title="ZSCM Tenant Page" value={currentItem.prg.ZSCM_Tenant_Link__c} onclick={navigateToWebPage} class="slds-m-left_x-small"></lightning-button-icon>
+                                                </template>
+                                                <template if:false={currentItem.prg.ZSCM_Tenant_Link__c}>
+                                                    <lightning-button-icon icon-name="utility:new_window" alternative-text="zscm tenant page" title="ZSCM Tenant Page" value={currentItem.prg.ZSCM_Tenant_Link__c} class="slds-m-left_x-small" disabled></lightning-button-icon>
+                                                </template>
+
+                                                <template if:true={isUtilityBtnsEnabled}>
+                                                    <template if:true={poDetailId}>
+                                                        <lightning-button-icon icon-name="utility:summarydetail" alternative-text="associated po detail" title="Associated PO Detail" value={poDetailId} onclick={navigateToPODetailPage} class="slds-m-left_x-small"></lightning-button-icon>
+                                                    </template>
+                                                    <template if:false={poDetailId}>
+                                                        <lightning-button-icon icon-name="utility:summarydetail" alternative-text="associated po detail" title="Associated PO Detail" value={poDetailId} class="slds-m-left_x-small" disabled></lightning-button-icon>
+                                                    </template>
+                                                </template>
+                                            </span>
+                                        </div>
+                                        <article class="slds-timeline__item_details slds-m-top_x-small slds-m-horizontal_xx-small" id={currentItem.prg.Name} aria-hidden="false">
+                                            <div class="slds-box slds-m-vertical_x-small">
+                                                <ul class="slds-wrap slds-list_horizontal">
+                                                    <li class="slds-grid slds-grid_vertical slds-size_1-of-2">
+                                                        <span class="slds-text-title slds-p-bottom_xx-small"><strong>Provisioning Type:</strong>&nbsp;{currentItem.prg.Provisioning_Type__c}</span>
+                                                        <span class="slds-text-title slds-p-bottom_xx-small"><strong>Provisioning Status:</strong>&nbsp;{currentItem.prg.Status__c}</span>
+                                                        <span class="slds-text-title slds-p-bottom_xx-small"><strong>Preferred Cloud:</strong>&nbsp;{currentItem.prg.Preferred_Cloud__c}</span>
+                                                        <template if:true={currentItem.prg.isZIAProvisioning}>
+                                                            <template if:true={currentItem.prg.Subscription_Id__c}>
+                                                                <span class="slds-text-title slds-p-bottom_xx-small"><strong>Subscription Id:</strong>&nbsp;{currentItem.prg.Subscription_Id__c}</span>
+                                                            </template>
+                                                            <template if:false={currentItem.prg.Subscription_Id__c}>
+                                                                <span class="slds-text-title slds-p-bottom_xx-small"><strong>Subscription Id:</strong>&nbsp;NA</span>
+                                                            </template>
+                                                        </template>
+                                                        <template if:false={currentItem.prg.isZIAProvisioning}>
+                                                            <template if:true={currentItem.prg.isAssociateZIAZSCValuePresent}>
+                                                                <span class="slds-text-title slds-p-bottom_xx-small"><strong>Associated ZIA Zscaler Cloud:</strong>&nbsp;{currentItem.prg.Associated_ZIA_Zscaler_Cloud__r.Name}</span>
+                                                            </template>
+                                                            <template if:false={currentItem.prg.isAssociateZIAZSCValuePresent}>
+                                                                <span class="slds-text-title slds-p-bottom_xx-small"><strong>Associated ZIA Zscaler Cloud:</strong>&nbsp;NA</span>
+                                                            </template>
+                                                        </template>
+                                                    </li>
+                                                    <li class="slds-grid slds-grid_vertical slds-size_1-of-2">
+                                                        <span class="slds-text-title slds-p-bottom_xx-small"><strong>Organization Domain:</strong>&nbsp;{currentItem.prg.Organization_Domain__c}</span>
+                                                        <template if:true={currentItem.prg.Additional_Organization_domains__c}>
+                                                            <span class="slds-text-title slds-p-bottom_xx-small"><strong>Additional Organization Domains:</strong>&nbsp;{currentItem.prg.Additional_Organization_domains__c}</span>
+                                                        </template>
+                                                        <template if:false={currentItem.prg.Additional_Organization_domains__c}>
+                                                            <span class="slds-text-title slds-p-bottom_xx-small"><strong>Additional Organization Domains:</strong>&nbsp;NA</span>
+                                                        </template>
+                                                        <span class="slds-text-title slds-p-bottom_xx-small"><strong>Account Industry Vertical:</strong>&nbsp;{currentItem.prg.Account_Industry_Vertical__c}</span>
+                                                        <template if:true={currentItem.prg.isZIAProvisioning}>
+                                                            <template if:true={currentItem.prg.Subscription_Name__c}>
+                                                                <span class="slds-text-title slds-p-bottom_xx-small"><strong>Subscription Name:</strong>&nbsp;{currentItem.prg.Subscription_Name__c}</span>
+                                                            </template>
+                                                            <template if:false={currentItem.prg.Subscription_Id__c}>
+                                                                <span class="slds-text-title slds-p-bottom_xx-small"><strong>Subscription Name:</strong>&nbsp;NA</span>
+                                                            </template>
+                                                        </template>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="slds-box slds-m-vertical_small">
+                                                <h3 class="slds-section-title_divider slds-m-bottom_small" style="background-color: rgb(238 238 238);color: black;border-radius:25px;text-align: center;">
+                                                    <b>Products</b>
+                                                </h3>
+                                                <lightning-datatable
+                                                    key-field="Id" 
+                                                    data={currentItem.prg.Provisioning_Products__r} 
+                                                    columns={prodCols} 
+                                                    hide-checkbox-column=true 
+                                                    show-row-number-column=true 
+                                                    resize-column-disabled=true 
+                                                    class="datatable-custom-style">
+                                                </lightning-datatable>
+                                            </div>
+                                            <div class="slds-box slds-m-vertical_small">
+                                                <h3 class="slds-section-title_divider slds-m-bottom_small" style="background-color: rgb(238 238 238);color: black;border-radius:25px;text-align: center;">
+                                                    <b>Contacts</b>
+                                                </h3>
+                                                <lightning-datatable 
+                                                    key-field="Id" 
+                                                    data={currentItem.prg.Provisioning_Contacts__r} 
+                                                    columns={contCols} 
+                                                    hide-checkbox-column=true 
+                                                    show-row-number-column=true 
+                                                    resize-column-disabled=true 
+                                                    class="datatable-custom-style">
+                                                </lightning-datatable>
+                                            </div>
+                                            <template if:true={currentItem.isApprovalDataPresent}>
+                                                <div class="slds-box slds-m-vertical_small">
+                                                    <h3 class="slds-section-title_divider slds-m-bottom_small" style="background-color: rgb(238 238 238);color: black;border-radius:25px;text-align: center;">
+                                                        <b>Approval History</b>
+                                                    </h3>
+                                                    <lightning-datatable 
+                                                        key-field="Id" 
+                                                        data={currentItem.pisWrapList} 
+                                                        columns={apprHisCols} 
+                                                        hide-checkbox-column=true 
+                                                        show-row-number-column=true
+                                                        resize-column-disabled=true 
+                                                        class="datatable-custom-style">
+                                                    </lightning-datatable>
+                                                </div>
+                                            </template>
+                                        </article>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
+            </template>
+        </div>
+    </lightning-card>
+</template>

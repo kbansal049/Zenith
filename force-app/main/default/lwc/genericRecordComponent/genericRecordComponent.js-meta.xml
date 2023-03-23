@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>48.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>genericRecordComponent</masterLabel>
+    <description>This is component will be used to update record based on fieldset.</description>
+    <targets>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage">
+            <property name="cmptitle" label="Title" description="Please provide title" type="String"/>
+            <property name="fldSetAPIName" label="FieldSet API Name" required="true" description="Please type Field Set API Name here" type="String"/>
+            <property name="cmpReadOnly" label="is Readonly" description="Please check the checkbox if component is for readonly purpose." type="boolean"/>
+            <property name="cmpDensity" label="Display Density" datasource="comfy,compact" type="String"/>
+            <property name="cmpColumns" label="# of Columns" datasource="1,2" type="String"/>
+            <property name="sectionExpand" label="Expand" description="default section should be expanded?" default="true" type="boolean"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

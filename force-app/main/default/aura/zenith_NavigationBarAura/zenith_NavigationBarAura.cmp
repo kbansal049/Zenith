@@ -1,0 +1,60 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    
+    <aura:attribute name="navBar" type="Aura.Component[]" required="false" />
+    <aura:attribute name="profileMenu" type="Aura.Component[]" required="false" />
+    <aura:attribute name="guestUser" type="Boolean" default="false" />
+    
+    <!-- -->
+    <aura:html tag="style">
+        
+        .span.profileName {
+			color:black !important;
+        }
+        .comm-navigation.forceCommunityGlobalNavigation {
+        background: white;
+        }
+        
+        
+        community_navigation-global-navigation-list{
+        background-color:white;
+        color:black !important;
+        }
+        
+        community_navigation-global-navigation-list:hover{
+        background-color:white;
+        color:black !important;
+        }
+        
+        button.slds-container_fluid.slds-button.slds-button--reset.slds-truncate {
+        background: white !important;
+        }
+        
+        li.slds-list__item {
+        background-color:white !important;
+        }
+        
+        ul.slds-list_vertical.slds-is-nested.slds-is-absolute.slds-hide {
+        border:2px solid white !important;
+        }
+        
+        a.slds-container_fluid.slds-truncate {
+        background-color:white !important;
+        }
+        
+        span{
+        font-weight:400 !important
+        }
+        
+        <!-- hide the home icon -->
+        a.slds-container_fluid.slds-truncate.slds-is-active {
+        display: none;
+        }
+        
+       
+        
+    </aura:html>
+    
+    
+    
+    
+</aura:component>

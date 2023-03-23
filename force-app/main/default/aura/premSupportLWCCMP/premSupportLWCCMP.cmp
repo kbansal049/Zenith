@@ -1,0 +1,18 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 02-16-2022
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<aura:component implements="flexipage:availableForAllPageTypes,lightning:isUrlAddressable,lightning:hasPageReference" access="global" >
+    <aura:attribute name="id" type="String"/>
+    <aura:attribute name="quoteId" type="String"/> 
+    <aura:attribute name="boolean" type="boolean" default="false"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="change" value="{!v.pageReference}" action="{!c.onPageReferenceChanged}"/>
+    <aura:if isTrue="{!v.boolean}">
+        <c:premSupportLWC recordId="{!v.quoteId}"/>
+  </aura:if>
+    
+</aura:component>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>56.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__HomePage</target>
+		<target>lightning__AppPage</target>
+		<target>lightning__Tab</target>
+		<target>lightningCommunity__Page</target>
+		<target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+		<targetConfig targets="lightningCommunity__Default">
+			<property name="membersIcon" type="String" default="" label="Members Icon Link" description="Enter image link"/>
+			<property name="postIcon" type="String" default="" label="Post Icon Link" description="Enter image link"/>
+			<property name="solutionsIcon" type="String" default="" label="Solutions Icon Link" description="Enter image link"/>
+			<property name="likesIcon" type="String" default="" label="Likes Icon Link" description="Enter image link"/>
+		</targetConfig>
+	</targetConfigs>
+</LightningComponentBundle>

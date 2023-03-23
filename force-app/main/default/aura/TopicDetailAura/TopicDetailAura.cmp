@@ -1,0 +1,77 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    
+    <aura:html tag="style">
+        
+        <!-- Adjusting width and styling of topic list-->
+        span.slds-col{
+        width: 284px;
+        white-space: nowrap;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        display: block;
+        background: #29B5E8 !important;
+        padding:21px 0px;
+        font-weight:900;
+        color:white;
+        font-size:1rem;
+        margin-bottom:10px ;
+        text-decoration: none;
+        }
+        
+        <!-- to remove | -->
+        .forceTopicSubTopicNavigation .topic-subTopicItem:not(.topic-last):after {
+        content: "";
+        padding: 0 var(--lwc-fcSpacingXSmall,8px);
+        }
+        
+        <!-- used for show More button like 2 More...-->
+        li.comm-topic__show-more.topic-showMore{
+        width: 96px;
+        white-space: nowrap;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        
+        background:  #29B5E8 !important;
+        padding:16px 10px;
+        font-weight:900;
+        font-size:1rem;
+        }
+        
+        lightning-button.slds-button button.slds-button{
+        color: white !important;
+        }
+        
+        <!-- to remove underline in the topics -->
+        a.comm-topic__link {
+        text-decoration: none;
+        }
+        
+        <!-- Responsive designs -->
+        @media only screen and (min-device-width: 398px) and (max-device-width: 425px){
+        span.slds-col{
+        width: 133px;
+        white-space: nowrap;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        display: block;
+        background: #29B5E8 !important;
+        padding:21px 0px;
+        font-weight:900;
+        color:white;
+        font-size:1rem;
+        margin-bottom:10px ;
+        text-decoration: none;
+        }
+        
+        @media only screen and (max-device-width: 398px){
+        span.slds-col{
+        	width:90px;
+        }
+        
+       }
+        
+        
+    </aura:html>
+    
+    
+</aura:component>

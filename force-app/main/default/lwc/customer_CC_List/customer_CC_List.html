@@ -1,0 +1,90 @@
+<template>
+    <div class="zs-case-details">
+        <div class="zs-case-info-comp">
+            <lightning-card>
+                <template if:true={loading}>
+                    <div class="slds-spinner_container">
+                        <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+                    </div>
+                </template>
+                <h3 slot="title">
+                    <lightning-icon icon-name="utility:user" size="small"></lightning-icon> &nbsp;&nbsp;
+                    Case Collaborators
+                </h3>
+                <lightning-button-icon onclick={openmodal} icon-name="utility:edit" slot="actions"
+                    alternative-text="Refresh"></lightning-button-icon>
+                <div class="slds-p-horizontal_small">
+                    <template for:each={emailList} for:item="email">
+                        <div key={email.key}>
+                            <div class="slds-grid slds-gutters" style="padding-top: 10px;">
+                                <div class="slds-col slds-size_12-of-12">
+                                    <div class="slds-grid slds-gutters">
+                                        <div class="slds-col slds-size_1-of-12 zs-collab-icon-class">
+                                            <lightning-icon icon-name="action:user" size="xx-small"
+                                                alternative-text="Approved"></lightning-icon>
+                                        </div>
+                                        <div class="slds-col slds-size_10-of-12">
+                                            <div class="slds-grid slds-gutters">
+                                                <div class="slds-col contact-email-label">
+                                                    <span class="zs-collab-email-class">{email}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </lightning-card>
+        </div>
+        <template if:true={openmodel}>
+            <div class="demo-only" style="height: 640px;">
+                <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                    aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+                        <template if:true={loading}>
+                            <div class="slds-spinner_container">
+                                <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+                            </div>
+                        </template>
+                        <header class="slds-modal__header">
+                            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                title="Close" onclick={closeModal}>
+                                <lightning-icon icon-name="utility:close" size="medium">
+                                </lightning-icon>
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                            <h2 style="font-weight:bold;" class="slds-text-heading_medium slds-hyphenate">
+                                Edit Collaborators
+                            </h2>
+                        </header>
+                        <div class="slds-modal__content">
+                            <template if:true={showcommentmandatorymessage}>
+                                <div class="slds-box slds-theme_error" style="margin-bottom:5px;">
+                                    {errormsg}
+                                </div>
+                            </template>
+                            <div class="slds-grid slds-gutters" style="padding: 15px;">
+                                <div class="slds-col">
+                                    <label for="account-name" class="slds-form-element__label slds-no-flex">CC List&nbsp;
+                                        <span style="color:#b55e5e;">(Please enter emails seperated by semi-colon)
+                                        </span></label>
+                                    <lightning-textarea onchange={handleEmailChange} name="reasonforESC"
+                                        value={customercclist} label=""></lightning-textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <footer class="slds-modal__footer">
+                            <lightning-button label="Cancel" variant="neutral" onclick={closeModal}>
+                            </lightning-button>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <lightning-button label="Save" variant="brand" onclick={handleContactSave}>
+                            </lightning-button>
+                        </footer>
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+            </div>
+        </template>
+    </div>
+</template>

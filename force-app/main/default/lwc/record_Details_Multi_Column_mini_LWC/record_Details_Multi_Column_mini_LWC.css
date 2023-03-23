@@ -1,0 +1,7 @@
+.componentHolder{
+    position: relative;
+    min-height: 40px;
+}
+.setCursorPointer{
+    cursor: pointer;
+}

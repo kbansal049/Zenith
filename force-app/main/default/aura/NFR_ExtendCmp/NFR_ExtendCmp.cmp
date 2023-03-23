@@ -1,0 +1,79 @@
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader" 
+                access="global">    
+    <aura:attribute name="record" type="NFR__c" />
+    <aura:attribute name="isExpired" type="Boolean"/>
+    <aura:attribute name="isExpired30days" type="Boolean"/>
+    <aura:attribute name="spinner" type="boolean" default="false"/>
+    <aura:attribute name="fromVF" type="Boolean" />
+    <aura:attribute name="fromVF1" type="Boolean" default="false"/>
+    <force:recordData aura:id="recordLoader"
+                      recordId="{!v.recordId}"
+                      fields="NFR_Licence_Status__c,Name,Approval_Status__c,RecordType.Name,Expiry_Date_FromStartDate__c"
+                      targetFields="{!v.record}"
+                      mode="EDIT"
+                      recordUpdated="{!c.recordUpdate}"
+                      />
+    <aura:if isTrue="{!v.spinner}">
+        <div class="slds-is-relative">
+            <lightning:spinner alternativeText="Loading" title="Processing.." size="small"
+                               class="slds-show backgroundSpinner"/> 
+        </div>
+    </aura:if>
+    <aura:if isTrue="{!v.fromVF}">    
+        <div class="slds-m-around--large slds-p-left_x-small">
+            <article>
+                <div class="slds-media"> 
+                    <div class="slds-media__body">
+                        <h1 class="slds-text-body_small slds-line-height_reset" title="Extend NFR License">
+                            NFR License</h1>
+                        <p class="slds-page-header__title slds-truncate slds-align-middle">
+                            <a href="{!'/'+v.recordId}" target="_parent">{!v.record.Name}</a></p>
+                    </div> 
+                    <aura:if isTrue="{!!v.fromVF1}">
+                        <div class="slds-float_right" style="align-self: flex-end;">
+                            <a href="{!'/'+v.recordId}" target="_parent">{!$Label.c.BackToNFR}</a>
+                        </div>
+                    </aura:if>
+                </div>                
+            </article>
+        </div>
+        <div class="slds-m-bottom--medium"></div>
+    </aura:if>
+    <div class="slds-m-around--small slds-p-left_x-small">
+        <aura:if isTrue="{!!v.fromVF1}">
+            <aura:if isTrue="{!v.isExpired}">
+                <ui:message title="Error" severity="error">
+                    <br />
+                    {!$Label.c.NFRExtend}            
+                </ui:message>
+                <aura:set attribute="else">
+                    <aura:if isTrue="{!v.isExpired30days}">
+                        <ui:message title="Error" severity="error">
+                            <br />
+                            {!$Label.c.NFRExtensionAlert}                           
+                        </ui:message>
+                    </aura:if>
+                    <aura:if isTrue="{!v.isExpired != null}">
+                        <ui:message title="Confirm" severity="error">
+                            <br />
+                            {!$Label.c.NFRExtended}                           
+                        </ui:message>
+                        <br />
+                        <lightning:button class="slds-align_absolute-center" variant="brand" label="Submit" title="Submit" onclick="{! c.extendExpiry }"/> 
+                    </aura:if>
+                </aura:set>
+            </aura:if>  
+            <aura:set attribute="else">
+                <ui:message title="Successfully extended the NFR" severity="confirm">
+                <br />
+                <div class="slds-p-bottom_medium">
+                    {!$Label.c.NFRLink}
+                </div>
+                <div class="slds-float_left" style="align-self: flex-end;">
+                    <a href="{!'/'+v.recordId}" target="_parent">{!$Label.c.BackToNFR}</a>
+                </div>                
+            </ui:message>
+            </aura:set>
+        </aura:if>
+    </div>
+</aura:component>

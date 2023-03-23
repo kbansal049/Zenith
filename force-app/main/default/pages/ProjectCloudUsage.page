@@ -1,0 +1,33 @@
+<apex:page showHeader="true" sidebar="false"  standardStylesheets="false"  lightningStylesheets="true"   standardController="inspire1__Project__c">
+  <apex:slds />
+    
+    <style>
+        button.slds-button.navigateButton.uiButton--default.uiButton span.bBody{
+            display: none;
+        }
+    </style>
+    <script>
+        function openFilteredReport(reportId,filterId){
+            fvVar='&fv2';
+             var url = '{!$Label.Base_URL}' +'/r/Report/'+reportId+'/view'+'?'+fvVar+'='+filterId ;
+             console.log('redirect url',url);
+             window.open(url,'_blank');
+             //sforce.one.navigateToURL(url);
+        }
+        
+    </script>
+  
+   <apex:pageBlock >
+ 
+            <analytics:reportChart reportId="{!$Label.ZIA_Cloud_Usage_Original}" hideOnError="false" filter="{column:'Account.Id', operator:'equals', value:'{!inspire1__Project__c.inspire1__Account__c}'}" size="large" showRefreshButton="true" ></analytics:reportChart>    
+            <div onclick="openFilteredReport('{!$Label.ZIA_Cloud_Usage_Override}','{!inspire1__Project__c.inspire1__Account__c}')"> <a href="#"> View Report </a></div>
+   </apex:pageBlock>
+   <apex:pageBlock >
+         <apex:pageBlockSection columns="1"  >
+            <analytics:reportChart reportId="{!$Label.ZPA_Cloud_Usage_Original}" hideOnError="false" filter="{column:'Account.Id', operator:'equals', value:'{!inspire1__Project__c.inspire1__Account__c}'}" size="large" showRefreshButton="true" ></analytics:reportChart> 
+            <div onclick="openFilteredReport('{!$Label.ZPA_Cloud_Usage_Override}','{!inspire1__Project__c.inspire1__Account__c}')"> <a href="#"> View Report </a></div>
+           </apex:pageBlockSection>
+
+   </apex:pageBlock>
+  
+</apex:page>

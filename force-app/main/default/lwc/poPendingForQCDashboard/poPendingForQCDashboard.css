@@ -1,0 +1,22 @@
+.pointer {
+    cursor: pointer;
+}
+
+.wrapped-header-datatable .slds-table .slds-th__action .slds-truncate {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: unset;
+    white-space: pre-line;
+    /*  uncomment this if you want break the words further */
+    /* word-wrap: break-word;*/
+
+}
+
+.wrapped-header-datatable .slds-table .slds-th__action {
+    height: 5rem;
+    border-bottom: 1px solid rgb(206 206 206);
+}
+
+.wrapped-header-datatable .slds-table .slds-line-height {
+    height: 80rem;
+}

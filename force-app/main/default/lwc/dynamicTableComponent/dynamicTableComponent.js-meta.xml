@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata" fqn="RelatedList">
+    <apiVersion>49.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__RecordPage</target>
+        <target>lightning__AppPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage,lightning__AppPage">
+            <property name="objectName" required="true" type="String" label="Object Name" description="Enter the object name"/>
+            <property name="childRelFieldName" required="true" type="String" label="Relationship field API Name (on child)" description="Relationship field API Name (on child)"/>
+            <property name="parentRelFieldName" required="true" type="String" label="Relationship field API Name (on parent)" description="Relationship field API Name (on parent)"/>
+            <property name="filterCondition" type="String" label="Filter Criteria (Except for Parent field Id filter)" description="Filter Criteria (Except for Parent field Id filter)"/>
+            <property name="inlineEdit" type="Boolean" label="Allow Inline Edit?" description="Allow Inline Edit?" default="false"/>
+            <property name="fieldSetName" required="true" type="String" label="Field Set API Name" description="Enter API Name for the fieldSet"/>
+            <property name="showStandardView" type="Boolean" label="Show View - Row Action" description="Show View - Row Action"/>
+            <property name="showStandardEdit" type="Boolean" label="Show Edit - Row Action" description="Show Edit - Row Action"/>
+            <property name="showStandardDelete" type="Boolean" label="Show Delete - Row Action" description="Show Delete - Row Action"/>
+            <property name="numofrecords" type="Integer" label="Number of records (per page)" description="Number of records (per page)"/>
+            <property name="actionFieldSetName" type="String" label="New Action Field Set API Name" description="While Performing New Action, these fieldset will determine the fields to be shown."/>
+            <property name="actionFieldSetNameEdit" type="String" label="Edit Action Field Set API Name" description="While Performing Edit Action, these fieldset will determine the fields to be shown." />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -1,0 +1,19 @@
+<template>
+    <lightning-record-edit-form
+    object-api-name={objectApiName}
+    record-id={recordId}
+    onsuccess={handleSuccess}
+    onsubmit={handleSubmit}
+    onerror={handleError}
+    >
+        <lightning-card>
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                <lightning-input-field field-name="Comments__c" value={comments} required></lightning-input-field>
+            </div>
+        </lightning-card>
+        <div class="slds-align_absolute-center slds-p-around_medium">
+            <lightning-button class="slds-p-around_medium" variant="brand" type="submit" name="approve" label="Approve" onclick={handleApprove} data-id="approve"></lightning-button>
+            <lightning-button class="slds-p-around_medium" variant="destructive" type="submit" name="reject" label="Reject" onclick={handleReject} data-id="reject"></lightning-button>
+        </div>
+    </lightning-record-edit-form>
+</template>

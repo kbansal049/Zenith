@@ -1,0 +1,46 @@
+.container{
+   /* background-image: url(`/resource/zScalarResources/zScalarResources/images/zenith_Banner.png`); */
+    height: 240px!important;
+}
+.brandingHeader{
+    margin-top: 40px;
+    font-weight: bold;
+    font-size: 22px;
+    color: #fff;
+}
+.brandingText{
+    font-size: 16px;
+    color: #fff;
+    margin-top: 5px;
+}
+
+.inputDiv{
+    margin-top: 5px;
+}
+.inputBox{
+    margin-left: 12%;
+    margin-right: 12%;
+}
+.btnDiv{
+    margin-top: 18px;
+    position: relative;
+    left: -55px;
+}
+lightning-input{
+    --slds-c-input-radius-border: 3rem;
+}
+lightning-button{
+    --slds-c-button-radius-border: 3rem;
+    --slds-c-button-color-border: #fff;
+    --lwc-buttonColorBorderPrimary: #fff;
+    --slds-c-button-color-background-hover: #fff;
+    --lwc-colorBackgroundButtonDefaultHover: #fff;
+    --slds-c-button-shadow-focus: #fff;
+}
+@media screen and (min-width: 1500px){
+    .btnDiv{
+        margin-top: 18px;
+        position: relative;
+        left: -110px;
+    }
+}

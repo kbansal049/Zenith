@@ -1,0 +1,17 @@
+<template>
+    <div class="slds-p-around_x-small lgc-bg">
+        <template if:true={showErrorMessage}>
+            <div class="slds-theme_error" style="margin-bottom:5px;">
+                {errormsg}
+            </div>
+        </template>
+        
+        <lightning-input label="Add or remove collaborators to this meeting. Please provide emails (semi-colon separated)" field-level-help="Provide emails (semi-colon separated) and press enter key to add to the email list" type="text" placeholder="Provide emails (semi-colon separated) and press enter key to add to the email list" onkeypress={handleEnterPress}></lightning-input>
+        <br/>
+        <template for:each={emailAddressList} for:item="email">
+            <lightning-pill key={email} id={email} class="test" data-item={email} label={email} onremove={handlePillRemove}>
+                <lightning-avatar fallback-icon-name="standard:user" variant="circle"></lightning-avatar>
+            </lightning-pill>&nbsp;
+        </template>
+    </div>
+</template>

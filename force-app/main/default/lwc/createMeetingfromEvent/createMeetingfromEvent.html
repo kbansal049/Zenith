@@ -1,0 +1,12 @@
+<template>
+    <template if:true={loading}>
+        <div class="slds-spinner_container">
+            <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+        </div>
+    </template>
+    <template if:true={errmsg}>
+        <div class="slds-box slds-theme_error" style="margin-bottom:5px;">
+            <lightning-formatted-rich-text value={errmsg}></lightning-formatted-rich-text>
+        </div>
+    </template>
+</template>

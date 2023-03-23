@@ -1,0 +1,6 @@
+<aura:component implements="lightning:actionOverride,force:hasRecordId,force:hasSObjectName,lightning:isUrlAddressable">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="parentId" type="String"/>
+    <aura:attribute name="parentType" type="String"/>
+    <c:tamEngagementCmp aura:id="childLwcCompId" recordId="{!v.recordId}" parentId="{!v.parentId}" parentType="{!v.parentType}"></c:tamEngagementCmp>
+</aura:component>

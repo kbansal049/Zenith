@@ -1,0 +1,87 @@
+<!-- PartnerFundClaimVFEmailCmp -->
+<apex:component controller="PartnerFundClaimVFEmailCmpController" access="global">
+    <style type="text/css">
+        .dataPadding{
+            padding: 2px;
+        }
+        .fontStyle{
+            color: #555555;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 18px;
+        }
+		.fontStyleWithBold{
+        	color: #555555;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 18px;
+			font-weight: bold;
+		}        
+    </style>
+    
+    <apex:attribute name="partnerFundClaimIdValue" type="String" description="This is the Id of the Partner Claim Record" 
+                    assignTo="{!partnerFundClaimId}" access="global" />
+    
+    <p class="fontStyleWithBold">
+        Partner Fund Request Information:
+    </p>
+    <apex:repeat value="{!fundClaimRecords}" var="claimRecord" id="fundClaimTable">              
+        <div class="fontStyle">
+            <ul class="dataPadding">
+                Partner Name : {!claimRecord.Request.Partner_Account__r.Name}
+            </ul>
+            <ul class="dataPadding">
+                Contact Name : {!claimRecord.Request.Partner_Contact__c}
+            </ul>
+            <ul class="dataPadding">
+                Contact Email Address : {!claimRecord.Request.Partner_Contact_Email__c}
+            </ul>
+            <ul class="dataPadding">
+                Contact Phone : {!claimRecord.Request.Partner_Contact_Phone__c}
+            </ul>
+            
+            <p class="fontStyleWithBold">
+                Activity Information:
+            </p>
+            
+            <ul class="dataPadding">
+                Activity Category : {!claimRecord.Request.Category__c}
+            </ul>
+            <ul class="dataPadding">
+                Activity Sub-Category : {!claimRecord.Request.Sub_Category__c}
+            </ul>
+            <ul class="dataPadding">
+                Activity Start Date : {!claimRecord.Request.Start_Date__c}
+            </ul>
+            <ul class="dataPadding">
+                Activity End Date : {!claimRecord.Request.End_Date__c}
+            </ul>
+            <ul class="dataPadding">
+                Activity Location : {!claimRecord.Request.Activity_Location__c}
+            </ul>
+            <ul class="dataPadding">
+                Estimated # of Attendees : {!claimRecord.Request.Estimated_of_Attendees__c}
+            </ul>
+            <ul class="dataPadding">
+                Estimated ROI : {!claimRecord.Request.Estimated_ROI__c}
+            </ul>
+            <ul class="dataPadding">
+                Amount Requested : {!claimRecord.Request.RequestedAmount}
+            </ul>
+            <ul class="dataPadding">
+                Total Activity Cost :  {!claimRecord.Request.Total_Activity_Cost__c}
+            </ul>
+            <ul class="dataPadding">
+                Lead Follow Up :  {!claimRecord.Request.Lead_Follow_Up__c}
+            </ul>
+            <ul class="dataPadding">
+                Target Audience : {!claimRecord.Request.Target_Audience__c}
+            </ul>
+            <ul class="dataPadding">
+                Zscaler Solution Focus : {!claimRecord.Request.Zscaler_Focus_Solution__c}
+            </ul>            
+        </div>        
+    </apex:repeat>
+</apex:component>

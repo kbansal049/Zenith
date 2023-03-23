@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StaticResource xmlns="http://soap.sforce.com/2006/04/metadata">
+    <cacheControl>Public</cacheControl>
+    <contentType>image/gif</contentType>
+    <description>Full Circle Field. Displayed on leads and contacts if an additional campaign is required in order to engage with the record.</description>
+</StaticResource>

@@ -1,0 +1,19 @@
+<apex:component controller="GetFeedItemsofCase" access="global">
+    <apex:attribute type="String" name="caseId" assignTo="{!equipmentRequestRecordId}" description="Case Id"/>
+    	<p>Hi {!ER.Case_Owner_Manager_Name__c},</p>
+        <p>Please find below details:</p>
+        <p>
+        Case Owner Name: {!ER.Owner.Name}<br/>   
+        Customer Name: {!ER.Contact.Name}<br/>      
+        Case Type: {!ER.Case_Type__c}<br/>
+        Priority: {!ER.Priority}<br/>
+        Case#: <a href="{!url}/{!ER.Id}">{!ER.CaseNumber}</a><br/>
+        </p>        
+        <br/>
+        <strong>Last Customer's Comment:</strong>
+        <apex:outputText escape="false"  value="{!Casecomment}"/>
+        <br/>
+        <p>Thanks</p>
+        <p>Zscaler Customer Support</p>
+            
+</apex:component>

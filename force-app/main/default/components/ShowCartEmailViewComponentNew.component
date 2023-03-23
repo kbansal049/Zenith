@@ -1,0 +1,424 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 09-20-2022
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<apex:component access="global" controller="ShowCartItemsEmailController">
+    <style>
+        .evencss {
+            background-color: #f0f0f0;
+        }
+
+        .oddcss {
+            background-color: #ffffff;
+        }
+
+        .evenCss,
+        .oddCss td {
+            border-right: 1px solid black;
+        }
+
+        .evenCss,
+        .oddCss td:last-child {
+            border-right: 0px;
+        }
+
+        .yearWiseSplitList .last,
+        .yearWiseSplitList .last {
+            font-weight: bold;
+        }
+
+        .pgSecHeaderBlue .pbSubheader {
+            background-color: #009CDA!important;
+        }
+
+        .pgSecHeaderBrown .pbSubheader {
+            background-color: #a55647!important;
+        }
+       
+        .pgSecHeaderBrown .pbSubsection, .pgSecHeaderBlue .pbSubsection, .instBase .pbSubsection{
+            overflow-x: scroll;
+        }
+
+        .table-outer {
+            overflow-x: scroll;
+            max-width: 1465px!important;
+        }
+        
+        body .bPageBlock {
+            width: 1500px !important;
+        }
+        .pgSecHeaderBrown .pbSubsection, .pgSecHeaderBlue .pbSubsection, .instBase .pbSubsection{
+            overflow-x: unset;
+        }
+        
+        .activeTab {background-color: #236FBD; color:white; background-image:none}
+        .inactiveTab { background-color: lightgrey; color:black; background-image:none}
+
+        .alignTextRight{
+            text-align: right;
+        }
+        .alignTextCenter{
+            text-align: center;
+        }
+        .testWidth{
+            width:40%;
+        }
+
+    </style>
+          
+    <!-- Attributes -->
+    <apex:attribute name="InputProposal" description="This field is used to display list of Proposal products" type="string" assignTo="{!quoteId}" />
+    <apex:attribute name="InputInstanceURL" description="This field is used to get instance URL" type="string" assignTo="{!InstanceURL}" />
+    <apex:attribute name="InputApprovalRequest" description="This field is used to get Approval Request" type="ID" assignTo="{!ApprovalRequestId}" />
+    <apex:attribute name="InputApproverId" description="This field is used for Approval Request" type="ID" assignTo="{!ApproverId}" />
+    <apex:attribute name="InputIsAssignment" description="This field is used for Approval Request" type="Boolean" assignTo="{!IsAssignment}" />
+    <apex:attribute name="InputIsApproved" description="This field is used for Approval Request" type="Boolean" assignTo="{!IsApproved}" />
+    <apex:attribute name="InputIsApproveOrReject" description="This field is used for Approval Request" type="Boolean" assignTo="{!IsApproveOrReject}" />
+    <apex:attribute name="ShowApprovalSection" description="This field is used for Approval Request" type="Boolean" assignTo="{!IsShowApprovalSection}" />
+
+    <!-- Approvals Section on Email Template -->
+    <apex:outputPanel rendered="true">
+        <apex:outputPanel rendered="{!IsAssignment}">
+            <div style="font-size: 1.8em; text-align: center; font-weight: bold;"> Quote for : {!accountName} </div>
+            <br/>
+            <br/>
+            <table style="border: 1px solid black; border-collapse: collapse; width:100%" cellspacing="0" cellpadding="0">
+                <tbody>
+                    <tr style="background-color: #17770a; text-align: center; color: white; background-color: black;">
+                        <td>
+                            <b>To Approve : Reply with "Approved" or "Approve" or "Yes". To Reject : Reply with "Rejected" or "Reject"
+                                or "No". You can also add your comments in the next line.</b>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <br/>
+            <br/>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!IsApproved}">
+            <table style="border: 1px solid black; border-collapse: collapse; width:100%" cellspacing="0" cellpadding="0">
+                <tbody>
+                    <tr style="background-color: #17770a; text-align: center; color: white">
+                        <td>Your quote is now Approved!!!!</td>
+                    </tr>
+                </tbody>
+                
+            </table>
+            <br/>
+            <br/>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!AND(NOT(IsApproved),NOT(IsAssignment), NOT(IsApproveOrReject))}">
+            <table style="border: 1px solid black; border-collapse: collapse; width:100%" cellspacing="0" cellpadding="0">
+                <tbody>
+                    <tr>
+                        <td style="background-color: #8e0a05; text-align: center; color: white">This quote has been rejected by
+                        <b>{!RejectedBy}</b> with following reason</td>
+                    </tr>
+                    <tr>
+                        <td>{!RejectionReason}</td>
+                        
+                    </tr>
+                </tbody>
+            </table>
+            <br/>
+            <br/>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!AND(NOT(IsAssignment), NOT(IsApproveOrReject))}">
+            <b>This quote has the following exceptions for Approval:</b>
+            <br/>
+            <apex:repeat value="{!ApprovalExceptionsList}" var="execep">
+                 - {!execep}
+                <br/>
+            </apex:repeat>
+            <br/>
+            <br/>
+        </apex:outputPanel>   
+        <apex:outputPanel rendered="{!OR(IsAssignment, IsApproveOrReject)}">
+            <b>You are reviewing the following exceptions:</b>
+            <br/>
+            <apex:repeat value="{!MyApprovalExceptionsList}" var="myexe">
+               - {!myexe}
+                <br/>
+            </apex:repeat>
+            <br/>
+            <br/>
+        </apex:outputPanel>
+        
+        <apex:outputPanel rendered="{!OR(IsAssignment, IsApproveOrReject)}">        
+            <b>The other exceptions on this quote are:</b>
+            <br/>
+            <apex:repeat value="{!otherApprovalExceptionsList}" var="otherexe">
+                 - {!otherexe}
+                <br/>
+            </apex:repeat>
+            <br/>
+            <br/>
+        </apex:outputPanel>
+       
+        <b>Approval Request Reason: </b>
+        <br />
+        <!--apex:outputPanel rendered="{!approvalReason != null}">
+                <apex:outputText value="{!HTMLENCODE(approvalReason)}" escape="false"/>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!approvalReason == null}">
+            - Not Provided.
+        </apex:outputPanel-->
+        
+        <table style="width: 50%">
+            <tr>
+                <apex:outputPanel rendered="{!approvalReason != null}">
+                    <td>
+                        <apex:outputText value="{!HTMLENCODE(approvalReason)}" style="white-space:none;" escape="false"/> 
+                    </td>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!approvalReason == null}">
+                    <td>
+                       - Not Provided.
+                    </td>
+                </apex:outputPanel>
+            </tr>
+        </table>
+        <br /><br />
+        
+        <!-- Previous Approver Details -->
+        <apex:outputPanel >
+        <div>
+            <b>Previous Approvers:</b>
+            <br/>
+            <apex:outputPanel rendered="{!approvalList.size > 0}">
+            <br />
+            <table border="1" style="border-collapse: collapse; width: 50%">
+                <tr style="font-weight:bold; text-align: center; background-color: #e3b3a9">
+                    <td>Step Number</td>
+                    <td>Rule Name</td>
+                    <td>Approved By</td>
+                    <td>Comments</td>
+                </tr> 
+                
+                <apex:repeat value="{!approvalList}" var="objApprovalList">
+                <tr>
+                    <td style="text-align: center;">
+                        <apex:outputText value="{!objApprovalList.sbaa__ApprovalStep__c}" /> 
+                    </td>
+                    <td>
+                        <apex:outputText value="{!objApprovalList.Approval_Rule_Name__c}" />
+                    </td>
+                    <td>
+                        <apex:outputText value="{!objApprovalList.sbaa__ApprovedBy__r.Name}" /> 
+                    </td>
+                    <td>
+                        <apex:outputText value="{!objApprovalList.sbaa__CommentsLong__c}" /> 
+                    </td>
+                </tr>  
+                </apex:repeat>
+            
+            </table> 
+            </apex:outputPanel> 
+            <apex:outputPanel rendered="{!approvalList.size == 0}">
+                - Not yet approved by another approver.
+            </apex:outputPanel>
+        </div>    
+        </apex:outputPanel>
+        <!-- Ends -->
+        <br/>
+        
+        <apex:outputPanel rendered="{!isSpecialTermAvailable}">        
+            <b>Special Terms:</b>
+            <br/>
+                {!specialTermVal}
+            <br/>
+            <br/>
+        </apex:outputPanel>
+        
+    </apex:outputPanel> 
+    <br/>
+    
+        <apex:outputPanel rendered="{!isTraditional}">
+            <h3 style="color: red; font-weight: bold;"> This Quote is built using {!$Label.Partner_Program_Traditional} Program and {!priceListName}.</h3>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!isSummitFederal}">
+            <h3 style="color: red; font-weight: bold;"> This Quote is built using {!$Label.Partner_Program_Summit_Federal} Program and {!priceListName}.</h3>
+        </apex:outputPanel>   
+        <apex:outputPanel rendered="{!isSummitDiscount}">
+            <h3 style="color: red; font-weight: bold;"> This Quote is built using {!$Label.Partner_Program_Summit_Discount} Program and {!priceListName}.</h3>    
+        </apex:outputPanel>
+        <!-- <apex:outputPanel rendered="{!isSummitDistribution}">
+            <h3 style="color: red; font-weight: bold;"> This Quote is built using {!$Label.Partner_Program_Summit_Distribution} Program and {!priceListName}.</h3>    
+        </apex:outputPanel> -->
+        <br /><br />
+        <apex:outputPanel rendered="{!isSummitDiscount}">
+            <h3 style="color: blue; font-weight: bold;"> Show cart details: 
+                <a href="{!url}/apex/ShowCartDetails?id={!QuoteList[0].Id}" style="font-weight: bold; color: #0047b3;">
+                <button style="font-weight: bold; color: #0047b3;">Show Cart</button>
+                </a>
+            </h3>    
+        </apex:outputPanel>
+        <!-- Quote Header Table on Details Tab --> 
+        <table style=" border-collapse: collapse; width:50%; border:1px solid black;" cellspacing="0" cellpadding="0">
+        <apex:repeat value="{!QuoteList}" var="objQuote">
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Account Name </td>
+                <td style="border: 1px solid black;">&nbsp;{!objQuote.SBQQ__Account__r.Name}</td>
+            </tr>
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Opportunity Owner </td>
+                <td style="border: 1px solid black;">&nbsp;{!objQuote.Opportunity_Owner__c}</td>
+            </tr>
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Type </td>
+                <td style="border: 1px solid black;">&nbsp;{!recordtypeName}</td>
+            </tr>
+            <apex:variable var="v" value="" rendered="{!NOT(ISBLANK(objQuote.Cloud_Type__c))}">
+                <tr style="border: 1px solid black; height: 20px;">
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Cloud Type</td>
+                    <td style="border: 1px solid black;">&nbsp;{!objQuote.Cloud_Type__c}</td>
+                </tr>
+            </apex:variable>
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Opportunity</td>
+                <td style="border: 1px solid black;">
+                    &nbsp;<a href="{!url}/{!objQuote.SBQQ__Opportunity2__r.Id}" style="font-weight: bold; color: #0047b3;">
+                        <apex:outputField value="{!objQuote.SBQQ__Opportunity2__r.Name}" />
+                    </a>
+                </td>
+            </tr>
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Quote</td>
+                <td style="border: 1px solid black;">
+                    &nbsp;<a href="{!url}/{!objQuote.Id}" style="font-weight: bold; color: #0047b3;">
+                        <apex:outputField value="{!objQuote.Name}" />
+                    </a>
+                </td>
+            </tr>
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Start Date</td>
+                <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!objQuote.SBQQ__StartDate__c}" /></td>
+            </tr>
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;End Date</td>
+                <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!objQuote.SBQQ__EndDate__c}" /></td>
+            </tr>
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Quote ACV</td>
+                <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!objQuote.ACV_New__c}" /></td>
+            </tr>
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;TCV</td>
+                <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!objQuote.TCV__c}" /></td>
+            </tr>
+            
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Net Variance</td>
+                <td style="border: 1px solid black;">&nbsp;
+                    <apex:outputPanel rendered="{!IF(AND(objQuote.Net_variance_weighted_avg__c != null, objQuote.Net_variance_weighted_avg__c < 0), true,false)}" style="color: red;">
+                        <apex:outputField value="{!objQuote.Net_variance_weighted_avg__c}" />
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!IF(AND(objQuote.Net_variance_weighted_avg__c != null, objQuote.Net_variance_weighted_avg__c >= 0), true,false)}" style="color: green;">
+                        <apex:outputField value="{!objQuote.Net_variance_weighted_avg__c}" />
+                    </apex:outputPanel>
+                </td>
+            </tr>
+            
+            <!-- Newly added as per updated code in QA sandbox -->
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Reseller</td>
+                <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!objQuote.SBQQ__Partner__r.Name}" /></td>
+            </tr>
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:20%;">&nbsp;Distributor</td>
+                <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!objQuote.Bill_to__r.Name}" /></td>
+            </tr>
+            <!-- Ends -->
+
+            <apex:outputPanel rendered="{!isRenewal}">
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Previous MRR</td>
+                <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!objQuote.Previous_MRR_Approval__c}" /></td>
+            </tr>
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Current MRR</td>
+                <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!objQuote.Current_Quote_MRR__c}" /></td>
+            </tr>
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;% Change</td>
+                <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!objQuote.Renewal_MRR_Change_Approval__c}" /></td>
+            </tr>
+            <tr style="border: 1px solid black; height: 20px;">
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Renewal ACV</td>
+                <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!objQuote.Renewal_ACV__c}" /></td>
+            </tr>    
+            </apex:outputPanel>
+            
+            <apex:outputPanel rendered="{!objQuote.Rep_Comp_Impacted__c == 'Yes'}">  
+            <tr style="border: 1px solid black; height: 20px;"> 
+                <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Message to SE</td>   
+                <td style="border: 1px solid black; color: red;">&nbsp;{!$Label.Message_To_SE}</td> 
+            </tr>   
+            </apex:outputPanel>
+
+            <!-- Adding Quote Table from Summary Tab -->
+            <apex:outputPanel rendered="{!isTraditional || isSummitFederal}">
+                <apex:outputPanel rendered="{!isFy21VolumeTier}">
+                <tr style="border: 1px solid black; height: 20px;">
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Total Subscription Discount</td>
+                    <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!objQuote.Total_Discount_Without_Support__c}"/></td>
+                </tr>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!isFy21SingleTier}">
+                <tr style="border: 1px solid black; height: 20px;">
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Net Discount</td>
+                    <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!objQuote.Total_PUPY_Discount__c}" /></td>
+                </tr>
+                </apex:outputPanel>
+            </apex:outputPanel>
+
+            <!-- <apex:outputPanel rendered="{!(isSummitDiscount || isSummitDistribution)}"> -->
+            <apex:outputPanel rendered="{!isSummitDiscount}">
+                <tr style="border: 1px solid black; height: 20px;">
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%; padding-left:2px; height: 30px;">Total Subscription Discount Without Support</td>
+                    <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!objQuote.Total_Discount_Without_Support__c}"/></td>
+                </tr>
+                <tr style="border: 1px solid black; height: 20px;">
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Partner Pricing type</td>
+                    <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!objQuote.Partner_Program__c}" /></td>
+                </tr>
+            </apex:outputPanel>
+            <!-- End for Quote Table from Summary Tab -->
+
+            <!-- Merge PPU Table with header Table -->
+            <apex:outputPanel rendered="{!IF(isRenewal && $Label.Show_PPU_Table == 'Yes', true, false)}">
+                <tr style="border: 1px solid black; height: 20px;">
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;PPU/Month</td>
+                    <td style="border: 1px solid black;">&nbsp;
+                        <apex:outputText value="${0, number, ###,###.##}">
+                            <apex:param value="{!IF(AND(NOT(ISNULL(objQuote.TCV__c)), NOT(ISNULL(objQuote.Number_of_Users__c)), objQuote.Number_of_Users__c > 0), (objQuote.TCV__c / objQuote.SBQQ__SubscriptionTerm__c) / objQuote.Number_of_Users__c, 0.0)}"/>
+                        </apex:outputText>
+                    </td>
+                </tr>
+                <tr style="border: 1px solid black; height: 20px;">
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Payment Term</td>
+                    <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!objQuote.SBQQ__PaymentTerms__c}" /></td>
+                </tr>
+                <tr style="border: 1px solid black; height: 20px;">
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Billing Frequency</td>
+                    <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!objQuote.SBQQ__BillingFrequency__c}" /></td>
+                </tr>
+                <tr style="border: 1px solid black; height: 20px;">
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Customer Sentiment</td>
+                    <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!objQuote.SBQQ__Account__r.Customer_Sentiment__c}" /></td>
+                </tr>
+                <tr style="border: 1px solid black; height: 20px;">
+                    <td style="border: 1px solid black; color:#FFFFFF; font-weight:bold; background-color: #0b6ef0; width:25%;">&nbsp;Customer Success Stage</td>
+                    <td style="border: 1px solid black;">&nbsp;<apex:outputField value="{!objQuote.SBQQ__Account__r.Success_Stage__c}" /></td>
+                </tr>
+            </apex:outputPanel>
+            <!-- End of PPU Table -->
+        
+        </apex:repeat>
+        </table>
+        <br /><br />  
+    
+</apex:component>

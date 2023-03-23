@@ -1,0 +1,10 @@
+.provReqSpinner{
+    position: relative;
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+	margin-left: 43%;
+}
+.custCenter{
+	text-align: center;
+}

@@ -1,0 +1,30 @@
+<template>
+    <lightning-card>
+        <div class="slds-var-p-around_small">
+            <div>
+                <span class="slds-form-element__label slds-text-title_bold">
+                    Total Records: {totalNumberOfRows}</span>
+            </div>
+            <div>
+                <span class="slds-form-element__label slds-text-title_bold">
+                    Solution usage type: {totalSolutionRecords}</span>
+            </div>
+            <div>
+                <span class="slds-form-element__label slds-text-title_bold">
+                    Integration usage type: {totalIntegrationRecords}</span>
+            </div>
+            <div class="slds-box" style="height: 400px;">
+
+                <!-- <lightning-datatable key-field="Id" data={data} columns={columns} load-more-offset="20"
+                    onloadmore={handleLoadMore} enable-infinite-loading hide-checkbox-column show-row-number-column>
+                </lightning-datatable> -->
+
+                <c-custom-data-table key-field="Id" data={data} columns={columns} load-more-offset="20"
+                    onloadmore={handleLoadMore} enable-infinite-loading hide-checkbox-column show-row-number-column>
+                </c-custom-data-table>
+
+            </div>
+            {loadMoreStatus}
+        </div>
+    </lightning-card>
+</template>

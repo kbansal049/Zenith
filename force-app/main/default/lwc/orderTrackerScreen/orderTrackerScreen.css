@@ -1,0 +1,52 @@
+.previous {
+  /* background-color: #f1f1f1;
+    color: black; */
+  margin-left: 10px;
+  font-size: 20px;
+}
+
+.next {
+  /* background-color: #4CAF50; */
+  /* color: white; */
+  margin-left: 10px;
+  font-size: 20px;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.comboBox:hover {
+  cursor: pointer;
+}
+
+.crop {
+  white-space: nowrap;
+  width: 12em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 400px;
+}
+
+.newMail {
+  --sds-c-icon-color-foreground-default: #113986;
+}
+
+.modalBody {
+  position: relative;
+}
+.tableFixHead {
+  overflow: scroll;
+  height: 525px;
+}
+
+.tableFixHead table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.tableFixHead th {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+}

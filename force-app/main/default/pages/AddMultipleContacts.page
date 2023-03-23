@@ -1,0 +1,26 @@
+<apex:page standardController="Security_Requests__c">
+    <apex:includeLightning />
+    <!--<style>
+    .minHeight{
+        min-height: 35.5rem;
+    }
+   </style>-->
+    <div id="lightning" class="minHeight"/>
+    
+    <script>
+    	var recordId = '{!$CurrentPage.parameters.Id}';
+        var mode = '{!$CurrentPage.parameters.mode}';
+        console.log('Mode>>> ',mode);
+        $Lightning.use("c:MultiSelectContactApp", function() {
+          $Lightning.createComponent("c:reUsableMultiSelectLookup",
+                                     { recordId: recordId,
+                                     enableEdit : mode},
+              "lightning",
+              function(cmp) {
+                console.log("lwc was created");
+                // do some stuff
+              }
+          );
+        });
+    </script>
+</apex:page>

@@ -1,0 +1,149 @@
+<template>
+    <!--<template for:each={caseData} for:item="cse">-->
+        <div class="zs-case-details">
+            <div class="zs-case-info-comp">
+                
+                <lightning-card>
+                    <h3 slot="title">
+                        <lightning-icon icon-name="action:info" size="x-small"></lightning-icon> &nbsp;&nbsp;
+                        Case Information
+                    </h3>
+                    <div class="slds-p-horizontal_small">
+
+
+                        <div class="slds-grid slds-gutters" style="margin-bottom: 5px;">
+                            
+                            <div class="slds-col slds-size_6-of-12 field-label">
+                                Case Number
+                            </div>
+                            <div class="slds-col slds-size_6-of-12 field-label">
+                                Case Owner
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters" style="margin-bottom: 25px;">
+                            
+                            <div class="slds-col slds-size_6-of-12">
+                                {caseNumber}
+                            </div>
+                            <div class="slds-col slds-size_6-of-12">
+                                {caseOwnerName}
+                            </div>
+                        </div>
+
+                        <div class="slds-grid slds-gutters" style="margin-bottom: 5px;">
+                            <div class="slds-col slds-size_6-of-12 field-label">
+                                Opened
+                            </div>
+                            <div class="slds-col slds-size_6-of-12 field-label">
+                                Last Activity
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters" style="margin-bottom: 25px;">
+                            <div class="slds-col slds-size_6-of-12">
+                                <lightning-formatted-date-time value={createdDate} year="numeric" month="numeric"
+                                    day="numeric" hour="2-digit" minute="2-digit" time-zone="America/New_York">
+                                </lightning-formatted-date-time>
+                            </div>
+                            <div class="slds-col slds-size_6-of-12" style="margin-bottom: 5px;">
+                                <lightning-formatted-date-time value={lastModifiedDate} year="numeric"
+                                    month="numeric" day="numeric" hour="2-digit" minute="2-digit"
+                                    time-zone="America/New_York">
+                                </lightning-formatted-date-time>
+                            </div>
+                        </div>
+
+                        <div class="slds-grid slds-gutters" style="margin-bottom: 5px;">
+                            
+                            <div class="slds-col slds-size_6-of-12 field-label">
+                                Priority
+                            </div>
+                            <div class="slds-col slds-size_6-of-12 field-label">
+                                Type
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters" style="margin-bottom: 25px;">
+                            <div class="slds-col slds-size_6-of-12">
+                                {priority}
+                            </div>
+                            <!--<template if:false={isDeception}>
+                                <div class="slds-col slds-size_6-of-12">
+                                    {caseData.Priority}
+                                    
+                                </div>
+                            </template>
+                            <template if:true={isDeception}>
+                                <div class="slds-col slds-size_6-of-12">
+                                    Dhole- {caseData.Priority_Deception__c}
+                                    
+                                </div>
+                            </template>-->
+                            
+                            <div class="slds-col slds-size_6-of-12">
+                                {caseType}
+                            </div>
+                        </div>
+
+                        <div class="slds-grid slds-gutters" style="margin-bottom: 5px;">
+                            
+                            
+                            <div class="slds-col slds-size_6-of-12 field-label">
+                                Product
+                            </div>
+                            
+                            <div class="slds-col slds-size_6-of-12 field-label">
+                                Requester
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters" style="margin-bottom: 25px;">
+                            
+                            
+                            <div class="slds-col slds-size_6-of-12">
+                                {product}
+                            </div>
+                           
+                            <div class="slds-col slds-size_6-of-12">
+                                <template if:true={isContactPresent}>
+                                    {contactName}
+                                </template>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters" style="margin-bottom: 5px;">
+                            <div class="slds-col slds-size_6-of-12 field-label">
+                                Category
+                            </div>
+                            <div class="slds-col slds-size_6-of-12 field-label">
+                                Sub-Category
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters" style="margin-bottom: 25px;">
+                            
+                            <div class="slds-col slds-size_6-of-12">
+                                {category}
+                            </div>
+                            <div class="slds-col slds-size_6-of-12">
+                                {subCategory}
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters" style="margin-bottom: 5px;">
+                            <div class="slds-col slds-size_6-of-12 field-label">
+                                Preferred Contact Number
+                            </div>
+                            <div class="slds-col slds-size_6-of-12 field-label">
+                                Preferred Contact Time Zone
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters" style="margin-bottom: 5px;">
+                            
+                            <div class="slds-col slds-size_6-of-12">
+                                {preferredContact}
+                            </div>
+                            <div class="slds-col slds-size_6-of-12">
+                                {preferredTimezone}
+                            </div>
+                        </div>
+                    </div>
+                </lightning-card>
+            </div>
+        </div>
+    <!--</template>-->
+</template>

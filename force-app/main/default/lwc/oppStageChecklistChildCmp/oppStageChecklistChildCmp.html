@@ -1,0 +1,278 @@
+<template>
+   <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-02" aria-modal="true" class="slds-modal slds-fade-in-open slds-modal_medium" style="z-index:9999;">
+      <div class="slds-modal__container slds-is-relative" >
+         <lightning-record-edit-form id="recordViewForm" record-id={recordId} record-type-id={recordTypeId} object-api-name="Opportunity"  mode="edit" onload={handleOnLoad} onsubmit={handleSubmit} onsuccess={handleSuccess} >
+            <header class="slds-modal__header">
+               <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                  title="Close" onclick={closeModal}>
+                  <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                     size="small"></lightning-icon>
+                  <span class="slds-assistive-text">Close</span>
+               </button>
+               <!-- <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">{fieldLabel}</h2> -->
+               <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Validate Primary and Secondary Competitors</h2>
+            </header>
+            <!--IBA-1884-Start-->
+            <div class="slds-modal__content slds-is-relative slds-p-around_medium modalBody" id="modal-content-id-2" data-id="redDiv">
+            <!--IBA-1884-End-->
+               <template if:true={HasError}>
+                  <div class="slds-notify slds-notify_alert slds-alert_error" role="alert" >
+                     <span class="slds-assistive-text">error</span>
+                     <h2>{ErrorMsg}</h2>
+                  </div>
+               </template>
+               <lightning-messages></lightning-messages>
+               <template if:false={isNext}>
+                  <template if:true={isSpinnerLoading}>
+                     <lightning-spinner alternative-text="Loading" variant="brand" size="large">
+                     </lightning-spinner>
+                  </template>
+                  <template if:true={isCustomPicklist}>
+                     <div class="slds-p-around_medium">
+                        <lightning-input-field field-name="Solution__c" onchange={handleControlling}  required variant="label-stacked"> </lightning-input-field>
+                        <template if:true={biOptions.length}>
+                           <lightning-dual-listbox name="Buyer Initiative"
+                                 label="Buyer Initiative"
+                                 source-label="Available"
+                                 selected-label="Selected"
+                                 field-level-help="Buyer Initiative"
+                                 options={biOptions}
+                                 onchange={handleDependent} class="buyerCmp" value={buyerVal} required></lightning-dual-listbox>
+                        </template>
+                     </div>
+                  </template>
+                  <template if:true={isValidationStage}>
+                     <div class="slds-p-around_medium">
+                        <lightning-input-field field-name={fieldName} onchange={handleValidationStage} variant="label-inline" data-name={fieldName}> </lightning-input-field>
+                        <template if:true={fieldDependency}>
+                           <template for:each={validationDependencies} for:item="fld">
+                              <template if:true={fld.isFile}>
+                                 <template if:true={fld.secondFieldName}>
+                                    <div class="slds-grid" key={fld.fieldName}>
+                                       <div class="slds-p-horizontal_small slds-p-around_medium slds-col slds-size_1-of-2">
+                                          <lightning-file-upload name="fileUploader" label={fld.fieldLabel} onuploadfinished={handleUploadFinished}  file-field-name="Source_fileupload__c" file-field-value={fld.fieldLabel} class="fileUpload" data-name={fld.fieldName}  style="display:flex">
+                                          </lightning-file-upload>
+                                          <template if:true={fld.fileName}>
+                                             <span style="padding: 2px;" key={fld.fileId}>
+                                                <lightning-pill label={fld.fileName} data-id={fld.fileId} onremove={handleDelete} data-name={fld.fieldName}>
+                                                </lightning-pill>
+                                             </span>
+                                          </template>
+                                          <template for:each={fld.loadedFiles} for:item="file" for:index="index">
+                                             <span style="padding: 2px;" key={file.fileTitle}>
+                                                <lightning-pill label={file.fileTitle} data-id={index} onremove={handleRemove} data-name={fld.fieldName}>
+                                                </lightning-pill>
+                                             </span>
+                                          </template>
+                                       </div>
+                                       <div class="slds-col slds-size_1-of-2">
+                                          <lightning-input-field key={fld.secondFieldName} field-name={fld.secondFieldName} label={fld.secondFieldLabel}></lightning-input-field>
+                                       </div>
+                                    </div>
+                                    
+                                 </template>
+                                 <template if:false={fld.secondFieldName}>
+                                    <div class="slds-p-horizontal_small slds-p-around_medium" key={fld.fieldName}>
+                                       <lightning-file-upload name="fileUploader" label={fld.fieldLabel} onuploadfinished={handleUploadFinished}  file-field-name="Source_fileupload__c" file-field-value={fld.fieldLabel} class="fileUpload" data-name={fld.fieldName}  style="display:flex">
+                                       </lightning-file-upload>
+                                       <template if:true={fld.fileName}>
+                                          <span style="padding: 2px;" key={fld.fileId}>
+                                             <lightning-pill label={fld.fileName} data-id={fld.fileId} onremove={handleDelete} data-name={fld.fieldName}>
+                                             </lightning-pill>
+                                          </span>
+                                       </template>
+                                       <template for:each={fld.loadedFiles} for:item="file" for:index="index">
+                                          <span style="padding: 2px;" key={file.fileTitle}>
+                                             <lightning-pill label={file.fileTitle} data-id={index} onremove={handleRemove} data-name={fld.fieldName}>
+                                             </lightning-pill>
+                                          </span>
+                                       </template>
+                                    </div>
+                                 </template>
+                                 
+                              </template>
+                              <template if:false={fld.isFile}>
+                                 <template if:true={fld.secondFieldName}>
+                                    <div class="slds-grid" key={fld.fieldName}>
+                                       <div class="slds-p-horizontal_small slds-p-around_medium slds-col slds-size_1-of-2">
+                                          <template if:true={fld.isRequired}>
+                                             <lightning-input-field key={fld.fieldName} field-name={fld.fieldName} onchange={handleSubChange} variant="label-inline" class="subDependent" required label={fld.fieldLabel} data-name={fld.fieldName}></lightning-input-field>
+                                          </template>
+                                          <template if:false={fld.isRequired}>
+                                             <lightning-input-field key={fld.fieldName} field-name={fld.fieldName} onchange={handleSubChange} variant="label-inline" class="subDependent"  label={fld.fieldLabel} data-name={fld.fieldName}></lightning-input-field>
+                                          </template>
+                                       </div>
+                                       <div class="slds-col slds-size_1-of-2">
+                                          <lightning-input-field key={fld.secondFieldName} field-name={fld.secondFieldName} label={fld.secondFieldLabel}></lightning-input-field>
+                                       </div>
+                                    </div>
+                                    
+                                 </template>
+                                 <template if:false={fld.secondFieldName}>
+                                    <div class="slds-p-horizontal_small slds-p-around_medium" key={fld.fieldName}>
+                                       <template if:true={fld.isRequired}>
+                                          <lightning-input-field key={fld.fieldName} field-name={fld.fieldName} onchange={handleSubChange} variant="label-inline" class="subDependent" required label={fld.fieldLabel} data-name={fld.fieldName}></lightning-input-field>
+                                       </template>
+                                       <template if:false={fld.isRequired}>
+                                          <lightning-input-field key={fld.fieldName} field-name={fld.fieldName} onchange={handleSubChange} variant="label-inline" class="subDependent"  label={fld.fieldLabel} data-name={fld.fieldName}></lightning-input-field>
+                                       </template>
+                                    </div>
+                                 </template>
+                                 
+                              </template>
+                             
+                           </template>
+                        </template>
+                     </div>
+                  </template>
+                  <template if:true={isOtherType}>
+                     <div class="slds-p-around_medium">
+                        <template if:false={isCustomerDocs}>
+                           <lightning-input-field field-name={fieldName}  onchange={handleChange} variant="label-inline" data-name={fieldName} required> </lightning-input-field>
+                        </template>
+                        <template if:true={isCustomerDocs}>
+                           <lightning-input-field field-name={fieldName} value={fieldVal} onchange={handleChange} variant="label-inline" data-name={fieldName} required> </lightning-input-field>
+                        </template>
+                        
+                        <!--Other fields here-->
+                        <template if:true={fieldDependency}>
+                           <template for:each={fieldDependencies} for:item="fld">
+                              <template if:true={fld.isFile}>
+                                 <div class="slds-p-horizontal_small slds-p-around_medium" key={fld.fieldName}>
+                                    <lightning-file-upload name="fileUploader" label={fld.fieldLabel} onuploadfinished={handleUploadFinished}  file-field-name="Source_fileupload__c" file-field-value={fld.fieldLabel} class="fileUpload" data-name={fld.fieldName}>
+                                    </lightning-file-upload>
+                                    <template if:true={fileName}>
+                                       <span style="padding: 2px;" key={fileId}>
+                                          <lightning-pill label={fileName} data-id={fileId} onremove={handleDelete}>
+                                          </lightning-pill>
+                                       </span>
+                                    </template>
+                                    <template for:each={loadedFiles} for:item="file" for:index="index">
+                                       <span style="padding: 2px;" key={file.fileTitle}>
+                                          <lightning-pill label={file.fileTitle} data-id={index} onremove={handleRemove}>
+                                          </lightning-pill>
+                                       </span>
+                                    </template>
+                                 </div>
+                              </template>
+                              <template if:false={fld.isFile}>
+                                 <lightning-input-field key={fld.fieldName} field-name={fld.fieldName} onchange={handleSubChange} variant="label-inline" class="subDependent" required label={fld.fieldLabel} data-name={fld.fieldName}></lightning-input-field>
+                              </template>
+                              
+                           </template>
+                        </template>
+                     </div>
+                  </template>
+                  <template if:true={isClosed}>
+                     <div class="slds-p-around_medium">
+                        <!--Other fields here-->
+                        <lightning-input-field field-name={fieldName} disabled="true" value={stageVal} variant="label-inline"> </lightning-input-field>
+                        <lightning-combobox name="Sub Stage" label="Sub Stage" value={subStageValue} placeholder="Select Sub Stage" 
+                           options={subStageOptions} onchange={handleSubStageChange}  variant="label-inline"  required></lightning-combobox>
+                        
+                        <!-- <lightning-input-field field-name="Sub_Stage__c" value={subStageValue} variant="label-inline" onchange={handleSubStageChange} required> </lightning-input-field> -->
+                        <lightning-input-field field-name="How_competitive_was_the_deal__c" value={competitiveDeal} onchange={handleCompetitiveDealChange} variant="label-inline" required> </lightning-input-field>
+                        
+                        <template if:true={isShowCompetitors}>
+                           <lightning-input-field field-name="Primary_Competitor__c" value={pcVal} variant="label-inline" onchange={handlePrimaryCompetitor} required> </lightning-input-field>
+                           <lightning-input-field field-name="Other_Primary_competitor__c" value={otherPrimaryCompetitor} onchange={handleOtherPrimaryCompetitor} variant="label-inline" if:true={isShowPrimaryOther} required> </lightning-input-field>
+                           <lightning-input-field field-name="Secondary_Competitors__c" value={scVal} variant="label-inline" onchange={handleSecondaryCompetitor} required> </lightning-input-field>
+                           <lightning-input-field field-name="Other_Secondary_competitor__c" value={otherSecondaryCompetitor} variant="label-inline" onchange={handleOtherSecondaryCompetitor} if:true={isShowSecondaryOther} required> </lightning-input-field>
+                        </template>
+                        
+                        <lightning-input-field field-name="Validated_Solution_Tech_Partner__c" value={validatedSolutionTechPartner} variant="label-inline" onchange={handleTechPartnerChange} required> </lightning-input-field>
+                        <lightning-input-field field-name="Requires_signing_customer_documents__c" value={requiresSigningCustomerDocuments} variant="label-inline" onchange={handlerequiresSigningCustomerDocuments} required> </lightning-input-field>
+                        <lightning-input-field field-name="Reason_for_overage_loss__c" value={overageReason} variant="label-inline" if:true={showOverage} required onchange={handleOverageReasonChange}></lightning-input-field>
+                     </div>
+                  </template>
+                  <template if:true={isAutoClosed}>
+                     <div class="slds-p-around_medium">
+                        <!--Other fields here-->
+                        <lightning-input-field field-name={fieldName} disabled="true" value={stageVal} variant="label-inline"> </lightning-input-field>
+                        <lightning-input-field field-name="Sub_Stage__c" value={subStageValue} variant="label-inline"  disabled="true"> </lightning-input-field>
+                        <!--IBA-1884-Start-->
+                        <lightning-input-field field-name="Primary_Competitor__c" value={pcVal} variant="label-inline" onchange={handlePrimaryCompetitor} required> </lightning-input-field>
+                        <lightning-input-field field-name="Other_Primary_competitor__c" value={otherPrimaryCompetitor} onchange={handleOtherPrimaryCompetitor} variant="label-inline" if:true={isShowPrimaryOther} required> </lightning-input-field>
+                        <!--IBA-1884-End-->
+                        <lightning-combobox name="Lost Reason" label="Closed Lost Reason" value={reason} placeholder="Select Closed Lost Reason" 
+                           options={options} onchange={handleReasonChange}  variant="label-inline"  required></lightning-combobox>
+                        <template if:true={requireLostComment}>	
+                           <lightning-textarea value={closedLostComment} label="Closed Lost Comment" variant="label-inline" required onchange={handleClosedLostComment}> </lightning-textarea>	
+                        </template>	
+                        <template if:false={requireLostComment}>	
+                           <lightning-textarea value={closedLostComment} label="Closed Lost Comment" variant="label-inline" onchange={handleClosedLostComment}> </lightning-textarea>	
+                        </template>
+                        <lightning-input-field field-name="Reason_for_overage_loss__c" value={overageReason} variant="label-inline" if:true={showOverage} required onchange={handleOverageReasonChange}></lightning-input-field>
+                        <lightning-input-field field-name="Requires_signing_customer_documents__c" value={requiresSigningCustomerDocuments} variant="label-inline" onchange={handlerequiresSigningCustomerDocuments} required> </lightning-input-field>
+                     </div>
+                  </template>
+                  <template if:true={isTextArea}>
+                     <div class="slds-p-around_medium">
+                        <!--Other fields here-->
+                        <lightning-textarea name={fieldName} onchange={handleChange} value={textVal} label={fieldLabel} variant="label-inline" required> </lightning-textarea>
+                     </div>
+                  </template>
+                  <template if:true={isFile}>
+                     <div class="slds-p-horizontal_small">
+                        <lightning-file-upload name="fileUploader" onuploadfinished={handleUploadFinished}  file-field-name="Source_fileupload__c" file-field-value={fieldLabel} data-name={fieldName}>
+                        </lightning-file-upload>
+                     </div>
+                     <div class="slds-p-around_medium">
+                        <template if:true={fileName}>
+                           <span style="padding: 2px;" key={fileId}>
+                              <lightning-pill label={fileName} data-id={fileId} onremove={handleDelete}>
+                              </lightning-pill>
+                           </span>
+                        </template>
+                        <!--<template for:each={modalPOFilesUploaded} for:item="file">-->
+                        <template for:each={loadedFiles} for:item="file" for:index="index">
+                           <span style="padding: 2px;" key={file.fileTitle}>
+                              <lightning-pill label={file.fileTitle} data-id={index} onremove={handleRemove}>
+                              </lightning-pill>
+                           </span>
+                        </template>
+                     </div>
+                  </template>
+                  <template if:true={isFileLink}>
+                     <div class="slds-p-horizontal_small">
+                        <lightning-file-upload name="fileUploader" onuploadfinished={handleUploadFinished}  file-field-name="Source_fileupload__c" file-field-value={fieldLabel} data-name={fieldName}>
+                        </lightning-file-upload>
+                     </div>
+                     <div class="slds-p-around_medium">
+                        <!--<template for:each={modalPOFilesUploaded} for:item="file">-->
+                        <template if:true={fileName}>
+                           <span style="padding: 2px;" key={fileId}>
+                              <lightning-pill label={fileName} data-id={fileId} onremove={handleDelete}>
+                              </lightning-pill>
+                           </span>
+                        </template>
+                        <template for:each={loadedFiles} for:item="file" for:index="index">
+                           <span style="padding: 2px;" key={file.fileTitle}>
+                              <lightning-pill label={file.fileTitle} data-id={index} onremove={handleRemove}>
+                              </lightning-pill>
+                           </span>
+                        </template>
+                     </div>
+                  </template>
+               </template>
+               <template if:true={isNext}>
+                 
+                  <template if:true={lossForm}>
+                     <c-opportunity-close-loss-info record-id={recordId} hide-buttons=true ></c-opportunity-close-loss-info>
+                  </template>
+                  <template if:false={lossForm}>
+                     <c-opp-closed-lost-duplicate record-id={recordId} hide-buttons=true ></c-opp-closed-lost-duplicate>
+                  </template>
+               </template>
+            </div>
+            <footer class="slds-modal__footer slds-align--absolute-center">
+               <lightning-button if:true={showBack} variant="brand" name="back" label="Back" class="slds-m-horizontal_small" onclick={handleBack}></lightning-button>
+               <lightning-button if:true={showSubmit} variant="brand" type="submit" name="submit" label="Submit" class="slds-m-horizontal_small"></lightning-button>
+               <lightning-button if:true={showNext} variant="brand" name="next" label="Next" class="slds-m-horizontal_small" onclick={handleNext} disabled={disableNextButton}></lightning-button><!--IBA-1884-->
+               <lightning-button  class="slds-m-horizontal_small" title="Cancel" onclick={closeModal} type="reset" label="Cancel"></lightning-button >
+            </footer>
+         </lightning-record-edit-form>
+      </div>
+   </section>
+   <c-custom-toast-component auto-close-time="3000"></c-custom-toast-component>
+</template>

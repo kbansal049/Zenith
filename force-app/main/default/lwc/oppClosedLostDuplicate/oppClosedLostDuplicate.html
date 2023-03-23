@@ -1,0 +1,83 @@
+<template>
+    <div class="slds-m-around_xx-large">
+        <template if:false={hasNoError}>
+            <div class="slds-notify slds-notify_toast slds-theme_error slds-align_absolute-center">
+                <span class="slds-assistive-text">error</span>
+                <div class="slds-notify__content">
+                    <h5 class="slds-text-heading_small slds-align_absolute-center">Error Message </h5>
+                    <p class="slds-align_absolute-center"> Please fix the following errors in Opportunity record before
+                        submitting the Loss form </p>
+                    <p class="slds-align_absolute-center">{errorMessage}</p>
+                    <div class="slds-align_absolute-center">
+                        <lightning-button class="slds-m-top_small" label="Back to Opportunity" onclick={handleReset}>
+                        </lightning-button>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template if:true={customError}>
+            <div class="slds-notify slds-notify_toast slds-theme_error slds-align_absolute-center">
+                <span class="slds-assistive-text">error</span>
+                <div class="slds-notify__content">
+                    <h5 class="slds-text-heading_small slds-align_absolute-center">Error Message </h5>
+                    <p class="slds-align_absolute-center">{errorMessage}</p>
+                </div>
+            </div>
+        </template>
+
+        <template if:true={loaded}>
+            <div class="slds-align_absolute-center">
+                <lightning-spinner alternative-text="Loading"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:true={isActivePRPresent}>
+            <div class="slds-align_absolute-center">
+                <span style="font-size: large;font-weight: bold;color: rgb(243, 11, 11);">
+                    Please change the Active PR(s) to duplicate opportunity.
+                </span>
+            </div>
+            <br />
+        </template>
+       
+        <template if:true={renderPage}>
+            
+                <div class="slds-align_absolute-center">
+                    <span style="font-size: large;font-weight: bold;color: rgb(243, 11, 11);">Duplicate Opportunity is needed</span>
+                </div>
+                <br />
+                <lightning-record-edit-form 
+                    object-api-name="Opportunity_Extension__c" onsubmit={handleSubmit} onsuccess={handleSuccess} record-id={extensionRecordId}  onerror={handleOppExtError}> 
+                    <lightning-messages>
+                    </lightning-messages>
+                    <lightning-input-field field-name='Opportunity__c' value={recordId} disabled>
+                    </lightning-input-field>
+                    <lightning-input-field data-id="Duplicate_Opportunity__c" field-name='Duplicate_Opportunity__c'  onchange={duplicateOppChange} required></lightning-input-field>
+                    
+                    <br />
+                    <template if:false={hideButtons}>
+                        <div class="slds-align_absolute-center">
+                            <lightning-button class="slds-m-top_small" type="submit" label="Submit" disabled={hideSubmit}>
+                            </lightning-button>&nbsp;&nbsp;
+                            <lightning-button class="slds-m-top_small" label="Cancel" onclick={handleReset}>
+                            </lightning-button>
+                        </div>
+                    </template>
+                    
+                </lightning-record-edit-form>
+
+                <lightning-record-edit-form data-id="oppForm" class="hiddenbtn"
+                object-api-name="Opportunity" onsubmit={handleOppSubmit} onsuccess={handleOppSuccess} record-id={getDupicateOppId} onerror={handleOppError} > 
+                <lightning-messages>
+                </lightning-messages>
+                <lightning-input-field data-id="Flexible_Identifier__c" field-name='Flexible_Identifier__c'>
+                </lightning-input-field>
+                <br />
+                <lightning-button data-id="hiddenbtn" class="hiddenbtn" type="submit" label="Submit opp">
+                </lightning-button>
+                
+            </lightning-record-edit-form>
+        </template>
+    </div>
+    <c-custom-toast-component auto-close-time="3000"></c-custom-toast-component>
+</template>

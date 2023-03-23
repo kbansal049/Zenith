@@ -1,0 +1,12 @@
+<template>
+    <div class="slds-box">
+    <lightning-card title="Select Quote to Clone" icon-name="standard:quotes">
+        <div style="padding-bottom:.5rem"></div>
+        <div class="slds-table_striped">
+            <lightning-datatable key-field="Id" data={existingQuotes} columns={columns} resize-column-disabled="true"
+                selected-rows={selectedRows} max-row-selection={maxRowSelection} onrowselection={handleRowSelection}>
+            </lightning-datatable>
+        </div>
+    </lightning-card>
+    </div>
+</template>

@@ -1,0 +1,121 @@
+<apex:page controller="JiraTicketAssociationController" tabStyle="Account_JIRA_Integration__c" showHeader="true">
+    <apex:slds />
+    <apex:includeLightning />
+    <apex:form >
+        <apex:actionFunction name="redirectToRecordPage" action="{!doRedirectToRecord}" immediate="true"/>
+    </apex:form>
+    <script>
+    function toastSuccessLaunch(){
+        var element = document.getElementById("ToastMessageSuccess");
+        element.classList.toggle("slds-hide");
+    }
+    function toastErrorLaunch(){
+        var element = document.getElementById("ToastMessageFailed");
+        element.classList.toggle("slds-hide");
+    }
+    </script>
+    
+    <!-- Success Message -->
+    <div class="slds-hide" style="height: 4rem;" id='ToastMessageSuccess'>
+        <div class="slds-notify_container slds-is-relative">
+            <div class="slds-notify slds-notify_toast slds-theme_success" role="alert">
+                <span class="slds-assistive-text">success</span>
+                <span class="slds-icon_container slds-icon-utility-success slds-m-right_small slds-no-flex slds-align-top" title="Description of icon when needed">
+                    <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#success')}" />
+                    </svg>
+                </span>
+                <div class="slds-notify__content">
+                    <h2 class="slds-text-heading_small" id="toastMsgSucc"></h2>
+                </div>
+                <button class="slds-button slds-button_icon slds-notify__close slds-button_icon-inverse" title="Close" onclick='toastSuccessLaunch()'>
+                    <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#close')}" />
+                    </svg>
+                    <span class="slds-assistive-text">Close</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Error Message -->
+    <div class="slds-hide" style="height: 4rem;" id='ToastMessageFailed'>
+        <div class="slds-notify_container slds-is-relative">
+            <div class="slds-notify slds-notify_toast slds-theme_error" role="alert">
+                <span class="slds-assistive-text">Error</span>
+                <span class="slds-icon_container slds-icon-utility-error slds-m-right_small slds-no-flex slds-align-top" title="Description of icon when needed">
+                    <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#error')}" />
+                    </svg>
+                </span>
+                <div class="slds-notify__content">
+                    <h2 class="slds-text-heading_small" id="toastMsgErr"></h2>
+                </div>
+                <button class="slds-button slds-button_icon slds-notify__close slds-button_icon-inverse" title="Close" onclick='toastErrorLaunch()'>
+                    <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#close')}" />
+                    </svg>
+                    <span class="slds-assistive-text">Close</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div  id="LoadingvfDIV" class="slds-spinner_container" style="position: fixed;">
+        <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+            <span class="slds-assistive-text">Loading...</span>
+            <div class="slds-spinner__dot-a"></div>
+            <div class="slds-spinner__dot-b"></div>
+        </div>
+    </div>
+    
+    
+    <div id="lightning" />
+    
+    <script>
+    document.addEventListener("showToastOnVF", function(event){
+        console.log('--showToastOnVF--event-- ',event);
+        if(event.detail){
+            var toastType = event.detail.variant;
+            var toastMessage = event.detail.message;
+            var toastTitle = event.detail.title;
+            console.log('toastType -- ' + toastType);
+            console.log('toastMessage -- ' + toastMessage);
+            console.log('toastTitle -- ' + toastTitle);
+            if(toastType && toastMessage && toastTitle){
+                if(toastType === "success"){
+                    document.getElementById("toastMsgSucc").innerHTML=toastMessage;
+                    toastSuccessLaunch();
+                }
+                else if(toastType === "error"){
+                    document.getElementById("toastMsgErr").innerHTML =toastMessage;
+                    toastErrorLaunch();
+                }
+            }
+        }
+    });
+    
+    document.addEventListener("redirectToRecord", function(event){
+        console.log('--redirectToRecord--event-- ',event);
+        if(event.detail){
+            var ncId = event.detail.recordId;
+            if(ncId){
+                redirectToRecordPage();
+            }
+        }
+    });
+    
+    $Lightning.use("c:AssociateJiraRequest", function() {
+        $Lightning.createComponent("c:associateJiraTicket", {
+            recordId: "{!$CurrentPage.parameters.recordID}",
+            requestType: "{!$CurrentPage.parameters.recordType}",
+        },
+                                   "lightning",
+                                   function(cmp) {
+                                       console.log("component was created");
+                                       document.getElementById("LoadingvfDIV").style.display = "none";
+                                   }
+                                  );
+    });
+    </script>
+</apex:page>

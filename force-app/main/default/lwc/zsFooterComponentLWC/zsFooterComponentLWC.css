@@ -1,0 +1,250 @@
+.dummyClass{color:black;}
+
+
+.container{
+    background-color: #012673;
+    border-radius: 20px 20px 0px 0px;
+    font-family: "Haptik-Regular";
+    height: auto;
+    padding-bottom: 2rem;
+}
+.footerSubContainer{
+    background-color: #012673;
+    margin-right: 10%;
+    margin-left: 10%;
+    padding-top: 3rem;
+}
+
+.footHeading{
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    /* margin-bottom: 8px; */
+}
+
+.rulerColor{
+    background-color: #ccc!important;
+    margin: 20px 20px 20px 5px;
+    width: 100%;
+    opacity: 0.1;
+    height: auto;
+
+}
+.branding_li{
+    color: #fff;
+}
+.faviconImg{
+    float: right;
+    margin-right: 36px;
+}
+.imgClass{
+    margin-right: 5px;
+}
+a{
+    text-decoration: none;
+    color: #fff;
+}
+img{
+    height: 40px!important;
+    width: 40px!important;
+}
+.footerLinks{
+    color:#ccc!important;
+}
+
+.mainLabels{
+    margin-bottom: 32px;
+}
+.btnClass{
+    color: #fff!important;
+}
+
+.brandingRuler{
+    width: 35px;
+    margin-top: 17px;
+    margin-bottom: 15px;
+    padding-bottom: 2px;
+}
+.liChild{
+    font-size: 14px;
+    color: #fff!important;
+}
+.branding_text{
+    font-size: 14px;
+    margin-top: 15px;
+}
+.privacyLinks{
+    margin-top: 12px;
+    margin-bottom: 2.3%;
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    .faqPipe{
+        padding-left: 15%;
+    }
+    .faqText{
+        margin-left: -29px;
+    }
+    .branding_text{
+        padding-top: 1%;
+        /* padding-bottom: 4%; */
+    }   
+    
+    .mainLabels{
+        margin-top: 4%;
+    }
+    .btnClass{
+        font-size: 16px!important;
+        position: absolute;
+        /* top: 210px; */
+        right: 50px;
+        margin-top: -5px;
+        --sds-c-button-text-color : white;
+        --sds-c-button-text-color-hover : white;
+        --sds-c-button-text-color-active : #fff;
+    }
+}
+@media screen and (min-width: 426px) and (max-width: 767px){
+    /* .brandingRuler{
+        margin-top: 1%;
+    } */
+    /* .branding_text{
+        padding-bottom: 4%;
+    } */
+    .mainLabels{
+        margin-top: 4%;
+    }
+    .btnClass{
+        font-size: 16px!important;
+        position: absolute;
+        /* top: 175px; */
+        right: 50px;
+        margin-top: -5px;
+        --sds-c-button-text-color : white;
+        --sds-c-button-text-color-hover : white;
+        --sds-c-button-text-color-active : #fff;
+    }
+}
+@media screen and (min-width: 1024px){
+    .liFirstChild{
+        margin-top: 10px;
+    }
+    .spanPipe{
+        padding-left: 17%;
+    }
+    .btnClass{
+        font-size: 16px!important;
+        position: absolute;
+        /* top: 205px; */
+        right: 50px;
+        margin-top: -5px;
+        --sds-c-button-text-color : white;
+        --sds-c-button-text-color-hover : white;
+        --sds-c-button-text-color-active : #fff;
+    }
+}
+
+@media screen and (min-width: 425px) and (max-width: 767px){
+    
+    .faqText{
+        margin-left: -4%;
+    }
+    .aboutText{
+        margin-left: -10px;
+    }
+    .copyrightText{
+        margin-left: 15px;
+    }
+    
+}
+@media screen and (max-width: 425px){
+    .branding_text{
+        padding-bottom: 4%;
+    }
+    .mainLabels{
+        margin-top: 20%;
+    }
+    .btnClass{
+        font-size: 16px!important;
+        position: absolute;
+        /* top: 205px; */
+        /* bottom: -175px; -184px */
+        left: 84%;
+        margin-top: -4px;
+        --sds-c-button-text-color : white;
+        --sds-c-button-text-color-hover : white;
+        --sds-c-button-text-color-active : #fff;
+    }
+    .footerSubContainer{
+        background-color: unset;
+        margin-right: 0px!important;
+        margin-left: 0px!important;
+        padding-top: 3rem;
+    }
+    .copyrightText{
+        margin-left: 5%;
+    }
+    .aboutText{
+        margin-left: -5%;
+    }
+}
+@media screen and (max-width: 767px){
+    .zsMedium{
+        margin-top: 25px;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1023px){
+    .privacyAnchor{
+        border-right: 1px solid white;
+        padding-right: 25%;
+    }
+
+    .aboutAnchor{
+        border-left: 1px solid white;
+        padding-left: 25%;
+    }
+    .aboutText{
+        margin-left: -3%;
+    }
+    .faqAnchor{
+        border-left: 1px solid;
+        padding-left: 25%;
+        border-right: 1px solid;
+        padding-right: 35%;
+    }
+    .faqText{
+        margin-left: -3%;
+    }
+    .copyrightText{
+        margin-left: 5%;
+    }
+
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1440px){
+    .privacyAnchor{
+        border-right: 1px solid white;
+        padding-right: 25%;
+    }
+
+    .aboutAnchor{
+        border-left: 1px solid white;
+        padding-left: 20%;
+    }
+    .aboutText{
+        margin-left: -4%;
+    }
+    .faqAnchor{
+        border-left: 1px solid;
+        padding-left: 25%;
+        border-right: 1px solid;
+        padding-right: 35%;
+    }
+    .faqText{
+        margin-left: -3%;
+    }
+    .copyrightText{
+        margin-left: 5%;
+    }
+
+}

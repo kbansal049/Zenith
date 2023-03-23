@@ -1,0 +1,116 @@
+.container{
+    font-family: "Haptik-Regular";
+    background-color: #f6f6f6;
+}
+.contentContainer{
+    background-color: white;
+    margin-top: 22px;
+    border-radius: 1rem;
+}
+
+.headerText{
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 70px;
+}
+
+.widgetSwitches{
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 22px;
+    
+}
+.userAvatar{
+    width: 50px;
+    height: 50px;
+    border-radius: 3rem;
+    cursor: pointer;
+}
+.contentMainDiv{
+    margin-top: 20px;
+    padding-left: 20px;
+    margin-bottom: 10px;
+    padding-bottom: 20px;
+}
+.contentMainDiv:not(:last-child){
+    border-bottom: 1px solid #ccc;
+}
+.borderClass:not(:last-child){
+    border-right: 2px solid #DDD;
+}
+
+.latestDiv{
+    cursor: pointer;
+    color:#236BF5;
+}
+.solvedDiv{
+    padding-left: 5%;
+    cursor: pointer;
+}
+.unreadDiv{
+    padding-left: 5%;
+    cursor: pointer;
+}
+.bookmarkDiv{
+    padding-left: 5%;
+    cursor: pointer;
+}
+.dateTime{
+    font-size: 12px;
+    text-align: center;
+}
+.userName{
+    font-size: 16px;
+    color: #236BF5;
+    cursor: pointer;
+}
+.feedContent{
+    margin-top: 14px;
+    font-size: 18px;
+    /* font-family: "Haptik-Bold"!important; */
+    font-weight: 500!important;
+    cursor: pointer;
+}
+.postDate{
+    padding-left: 5px;
+}
+.calendarImg{
+    margin-top: -1px;
+}
+.feedStats{
+    padding-left: 25px;
+    font-size: 14px!important;
+}
+.statsIcons{
+    padding-right: 5px;
+}
+.postDateDiv{
+    padding-right: 20px;
+    margin-top: 2px;
+}
+/* .borderBottomClass:first-child{
+    border-bottom: 1px solid #ccc;
+    margin-right: 20px;
+    margin-top: 20px;
+} */
+/* .view-more-button{
+    border-radius: 3rem;
+    color: #236BF5;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.6255rem 1rem;
+    cursor: pointer;
+    background: linear-gradient(180deg, #F7F7F7 81.04%, rgba(247, 247, 247, 0) 100%);
+    border: 1px solid #c1c1c1;
+} */
+.viewBtn{
+    color:rgb(35,107,245);
+    font-weight:900 !important;
+	font-size:15px;
+    margin-left: 20px;
+    cursor: pointer;
+
+}
+.selectedDiv{
+    color:#236BF5;
+}

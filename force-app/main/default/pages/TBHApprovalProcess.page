@@ -1,0 +1,17 @@
+<apex:page controller="THBApprovalProcessController" lightningstylesheets="true" sidebar="false">
+    <apex:slds />
+    <apex:includeLightning />
+    <div id="displayApprovalListDiv" />
+    <script>
+    $Lightning.use("c:DealRegistrationProcessInstanceApplication", function() {
+        $Lightning.createComponent("c:DealRegistraionProcessInstanceList",
+          { 
+          },
+          "displayApprovalListDiv",
+          function(cmp) {
+             console.log('LWC component invoked');
+          });
+    });
+    </script>
+    
+</apex:page>

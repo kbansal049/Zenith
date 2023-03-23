@@ -1,0 +1,46 @@
+<template>
+<div class="container">
+    <h1 style="text-align: center ; font-style: Haptik-Bold; font-size:30px">Featured content</h1>
+  <!--Carasouel Records Tile Comtrol -->
+                    <div class="alincontrolOuter">
+                        <template if:true={recordData}>
+                                <span class="applyFilterButton smallFont fontFamilyBold pointerCursor hoverfilter" data-id="slideLeft">
+                                    <img src={iconright} class="sf_imgIcon rightIcon"  onclick={handlePrevNew}  >
+                                </span>
+                                <div class="alincontrolrecords" data-name="containerrecod">
+                                            <template for:each={recordData} for:item="record">
+                                                <div style=" padding: 10px;" class=" slds-col slds-size_6-of-12 slds-large-size_3-of-12 slds-x-medium-size_4-of-12  slds-medium-size_4-of-12 slds-small-size_12-of-12 "  key={record.id}>
+                                                     
+                                                        <div class="zenith_inner_div"   >
+                                                            <!-- <a href={record.Url} target="_blank"> -->
+                                                            <!-- <div class="image_div "><img src={record.Image__c} class="imgsize"></div>   -->
+                                                            <div class="image_div "><lightning-formatted-rich-text value={record.Image}  class="imgsize" data-id={record.Url} onclick={handleClick} ></lightning-formatted-rich-text></div>
+                                                             
+                                                            <div class="content" >
+                                                            <div class="textheight" >
+                                                            <p class="text" >{record.Title}</p>
+                                                            <p class="text1" >{record.Content}</p>
+                                                            </div>
+                                                            <template if:true={record.PostedHour}>
+                                                             <p style="color: #9A9A9A ;padding: 32px 0px 15px 0px">Posted: {record.PostedHour} hours ago </lightning-formatted-date-time></p>   
+                                                              </template>
+                                                            <template if:false={record.PostedHour}>
+                                                             <p style="color: #9A9A9A ;padding: 32px 0px 15px 0px">Posted: <lightning-formatted-date-time  value={record.CreatedDate} ></lightning-formatted-date-time></p>
+                                                             </template>
+                                                            </div>
+                                                            <!-- </a> -->
+                                                        </div>
+                                                      
+                                                </div>
+                                            </template>
+                                </div>
+                                <span  class="applyFilterButton smallFont fontFamilyBold pointerCursor hoverfilter"  data-id="slideRight">
+                                    <img src={iconleft}  class="sf_imgIcon leftIcon" onclick={handleNextNew} >
+                                </span>
+                        </template>
+                    
+                    </div>
+
+
+    </div>
+</template>

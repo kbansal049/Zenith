@@ -1,0 +1,260 @@
+<aura:component implements="forceCommunity:themeLayout,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,forceCommunity:profileMenuInterface" access="global">   
+    <aura:attribute name="navBar" type="Aura.Component[]" required="false" />
+    <aura:attribute name="profileMenu" type="Aura.Component[]" required="false" />
+    <aura:attribute name="guestUser" type="Boolean" default="false" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <div class="navigationContainer" >
+        <div class="slds-grid slds-wrap logoPadding">
+            <div class="slds-col slds-size_7-of-12 slds-medium-size_8-of-12 slds-large-size_8-of-12 outerLogo">
+                
+                <div class="demo">
+                    
+                    <div class="logoContainer" onclick="{!c.clickHome}">
+                        <!-- <img src="{!$Resource.ZscalarHeaderLog}"/> -->
+                        <img src="{!$Resource.zScalarResources+'/zScalarResources/images/headerLogo.png'}"/>
+                        
+                    </div>
+                    
+                </div> 
+            </div>
+            
+            
+            <div class="slds-col slds-size_3-of-12 slds-medium-size_4-of-12 slds-large-size_4-of-12 fontlato loginSignUp">
+                
+                <aura:if isTrue="{!v.guestUser}">
+                    <div class="buttonPadding cssForLarge">
+                        
+                        <button  class="signIn fontlato" onclick="{!c.clickSignup}">Sign in / Register</button>
+                    </div> 
+                    <div class="buttonPadding cssForSmall">
+                        
+                        <button  class="signIn " onclick="{!c.clickSignup}">Sign in</button>
+                    </div> 
+                    
+                    <aura:set attribute="else">
+                        <div class="slds-grid slds-wrap positions mediaPositions">
+                            <div class="slds-col slds-size_7-of-12 notificationsWidth"> 
+                                <forceCommunity:notifications/>
+                            </div>                      
+                            <div class="slds-col slds-size_5-of-12 profilemenuWidth" style="text-align:left !important">
+                                {!v.profileMenu}
+                            </div>
+                        </div>
+                    </aura:set>
+                </aura:if>      
+                
+                
+            </div>
+            
+            <div class="slds-col slds-size_2-of-12 slds-medium-size_12-of-12 slds-large-size_12-of-12 comNav">
+                
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_10-of-12 slds-medium-size_10-of-12 slds-large-size_10-of-12 comNav">
+                        {!v.navBar}
+                        
+                    </div>
+                    <div class="slds-col slds-size_2-of-12 slds-medium-size_2-of-12 slds-large-size_2-of-12 empWithNav">
+                        <p class="employee empPaddingLarge" >Employees >></p>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="slds-col slds-size_12-of_12 empWithoutNav "  >
+                
+                
+                <p class="employee" >Employees >></p>
+                
+                
+                
+                
+            </div>
+        </div>
+    </div>
+    
+    <aura:html tag="style">
+  <!-- To remove the box shadow of the bell icon-->
+		button.slds-button.slds-button.slds-button_icon.slds-button_icon.slds-button_icon-container.slds-button_icon-small.slds-global-actions__notifications.slds-global-actions__item-action.activated.forceHeaderButton:focus-visible{
+        	outline:none !Important;
+        	box-shadow:none;
+        }
+        button.slds-button.slds-button.slds-button_icon.slds-button_icon.slds-button_icon-container.slds-button_icon-small.slds-global-actions__notifications.slds-global-actions__item-action.activated.forceHeaderButton:focus{
+        	outline:none;
+        	box-shadow:none;
+        }
+        .slds-button:focus {
+        	outline:none;
+        	box-shadow:none;
+        }
+        
+        .selfServiceProfileMenuTrigger .trigger-link{
+        	box-shadow:none !important;
+        }
+        <!-- To remove the box shadow of the nav buttons-->
+        .forceCommunityGlobalNavigation .slds-list__item button{
+        	box-shadow:none;
+        }
+        
+        ul.slds-list_vertical.slds-is-nested.slds-is-absolute.right-align {
+        	background:white !important;
+        padding:10px !important;
+        }
+        
+        @media only screen and (min-width:1163px) and (max-width:1440px){
+        ul.slds-list_vertical.slds-is-nested.slds-is-absolute{
+        margin-top:2rem !important;
+        }
+        ul.slds-list_vertical.slds-is-nested.slds-is-absolute::after{
+        content: " ";
+        position:absolute;
+        left:98px;
+        top:-15px;
+        border-top:none;
+        border-right:15px solid transparent;
+        border-left:15px solid transparent;
+        border-bottom:15px solid #ffffff;
+        }
+        
+        ul.slds-list_vertical.slds-is-nested.slds-is-absolute:nth-child(2)::after{
+        content: " ";
+        position:absolute;
+        left:63px !Important;
+        top:-15px;
+        border-top:none;
+        border-right:15px solid transparent;
+        border-left:15px solid transparent;
+        border-bottom:15px solid #ffffff;
+        }
+        ul.comm-navigation__list.slds-list_horizontal.slds-has-flexi-truncate li:nth-child(7) ul.slds-list_vertical.slds-is-nested.slds-is-absolute:nth-child(2)::after{
+        left:162px !Important;
+        }
+        
+        }
+        
+        
+        .forceCommunityGlobalNavigation .slds-list_horizontal>.slds-list__item>.comm-navigation__item>button.slds-is-active:not([data-type="home"]) {
+        background-color:white !important;
+        }
+        .forceCommunityGlobalNavigation .slds-list_horizontal>.slds-list__item>.comm-navigation__item>button.slds-is-active:not([data-type="home"]) {   
+        background-color:white !important;
+        
+        }
+        .forceCommunityGlobalNavigation .slds-list__item a.slds-is-active:not([data-type="home"])
+        {
+        background-color:white !important;
+        }
+        
+        .forceCommunityGlobalNavigation svg {
+        fill: #000;
+        }
+        
+        
+        .forceCommunityGlobalNavigation .slds-list__item button
+        {
+        font-size:15px;
+        text-transform:capitalize;
+        font-weight:700 !important;
+        }
+        .selfServiceUserProfileMenu .profileName{
+        color:black !important;
+        }
+        
+        @media only screen and (min-width: 767px){
+        .positions{
+        padding:14px 0px !important;
+        }
+        }
+        <!-- for notification panel adjustment -->
+        @media only screen and (min-width: 320px){
+        .uiPanel >.pointer{
+        left: 212.005px !important;
+        }
+        
+        
+        @media only screen and (min-width:1360px) and (max-width:1367px){
+        .uiPanel >.pointer{
+        left: 272.005px !important;
+        }
+        }
+        
+        @media only screen and (min-width:321px) and (max-width:375px){
+        .uiPanel >.pointer{
+        left: 196.005px !important;
+        }
+        }
+        @media only screen and (min-width:376px) and (max-width:425px){
+        .uiPanel >.pointer{
+        left: 174.005px !important;
+        }
+        }
+        
+        @media only screen and (min-width:426px) and (max-width:768px){
+        .uiPanel >.pointer{
+        left: 155.005px !important;
+        }
+        }
+        @media only screen and (min-width:769px) and (max-width:1024px){
+        .uiPanel >.pointer{
+        left: 167.005px !important;
+        }
+        }
+        @media only screen and (min-width:1025px) and (max-width:1440px){
+        .uiPanel >.pointer{
+        left: 302.005px !important;
+        }
+        .cssForLarge{
+        padding-left:3.9rem !important;
+        }
+        }
+        @media only screen and (min-width:1441px) and (max-width:2560px){
+        .uiPanel >.pointer{
+        display:none;
+        }
+        }
+        
+        .forceCommunityGlobalNavigation>*>.slds-grid{
+        padding-left:0px;
+        }
+        .forceCommunityGlobalNavigation div nav ul li button.slds-container_fluid.slds-button.slds-button--reset.slds-truncate{
+        padding-left:0px !important;
+        padding-right:24px !important;
+        }
+        
+        .forceCommunityGlobalNavigation div nav ul li button.slds-container_fluid.slds-button.slds-button--reset.slds-truncate:nth-child(7){
+        padding-left:12px !important;
+        padding-right:12px !important;
+        }
+        
+        
+        .forceCommunityGlobalNavigation>* {
+        display: block;
+        margin: 0 0;
+        
+        }
+        
+        @media only screen and (min-width:768px) and (max-width:1024px){
+        .mediaPositions{
+        margin-left:43%;	
+        }
+        .cssForLarge{
+        padding-left:1rem !important;
+        }
+        }
+        
+        .forceCommunityGlobalNavigation .slds-list__item button:hover{
+        color:#236BF5;
+        }
+        
+        @media screen and (min-width:1923px){
+        .THIS .uiPanel--notificationsPanel{
+        left:1417px !important;
+        }
+        }
+        
+    </aura:html>
+    
+    
+    
+    
+    
+</aura:component>

@@ -1,0 +1,21 @@
+.datatable-custom-style{
+	font-weight: normal;
+}
+.fontclr{
+	color: white;
+}
+.slds-modal__container {
+  max-width: 35rem !important;
+  width: 35% !important;
+}
+.modal-body{ 
+  height: 90vh !important; 
+  max-height: 100vh !important; 
+}
+.linktag{
+  color:red !important;;
+  font-weight:bold !important;;
+}
+.red-icon{
+  --lwc-colorTextIconDefault: #F62217;
+}

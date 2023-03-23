@@ -1,0 +1,10 @@
+<apex:page standardController="RFP_Request__c"
+           sidebar="false"
+           showHeader="false"
+           showChat="false">
+
+<apex:pageMessage summary="Please add/share documents or notes related to the request in the Google Docs, Notes, & Attachments section in order for the Proposals Team to process this request﻿." 
+                  severity="Critical" 
+                  strength="3"
+                  escape="false"/>
+</apex:page>

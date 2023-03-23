@@ -1,0 +1,16 @@
+<template>
+
+    <!--Showing Page Level Spinner-->
+    <template if:true={isPage}>
+        <lightning-spinner variant="brand" style="position: fixed;" alternative-text="Loading...">
+        </lightning-spinner>
+        <div style="position: fixed;" class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <!--Showing Component Level Spinner-->
+    <template if:true={isComponent}>
+        <lightning-spinner variant="brand" alternative-text="Loading...">
+        </lightning-spinner>
+    </template>
+    
+</template>

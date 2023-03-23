@@ -1,0 +1,201 @@
+<template>
+    <lightning-card>
+
+        <!-- Spinner -->
+        <template if:false={isLoadedSuccess}>
+            <div class="spinnerHolder" style="height: 80px;">
+                <lightning-spinner variant="brand" alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- Data -->
+
+        <template if:true={isLoadedSuccess}>
+
+
+            <template if:true={hasError}>
+                <div class="slds-p-around_small slds-text-align_center slds-text-color_error"
+                    style="font-size: larger;">
+                    {errorMsg}
+                </div>
+            </template>
+
+            <template if:false={hasError}>
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-1">
+                        <!--<div class="slds-text-heading_medium slds-text-align_center"><b>Contact That Matters</b></div>-->
+                    </div>
+                    <div class="slds-col slds-size_2-of-3">
+                        <div class="slds-text-heading_medium slds-p-horizontal_large slds-p-vertical_medium"><b><a
+                                    onclick={gotoAccountRecord} data-acc-id={recordId}>{cioDetail.accountName}</a></b>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-3">
+                        <div class="slds-p-around_medium slds-float_right">
+                            <template if:false={isContactListEmpty}>
+                                <lightning-button class="slds-p-horizontal_xx-small" label="Save" variant="brand"
+                                    onclick={openConfirmModal}>
+                                </lightning-button>
+                                <lightning-button class="slds-p-horizontal_xx-small" label="Cancel" variant="Neutral"
+                                    onclick={resetTheData}></lightning-button>
+                            </template>
+                            <lightning-button class="slds-p-horizontal_xx-small" label="Go back to Account"
+                                variant="brand-outline" data-acc-id={recordId} onclick={navigateToAccountRecord}>
+                            </lightning-button>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="height: 600px;overflow-y: auto;">
+                    <table
+                        class="detail-table slds-table slds-table_cell-buffer slds-table_bordered slds-p-horizontal_xx-small">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Name">Contact Name</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Title">Title</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Send Exec Insights">Send Exec Insights</div>
+                                </th>
+                                <!--
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="Case#">Case Number</div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="Case Status">Case Status</div>
+                                    </th>
+                                -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template if:false={isContactListEmpty}>
+                                <template for:each={conList} for:item="conObj">
+                                    <tr key={conObj.Con.Id}>
+                                        <td>
+                                            <span><a onclick={gotoContactRecord}
+                                                    data-con-id={conObj.Con.Id}>{conObj.Con.Name}</a></span>
+                                        </td>
+                                        <td>
+                                            <span>{conObj.Con.Title}</span>
+                                        </td>
+                                        <td>
+                                            <div class="slds-p-rigth_small">
+                                                <template if:false={conObj.CaseExist}>
+                                                    <lightning-combobox variant="label-hidden" name={conObj.Con.Id}
+                                                        value={conObj.Send_Exec_Insights} options={execOptions}
+                                                        onchange={handleCIOReportChange}></lightning-combobox>
+                                                </template>
+                                            </div>
+                                        </td>
+                                        <!--
+                                        <td style="height: 40px;">
+                                            <template if:false={conObj.MatchesDomainCriteria}><a onclick={gotoCaseRecord}
+                                                    data-case-id={conObj.CaseId}>{conObj.CaseNumber}</a></template>
+                                        </td>
+                                        <td>
+                                            <template if:false={conObj.MatchesDomainCriteria}>{conObj.CaseStaus}</template>
+                                        </td>
+                                        -->
+                                    </tr>
+                                </template>
+                            </template>
+
+                        </tbody>
+                    </table>
+                    <template if:true={isContactListEmpty}>
+                        <div class="slds-p-horizontal_large slds-p-vertical_medium">
+                            <div class="slds-p-horizontal_xx-small slds-text-heading_small" style="text-align: center;">
+                                No
+                                contact records available to show.
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </template>
+    </lightning-card>
+
+
+    <!-- Confirm Save -->
+    <template if:true={showConfirmModal}>
+        <div style="height: 500px;">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-04" aria-modal="true"
+                aria-describedby="modal-content-id-4" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container notifyModal">
+
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close" onclick={closeConfirmModal}>
+                            <lightning-icon icon-name="utility:close" variant="inverse" alternative-text="Close"
+                                size="medium">
+                            </lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-04" class="slds-text-heading_medium slds-hyphenate">Confirm</h2>
+                    </header>
+
+                    <div class="saveContactSpinnerHolder" style="position: relative;">
+                        <template if:true={saveContactCalled}>
+                            <lightning-spinner variant="brand" alternative-text="Loading" size="small">
+                            </lightning-spinner>
+                        </template>
+
+
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-4">
+
+                            <div class="slds-text-align_center">
+                                <span style="font-size: medium;">Do you want to proceed?</span>
+                            </div>
+                            <template if:true={willBeCaseCreated}>
+                                <div class="slds-p-vertical_small">
+                                    <span class="slds-p-around_x-small">
+                                        <lightning-icon variant="warning" icon-name="utility:info" size="xx-small"
+                                            alternative-text="Info" title="Info"></lightning-icon>
+                                    </span>
+                                    <span class="slds-p-around_xx-small">
+                                        New Case for Domain verification will be Created for below contacts
+                                    </span>
+                                </div>
+                                <div>
+                                    <ul class="slds-has-dividers_around-space">
+                                        <template for:each={caseCreationList} for:item="conObj">
+                                            <li key={conObj.Con.Id} class="slds-item">{conObj.Con.Name}</li>
+                                        </template>
+                                    </ul>
+                                </div>
+                            </template>
+                        </div>
+                        <footer class="slds-modal__footer">
+                            <!--<div class="slds-clearfix">
+                                <div class="slds-float_left">
+                                    <lightning-button label="Yes" variant="brand" onclick={saveContacts}>
+                                    </lightning-button>
+                                </div>
+                                <div class="slds-float_right">
+                                    <lightning-button label="No" variant="neutral" onclick={closeConfirmModal}>
+                                    </lightning-button>
+                                </div>
+                            </div>-->
+                            <div class="slds-align_absolute-center">
+                                <span>
+                                    <lightning-button label="Yes" variant="brand" onclick={saveContacts}>
+                                    </lightning-button>
+                                </span>
+                                <span class="slds-p-left_large">
+                                    <lightning-button label="No" variant="neutral" onclick={closeConfirmModal}>
+                                    </lightning-button>
+                                </span>
+                            </div>
+                        </footer>
+
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </template>
+
+</template>

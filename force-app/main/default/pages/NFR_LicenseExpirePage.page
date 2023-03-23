@@ -1,0 +1,15 @@
+<apex:page sidebar="false" showHeader="true" standardStylesheets="false" standardController="NFR__c">
+    <apex:includeLightning />
+    <apex:slds />
+    
+    <div id="expirePgId" />    
+    <script>
+    $Lightning.use("c:NFR_LicenseExpiryApp", function() {
+        $Lightning.createComponent("c:NFR_ExpireCmp",
+                                   { "recordId" : "{!$CurrentPage.parameters.Id}",
+                                    "fromVF"   : true
+                                   },
+                                   "expirePgId", function(component) {});
+    });
+    </script>
+</apex:page>

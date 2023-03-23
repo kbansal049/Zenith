@@ -1,0 +1,43 @@
+<template>
+
+    <br />
+    <br />
+    <br />
+    <br />
+    <div class="textFormat" if:true={isEmailVerificationSuccess}>
+        <br />
+        <p>{label.EMAIL_VERIFICATION_SUCCESS_LABEL_LINE_1}</p>
+        <br />
+        <p>{label.EMAIL_VERIFICATION_SUCCESS_LABEL_LINE_2}</p>
+        <br />
+    </div>
+    <div class="textFormat" if:true={isEmailVerificationFailed}>
+        {label.EMAIL_VERIFICATION_FAILED__LABEL}
+    </div>
+    <div class="textFormat" if:true={isEmailVerificationLinkExpired}>
+        <div if:false={_isEmailResendSuccess}>
+            Your verification link has expired. Please click <a style="vertical-align: baseline;"
+                onclick={triggerVerificationEmail}>here</a> to get a new link.
+        </div>
+        <div if:true={_isEmailResendSuccess}>
+            {label.EMAIL_RESEND_SUCCESS_LABEL}
+        </div>
+    </div>
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+
+    <template if:true={showSpinner}>
+        <lightning-spinner alternative-text="Loading" variant="brand" size="large">
+        </lightning-spinner>
+    </template>
+</template>

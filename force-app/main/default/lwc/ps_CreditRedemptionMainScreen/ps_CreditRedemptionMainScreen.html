@@ -1,0 +1,332 @@
+<!--
+   @Author : Harish Gowda N, Sachin Tandon
+   @Requirement : PS Credit Process - CR# 4743,CR# 4744,CR# 4745
+   @Created Date : 17/05/2022
+   @Description : LWC Component for PS Credit Redemption Process.
+   ***********************************************************************************************************
+   MODIFICATION LOG
+   * Version            Developer            Date            Jira Number          Description
+   *************************************************************************************************************
+     1.0                Sachin Tandon        17/05/2022      CR#4745      PS Credits Redemption Process && PS Credits Redemption Validation.
+     2.0                Harish Gowda N       17/05/2022      CR#4744      PS Credits Redemption Process && PS Credits Redemption Validation.
+     3.0                Harish Gowda N       29/07/2022      IBA-1098     Allow CSM's to redeem PS credits for Training.
+     4.0                Harish Gowda N       21/09/2022      IBA-2878     New PS Credits Offering - Attack Surface Discovery Report (CR# 5203).
+     5.0                Harish Gowda N       06/10/2022      IBA-3300     New PS Credits Offering for redemption (CR# 5222).
+   *************************************************************************************************************
+-->
+  <template>
+    <lightning-card>
+      <template if:true={isLoading}>
+        <c-spinner is-component=true></c-spinner>
+      </template>
+      
+      <!-- IBA-5488 : Start -->
+      <!--Header Section-->
+      <div class="slds-box slds-theme_default slds-align_absolute-center" style="height:5rem">
+        <h1 class="slds-page-header__title slds-m-right_small slds-align-middle slds-truncate"  title={PS_REDEMPTION_SCREEN_LBL}>{PS_REDEMPTION_SCREEN_LBL}</h1>
+      </div>
+     <!--Header Section Ends-->
+     <div>
+
+     <!-- IBA-6609 : STARTS-->
+     <!--The Modal is visible to PS OPS and Provides a capability to pick the credit type-->
+      <template if:true={displayCreditPicklistModal}>
+      
+        <!-- Modal/Popup Box LWC starts here -->
+      
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-02" aria-modal="true" aria-describedby="modal-content-id-2" class="slds-modal slds-fade-in-open">
+          <div class="slds-modal__container">
+              
+            <!-- Modal/Popup Box LWC header here -->
+            <header class="slds-modal__header">
+                <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Select Credit For Redemption</h2>
+            </header>
+              
+            <!-- Modal/Popup Box LWC body starts here -->
+              <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                <lightning-radio-group name="customerCredits"
+                          label="Customer Credit Types"
+                          options={customerCreditOptions}
+                          value={userPreferredCreditType}
+                          onchange={handlePicklistChange}
+                          required
+                          type="radio"></lightning-radio-group>
+              </div>
+              
+            <!-- Modal/Popup Box LWC footer starts here -->
+              <footer class="slds-modal__footer">
+                  <lightning-button label="Back to Account" slot="actions" onclick={goBackToAccount}></lightning-button>
+                  <lightning-button variant="brand" label="Next" title="Next" onclick={submitCreditType} class="slds-m-left_x-small" ></lightning-button>
+              </footer>
+          </div>
+        </section>
+    
+        <div class="slds-backdrop slds-backdrop_open"></div>    
+      </template>
+      <!-- IBA-6609 : ENDS-->
+      
+      <template if:true={shouldDisplayPSCreditTable}>
+        <template if:true={showPSCreditTable}>
+            <!--Custom Credit Section Starts-->
+            <lightning-card title="Available Professional Services Credits">
+              <lightning-button label="Back to Account" slot="actions" onclick={goBackToAccount}></lightning-button>
+              
+              <!--To Provide user an ability to go back to the modal-->
+              <template if:true={hasEEPermision}>
+                <lightning-button label="Select Customer Credit Type" slot="actions" onclick={displayCustomerCreditModal} class="slds-m-left_x-small"></lightning-button>
+              </template>
+              
+              <div class="slds-align_absolute-center">
+                  <div class="slds-scrollable_y " style="height:10rem;width:120rem">
+                    <lightning-datatable 
+                        hide-checkbox-column 
+                        show-row-number-column 
+                        data={psCreditsList} 
+                        columns={columns} 
+                        key-field="Id">
+                    </lightning-datatable>
+                  </div>
+              </div>
+            </lightning-card>
+        </template>
+
+        <template if:false={showPSCreditTable}>
+          <lightning-card title="Available Professional Services Credits">
+            <lightning-button label="Back to Account" slot="actions" onclick={goBackToAccount}></lightning-button>
+            <template if:true={hasEEPermision}>
+              <lightning-button label="Select Customer Credit Type" slot="actions" onclick={displayCustomerCreditModal} class="slds-m-left_x-small"></lightning-button>
+            </template>
+            <div class="slds-align_absolute-center">
+              <div class=" slds-theme_shade" style="height:4rem;width:120rem">
+                <div class=" slds-box slds-align_absolute-center">
+                  <h2 class="slds-m-right_small slds-align-middle slds-truncate">{NO_PS_CREDITS_FOUND_MSG}</h2>
+                </div>
+              </div>
+            </div>
+          </lightning-card>
+        </template>
+      </template> 
+      <!-- IBA-5448 : Early Engagement Customer Credit Section-->
+        <template if:true={shouldDisplayEEComponent}>
+           <!--DataTable-->
+           <lightning-card title="Available Early Engagement Credits">
+            <lightning-button label="Back to Account" slot="actions" onclick={goBackToAccount}></lightning-button>
+            <lightning-button label="Select Customer Credit Type" slot="actions" onclick={displayCustomerCreditModal} class="slds-m-left_x-small"></lightning-button>
+              <template if:true={shouldDisplayEECreditsTable}>
+                <div class="slds-align_absolute-center">
+                  <div class="slds-scrollable_y " style="height:10rem;width:120rem">
+                     <lightning-datatable 
+                        hide-checkbox-column 
+                        show-row-number-column 
+                        data={earlyEngagementCustomerCredits} 
+                        columns={columns} 
+                        key-field="Id">
+                     </lightning-datatable>
+                  </div>
+               </div>
+              </template>
+
+              <template if:false={shouldDisplayEECreditsTable}>
+                 <div class="slds-align_absolute-center">
+                    <div class=" slds-theme_shade" style="height:4rem;width:120rem">
+                      <div class=" slds-box slds-align_absolute-center">
+                        <h2 class="slds-m-right_small slds-align-middle slds-truncate">{NO_EE_CREDITS_FOUND_MSG}</h2>
+                      </div>
+                    </div>
+                  </div>
+              </template>
+           </lightning-card>
+        </template>
+      </div>
+        
+        <!--Dispaly Total Available Credit Starts-->
+        <div class="slds-box slds-clearfix" style="height:3rem; border-bottom:none;">
+           <div class="slds-float_right">
+              <h1  class="slds-p-right_medium slds-text-title_bold"  >{TOTAL_AVAILABLE_CREDITS_LBL} {totalAvailableCredits}</h1>
+              <br>
+           </div>
+        </div>
+        <!-- Display Total Availale Credit Section End-->
+      <!-- IBA-5488 : Ends -->
+
+      <br />
+      <br />
+      
+      <template if:true={psOfferingsList}>
+        <lightning-card title="Professional Services Offerings">
+          <lightning-datatable data={psOfferingsList} columns={psOfferingColumns} key-field="Id" oncellchange={hanldeCellChange} oncancel={handleCancel} data-id="psOfferingTable" suppress-bottom-bar hide-checkbox-column></lightning-datatable>
+          <template if:true={trainingOfferingsList}>
+            <lightning-card title="Training Services Offerings">
+              <lightning-datatable data={trainingOfferingsList} columns={psOfferingColumns} key-field="Id" oncellchange={hanldeTrainingCellChange} oncancel={handleCancel} data-id="trainingOfferingTable" suppress-bottom-bar hide-checkbox-column></lightning-datatable>
+            </lightning-card>
+          </template>
+          <div class="slds-box slds-clearfix" style="height:3rem; border-bottom:none;">
+            <div class="slds-float_right">
+              <h1 class="slds-p-right_medium slds-text-title_bold">{TOTAL_CREDITS_REDEEMED_LBL} {totalCreditsRedeemed}</h1>
+              <br />
+            </div>
+            <div class="slds-float_left">
+              <h1 class="slds-p-right_medium slds-text-title_bold">{TOTAL_AVAILABLE_CREDITS_LBL} {totalAvailableCredits}</h1>
+              <br />
+            </div>
+          </div>
+          <div style="margin-left: 81%; padding: 10px;">
+            <lightning-button variant="brand" label="Redeem Offering" title="Redeem Offering" onclick={handleSave} class="slds-m-left_x-small"></lightning-button>
+            <lightning-button label="Reset" title="Reset" onclick={handleCancel} class="slds-m-left_x-small"></lightning-button>
+            <br />
+          </div>
+        </lightning-card>
+      </template>
+      
+      <!--PopUp Modal Section Starts -->
+      <template if:true={isModalOpen}>  
+        <!-- Modal/Popup Box LWC starts here -->
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+          <div class="slds-modal__container" style="min-width: 66rem !important; max-width: 66rem !important;">
+            
+            <!-- Modal/Popup Box LWC header here -->
+            <header class="slds-modal__header">
+              <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small"></lightning-icon>
+                <span class="slds-assistive-text">Close</span>
+              </button>
+              <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Confirm PS Credit Redemption</h2>
+            </header>
+            
+            <!-- Modal/Popup Box LWC body starts here -->
+            <div class="slds-modal__content slds-p-around_small" id="modal-content-id-1" style="overflow:initial !important;">
+              <template if:true={showModalPSofferingtable}>
+                <lightning-card title="Professional Services Credits">
+                  <div>
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped slds-border_top slds-border_bottom slds-border_right slds-border_left">
+                      <thead>
+                        <tr class="slds-text-title_caps">
+                          <th scope="col">
+                            <div class="slds-truncate" title="Offering">Offering</div>
+                          </th>
+                          <th scope="col">
+                            <div class="slds-truncate" title="Units Required">Units Required</div>
+                          </th>
+                          <th scope="col">
+                            <div class="slds-truncate" title="Credits Redeemed">Credits Redeemed</div>
+                          </th>
+                          <th scope="col">
+                            <div class="slds-truncate" title="Start Date">Start Date</div>
+                          </th>
+                          <th scope="col">
+                            <div class="slds-truncate" title="'Time Zone">Time Zone</div>
+                          </th>
+                          <th scope="col">
+                            <div class="slds-truncate" title="Customer Contact">Customer Contact</div>
+                          </th>
+                          <th scope="col">
+                            <div class="slds-truncate" title="Notes">Notes</div>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <template for:each={psOfferingsListOriginalCopy} for:item="Offering" for:index="Id">
+                          <tr key={Offering.Id}>
+                            <td data-label="Offering">
+                              <div class="slds-cell-wrap"> {Offering.Name} </div>
+                            </td>
+                            <td data-label="Units Required">
+                              <div class="slds-cell-wrap"> {Offering.Units} </div>
+                            </td>
+                            <td data-label="Credits Redeemed">
+                              <div class="slds-cell-wrap"> {Offering.CreditsRequired} </div>
+                            </td>
+                            <td data-label="Start Date">
+                              <div class="slds-cell-wrap" style="margin-top:-10px">
+                                <lightning-input type="Date" label="" onchange={handleDate} data-id={Offering.Id} value={Offering.DeploymentStartDate} required></lightning-input>
+                              </div>
+                            </td>
+                            <td data-label="Time Zone">
+                              <div class="slds-cell-wrap" style="margin-top:-10px">
+                                <lightning-combobox class="comboBox" name="TimeZone" value={Offering.RequesterTimeZone} options={requestedTimeZones} placeholder="Select TimeZone" onchange={handleTimeZoneChange} data-id={Offering.Id} required></lightning-combobox>
+                              </div>
+                            </td>
+                            <td data-label="Customer Contact">
+                              <div class="slds-cell-wrap">
+                                <c-generic-search-component data-generic-index={Offering.Id} obj-name="Contact" icon-name="standard:contact" label-name="" placeholder="Select Contact" fields={fields} display-fields={displayFields} onlookup={handleLookup} source-id={Offering.Id} filter={Offering.filterClause}></c-generic-search-component>
+                              </div>
+                            </td>
+                            <td data-label="Notes">
+                              <div class="slds-cell-wrap" style="width:8rem">
+                                <c-generic-notes-component record-id={Offering.Id} record-name={Offering.Name} ongetnotesvalue={handleNotes}></c-generic-notes-component>
+                              </div>
+                            </td>
+                          </tr>
+                        </template>
+                        <template if:true={showAttackSurfaceDiscoveryReport}>
+                          <template for:each={attackSurfaceOfferingsListOriginalCopy} for:item="OfferingNew" for:index="Id">
+                            <tr key={OfferingNew.Id}>
+                              <td data-label="Offering">
+                                <div class="slds-cell-wrap"> {OfferingNew.Name} </div>
+                              </td>
+                              <td data-label="Units Required">
+                                <div class="slds-cell-wrap"> {OfferingNew.Units} </div>
+                              </td>
+                              <td data-label="Credits Redeemed">
+                                <div class="slds-cell-wrap"> {OfferingNew.CreditsRequired} </div>
+                              </td>
+                            </tr>
+                          </template>
+                        </template>
+                      </tbody>
+                    </table>
+                  </div>
+                </lightning-card>
+              </template>
+              
+              <!--this section is to show the Training offerings in the Modal screen-->
+              <template if:true={showModalTrainingofferingtable}>
+                <lightning-card title="Training Services Credits">
+                  <div>
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped slds-border_top slds-border_bottom slds-border_right slds-border_left">
+                      <thead>
+                        <tr class="slds-text-title_caps">
+                          <th scope="col">
+                            <div class="slds-truncate" title="Offering">Offering</div>
+                          </th>
+                          <th scope="col">
+                            <div class="slds-truncate" title="Units Required">Units Required</div>
+                          </th>
+                          <th scope="col">
+                            <div class="slds-truncate" title="Credits Redeemed">Credits Redeemed</div>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <template for:each={trainingOfferingsListOriginalCopy} for:item="trainingOffering" for:index="Id">
+                          <tr key={trainingOffering.Id}>
+                            <td data-label="trainingOffering">
+                              <div class="slds-cell-wrap"> {trainingOffering.Name} </div>
+                            </td>
+                            <td data-label="Units Required">
+                              <div class="slds-cell-wrap"> {trainingOffering.Units} </div>
+                            </td>
+                            <td data-label="Credits Redeemed">
+                              <div class="slds-cell-wrap"> {trainingOffering.CreditsRequired} </div>
+                            </td>
+                          </tr>
+                        </template>
+                      </tbody>
+                    </table>
+                  </div>
+                </lightning-card>
+              </template>
+            </div>
+            
+            <!-- Modal/Popup Box LWC footer starts here -->
+            <footer class="slds-modal__footer">
+              <button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Cancel</button>
+              <button class="slds-button slds-button_brand" onclick={submitDetails} title="Confirm Save">Confirm Save</button>
+            </footer>
+          </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+      </template>
+      <template if:true={error}> {error} </template>
+    </lightning-card>
+  </template>

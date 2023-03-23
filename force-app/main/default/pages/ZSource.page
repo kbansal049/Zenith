@@ -1,0 +1,3 @@
+<apex:page >
+ <apex:iframe src="https://salesforceconnect.mediafly.com/salesforce/v?sid={!$Api.Session_Id}&surl={!$Api.Enterprise_Server_URL_360}&viewerUrl=https://sfdcviewer.mediafly.com" scrolling="true" id="theIframe"/>>
+</apex:page>

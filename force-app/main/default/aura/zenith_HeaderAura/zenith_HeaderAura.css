@@ -1,0 +1,295 @@
+.THIS .notificationsWidth{
+    text-align:left !important;
+}
+
+.THIS .positions{
+  position: relative; 
+}
+.THIS .employee{
+    color:rgb(35,107,245);
+    font-weight:900 !important;
+	font-size:15px;
+}
+/* To hande the Employee>> part for different screens */
+ .THIS .empWithNav{
+    color:black;
+    padding:8px 0px;
+}
+
+/*User Profile*/
+.THIS .uiPopupTrigger{
+    text-align:left !important;
+}
+
+/*Notification Icon*/
+.THIS .unsNotificationsCounter{
+    text-align:right !important;
+}
+
+/*visiblity of profile menu name*/
+.THIS .selfServiceUserProfileMenu .profileName{
+    color:black !important;
+}
+
+/*Handle the bell icon */
+.THIS .forceIcon.slds-button__icon{
+    stroke: #34B5FF;
+    stroke-width: 4px;
+    outline-color: #34B5FF;
+    width: 14px;
+    height: 12px;
+    color: #34B5FF;
+    opacity: 1;
+    fill: none;
+}
+
+.THIS .forceCommunityGlobalNavigation .slds-list__item a {
+    font-size:15px;
+    text-transform:capitalize !important;
+    font-weight:700!important;
+
+}
+.THIS .forceCommunityGlobalNavigation .slds-list__item a span{
+    font-size:15px;
+    text-transform:capitalize;
+    font-weight:700!important;
+    margin-right:24px !important;
+	
+}
+.THIS .forceCommunityGlobalNavigation .slds-list__item a span:hover{
+    color:#236BF5;
+}
+
+
+.THIS .buttonPadding{
+    text-align:center;
+    margin:3% 0px;
+}
+
+.THIS .signIn{
+    border-radius: 22px;
+    background-color:rgb(35,107,245);
+    color:white;                           
+    font-weight:bold;                        
+    font-size: 15px;
+    border-color: #29b5e8; 
+    border: 1px solid #29b5e8;
+    opacity: 1; 
+   padding:6px 28px;
+
+}
+
+.THIS .outerLogo {
+     border-bottom: 1px solid rgba(0, 0,0, 0.16);
+}
+.THIS .loginSignUp{
+     border-bottom: 1px solid rgba(0, 0,0, 0.16);
+}
+
+@media only screen and (max-width: 767px){
+    .THIS .empWithNav{
+        display: none;
+    }
+
+    .THIS .empWithoutNav{
+        display:block;
+    }
+    
+    .THIS.navigationContainer{
+    	margin:0 6%;
+        margin-top:0.6rem !important;
+    }
+    
+.THIS .outerLogo{
+        border-bottom:0px;
+    }
+    
+.THIS .loginSignUp{
+     border-bottom: 0px;
+}
+    
+    
+    
+}
+
+    
+
+
+@media only screen and (min-width: 1025px)  {
+	 .THIS .empPaddingLarge{
+      /* padding-left:1rem;*/ 
+        text-align:center;
+    }
+}
+
+
+@media only screen and (min-width: 768px){
+    .THIS .empWithNav{
+        display: block;
+       text-align:center;
+    }
+   
+
+    .THIS .empWithoutNav{
+        display:none;
+    }
+     .THIS.navigationContainer{
+    	margin:0 10%;
+         margin-top:0.6rem !important;
+    }
+    
+    .THIS .cssForSmall{
+         display:none;
+    }
+    .THIS .cssForLarge{
+       
+        display:block;
+    }
+    
+}
+
+@media only screen and (min-width:1202px) and (max-width:2000px){
+    .THIS .cssForLarge{
+        text-align:right;
+        padding-right:2.9rem;
+    }
+}
+@media only screen and (min-width:2001px) {
+    .THIS .cssForLarge{
+        text-align:right;
+        padding-right:4.9rem;
+    }
+}
+
+@media only screen and (max-width:320px){
+    .THIS .profilemenuWidth{
+        padding-left:5px;
+    }
+    .THIS .unsNotificationsCounter{
+        text-align:center !important;
+    }
+    
+    .THIS .empWithoutNav{
+        margin-left:63%;
+        margin-top:0.675rem;
+         margin-bottom:4px;
+    }
+}
+
+@media only screen and (min-width:321px) and (max-width:424px){
+		 .THIS .profilemenuWidth{
+        padding-left:12px;
+    }
+    
+    .THIS .empWithoutNav{
+        margin-left:69%;
+        margin-top:0.675rem;
+              margin-bottom:4px;
+    }
+}
+
+@media only screen and (max-width:424px){
+   
+    
+    .THIS.navigationContainer{
+        margin:2%;
+    }
+    
+}
+@media only screen and (max-width:320px){
+
+.THIS .signIn{
+    font-size: 13px;
+    border-color: #29b5e8; 
+    border: 1px solid #29b5e8;
+    opacity: 1; 
+  	 padding:0px 12px;
+     margin-left:6px;
+    }
+}
+
+@media only screen and (min-width:310px) and (max-width:463px){
+
+.THIS .signIn{
+    font-size: 13px;
+    border-color: #29b5e8; 
+    border: 1px solid #29b5e8;
+    opacity: 1; 
+  	 padding:3px 12px;
+        margin-left:6px;
+    }
+}
+
+
+@media only screen and (min-width:375px) and (max-width:425px){
+     .THIS .empWithoutNav{
+        margin-left:69%;
+        margin-top:0.675rem;
+              margin-bottom:4px;
+    }
+}
+
+@media only screen and (min-width:425px) and (max-width:767px){
+     .THIS .empWithoutNav{
+        margin-left:75%;
+        margin-top:0.675rem;
+              margin-bottom:4px;
+    }
+}
+
+
+@media only screen and (min-width:768px) and (max-width:1024px){
+    
+.THIS .outerLogo{
+        border-bottom:0px;
+    }
+    
+.THIS .loginSignUp{
+     border-bottom: 0px;
+}
+    .THIS .notificationsWidth{
+        padding-right:22px !important;
+    }
+    
+     
+}
+
+@media only screen and (min-width:425px) and (max-width:523px){
+    .THIS .profilemenuWidth{
+        padding-left:13px;
+    }
+}
+@media only screen and (min-width:524px) and (max-width:767px){
+     .THIS .profilemenuWidth{
+        padding-left:34px;
+    }
+}
+@media only screen and (max-width:767px){
+	.THIS .cssForSmall{
+        display:block;
+    }
+    .THIS .cssForLarge{
+        display:none;
+    }
+}
+@media only screen and (min-width:1024px) and (max-width:1377px){
+	 .THIS .buttonPadding{
+    margin-bottom:3.1% !important;
+    }
+}
+
+
+@media only screen and (min-width:1377px) and (max-width:1921px){
+	 .THIS .buttonPadding{
+    margin-bottom:7px !important;
+    }
+}
+
+
+
+@media only screen and (min-width:2312px) and (max-width:2560px){
+     
+    .THIS .buttonPadding{
+        margin-bottom:0.66% !important;
+    }
+}

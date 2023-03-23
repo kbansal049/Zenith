@@ -1,0 +1,184 @@
+<!--
+  @description       : 
+  @author            : Priyanka Pise
+  @group             : 
+  @last modified on  : 11-07-2022
+  
+-->
+
+<template>
+    <c-custom-toast-component auto-close-time="3000"></c-custom-toast-component>
+    <lightning-record-view-form record-id={accountId} object-api-name="Account">
+        <lightning-card variant="Narrow" title={acctName} icon-name="standard:account">
+        <lightning-button label="New Tenant"  slot="actions" value="create new tenant" class="slds-p-right_small" onclick={newtenantforinternal}></lightning-button>
+        <lightning-button label="Back to Account" slot="actions" onclick ={navigateToAccountRecord} class="slds-p-right_small"></lightning-button>
+            <div class="slds-p-horizontal_small">
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-output-field field-name="Name"></lightning-output-field>                      
+                    </div>
+                   
+                </div>
+            </div>
+        </lightning-card>
+    </lightning-record-view-form>
+    
+    <lightning-card variant="Narrow">
+        <div class="slds-p-horizontal_small">
+        <b>{viewAs}</b>    
+        <lightning-formatted-rich-text label={viewAs} value={name}></lightning-formatted-rich-text>
+        &nbsp;&nbsp;<lightning-button label="Request For User" slot="actions" value="Request for user" class="slds-p-right_small" onclick={openuserselectionpopup}></lightning-button></div>
+
+    </lightning-card>
+  
+
+
+        <div class="slds-p-vertical_small"></div>
+        <lightning-card variant="Narrow">
+            <h3 class="slds-section-title--divider slds-m-bottom--small" style="background-color: rgb(176 196 223);color: black; text-align: center;">
+                <b>Pending PRG</b>
+            </h3>
+            <div class="slds-m-around_medium">
+                <lightning-button label="Expand All" variant="brand-outline" disabled={isPendingExpandAllButtonDisabled} value="Pending Provisions Accordian Section" class="slds-m-around_small" onclick={expandAllActiveAccordianSections}></lightning-button>
+                <lightning-button label="Collapse All" variant="brand-outline" disabled={isPendingCollapseAllButtonDisabled} value="Pending Provisions Accordian Section" class="slds-m-around_small" onclick={collapseAllActiveAccordianSections}></lightning-button>
+            </div>
+            <template if:true={pgWrap}>
+                
+                <template if:true={pgWrap.tenantList}>
+                    <lightning-accordion allow-multiple-sections-open active-section-name={pendingProvisionActiveSections}>
+                        <template for:each={pgWrap.tenantList} for:item="tenant">
+                            <lightning-accordion-section name={tenant.sectionName} label={tenant.sectionName} style="font-weight: bold;" key={tenant.sectionName}>
+                                <template if:true={tenant.isTrialTenant}>
+                                    <div class="slds-p-vertical_small">
+                                        <span class="slds-badge_lightest">
+                                            <lightning-button variant="brand-outline" label={tenant.pGroup.Name} title={tenant.pGroup.Name} value={tenant.pGroup.Id} icon-name="utility:new_window" icon-position="right" class="slds-m-left_x-small" onclick={navigateToPRGRecPage}></lightning-button>&nbsp;&nbsp;&nbsp;
+                                        </span>
+                                        <span class="slds-badge slds-theme_info" style="background-color: rgb(235 245 255);color: black; text-align: center;">
+                                            Type: {tenant.pGroup.Provisioning_Type__c} &nbsp;&nbsp;||&nbsp;&nbsp; Status: {tenant.pGroup.Status__c} &nbsp;&nbsp;||&nbsp;&nbsp; Product Line: {tenant.pGroup.Product_Line__c} &nbsp;&nbsp;||&nbsp;&nbsp; Process: {tenant.pGroup.Provisioning_Process__c}&nbsp;&nbsp;||&nbsp;&nbsp; Approval Status: {tenant.pGroup.Approval_Status__c}
+                                        </span>
+                                    </div>
+                                </template>
+                                <template if:true={tenant.isSubscriptionTenant}>
+                                    <span class="slds-badge_lightest">
+                                        <lightning-button variant="brand-outline" label={tenant.pGroup.Name} title={tenant.pGroup.Name} value={tenant.pGroup.Id} icon-name="utility:new_window" icon-position="right" class="slds-m-left_x-small" onclick={navigateToPRGRecPage}></lightning-button>&nbsp;&nbsp;&nbsp;
+                                    </span>
+                                   
+                                </template>
+                                <div class="slds-p-vertical_small">
+                                    <lightning-datatable 
+                                        key-field="Id" 
+                                        data={tenant.pProducts} 
+                                        columns={columnsTT} 
+                                        hide-checkbox-column=true 
+                                        show-row-number-column=true 
+                                        resize-column-disabled=true 
+                                        class="datatable-custom-style">
+                                    </lightning-datatable>
+                                </div>
+                            </lightning-accordion-section>
+                        </template>
+                    </lightning-accordion>
+                </template>
+            </template>
+        </lightning-card>
+  
+
+    <div class="slds-p-vertical_small"></div>
+    <lightning-card variant="Narrow">
+        <h3 class="slds-section-title--divider slds-m-bottom--small" style="background-color: rgb(176 196 223);color: black; text-align: center;">
+                <b>Provisioned Tenants</b>
+        </h3>
+        <lightning-accordion allow-multiple-sections-open active-section-name={provisionedTraialTenantActiveSections}>
+            <template if:true={tenantwrap}>
+                <template for:each={tenantwrap} for:item="tenant">
+                    <template if:true={tenant.zscObjWrapper}>
+                        <lightning-accordion-section name={tenant.zscObjWrapper.Name} label={tenant.zscObjWrapper.Name} style=" font-weight: bold;" key={tenant.zscObjWrapper.Name}>
+                            <div class="slds-p-vertical_small">
+                                <span class="slds-badge_lightest">
+                                    <lightning-button variant="brand-outline" label={tenant.zscObjWrapper.Name} title={tenant.zscObjWrapper.Name} value={tenant.zscObjWrapper.Id} icon-name="utility:new_window" icon-position="right" class="slds-m-left_x-small" onclick={navigateToZSCRecPage}></lightning-button>&nbsp;&nbsp;&nbsp;
+                                </span></div>
+                                    <template if:true={tenant.pgWrapper}>
+                                        <div class="slds-p-vertical_small">
+                                            <h3 class="slds-section-title--divider slds-m-bottom--small" style="background-color: rgb(238 238 238);color: black;border-radius:25px;text-align: center;">
+                                                <b>Products</b>
+                                            </h3>
+                                            <lightning-datatable 
+                                                            key-field="Id" 
+                                                            data={tenant.pgWrapper.Provisioning_Products__r} 
+                                                            columns={columnsTT} 
+                                                            hide-checkbox-column=true 
+                                                            show-row-number-column=true 
+                                                            resize-column-disabled=true 
+                                                            class="datatable-custom-style">
+                                            </lightning-datatable>
+                                            </div>
+                                            <div class="slds-p-vertical_small">
+                                                <h3 class="slds-section-title--divider slds-m-bottom--small" style="background-color: rgb(238 238 238);color: black;border-radius:25px;text-align: center;">
+                                                    <b>Contacts</b>
+                                                </h3>
+                                                <lightning-datatable 
+                                                            key-field="Id" 
+                                                            data={tenant.pgWrapper.Provisioning_Contacts__r} 
+                                                            columns={columnsCC} 
+                                                            hide-checkbox-column=true 
+                                                            show-row-number-column=true 
+                                                            resize-column-disabled=true 
+                                                            class="datatable-custom-style">
+                                                </lightning-datatable>
+                                            </div>
+                                    </template>
+                        </lightning-accordion-section>                        
+                    </template>
+                </template>
+            </template>
+        </lightning-accordion>
+    </lightning-card>
+
+<template if:true={showuserselection}>
+        <div class="slds-p-vertical_small"></div>
+            <div class="slds-modal slds-fade-in-open slds-backdrop">
+                <div class="slds-modal__container">
+                    <lightning-card>
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse">
+                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small" onclick={closeuserselection}></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <!--HEADER Section-->
+                    <div class="slds-modal__header">
+                        <h1 id="modal-heading-02" class="slds-modal__title slds-hyphenate">User Selection</h1>
+                    </div>
+                    <!--Body Section-->
+                    <div id="modal-content-id-2" class="slds-modal__content slds-p-around_medium" style="height:280px">
+                       
+                        <template if:false={showSuccess}>
+                            <p style="text-align: center;">
+                              						
+								 <c-generic-search-component           
+                                             obj-name="user"
+                                             icon-name="standard:user"
+                                             label-name=""
+                                             placeholder="Type User name to view Tenants" 
+                                             fields={fields}
+                                             display-fields={displayFields}
+                                             onlookup={handleUserSelected}                                              
+                                             value-id={selecteduser}
+                                             filter={filterClause}>
+                                 </c-generic-search-component>
+										  
+                            </p>
+                        </template>
+                    </div>
+                    <div><br/></div>
+                    <div class="slds-align_absolute-center">
+                        <lightning-button label="Close" variant="brand-outline" onclick={closeuserselection}></lightning-button>&nbsp;&nbsp;
+                        <lightning-button label="View Tenants" variant="brand" onclick={sendUserSelection}></lightning-button>
+                    </div><br/>
+                    </lightning-card>
+                    <!--Footer Section-->
+                </div>
+            </div>
+    </template>
+
+
+
+</template>

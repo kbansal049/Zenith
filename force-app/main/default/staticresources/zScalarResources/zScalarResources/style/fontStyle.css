@@ -1,0 +1,24 @@
+@font-face {
+  font-family: 'Haptik-Regular';
+  src: url('https://zenith-zscaler-support.cs196.force.com/sfsites/c/resource/zScalarResources/zScalarResources/zenithFonts/GT-Haptik-ZS-Regular.eot'); /* IE9 Compat Modes */
+  src: url('https://zenith-zscaler-support.cs196.force.com/sfsites/c/resource/zScalarResources/zScalarResources/zenithFonts/GT-Haptik-ZS-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('https://zenith-zscaler-support.cs196.force.com/sfsites/c/resource/zScalarResources/zScalarResources/zenithFonts/GT-Haptik-ZS-Regular.woff') format('woff'), /* Modern Browsers */
+       url('https://zenith-zscaler-support.cs196.force.com/sfsites/c/resource/zScalarResources/zScalarResources/zenithFonts/GT-Haptik-ZS-Regular.ttf')  format('truetype'), /* Safari, Android, iOS */
+       url('https://zenith-zscaler-support.cs196.force.com/sfsites/c/resource/zScalarResources/zScalarResources/zenithFonts/GT-Haptik-ZS-Regular.svg#svgFontName') format('svg'); /* Legacy iOS */
+}
+@font-face {
+  font-family: 'Haptik-Bold';
+  src: url('https://zenith-zscaler-support.cs196.force.com/sfsites/c/resource/zScalarResources/zScalarResources/zenithFonts/GT-Haptik-ZS-Bold.eot'); /* IE9 Compat Modes */
+  src: url('https://zenith-zscaler-support.cs196.force.com/sfsites/c/resource/zScalarResources/zScalarResources/zenithFonts/GT-Haptik-ZS-Bold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('https://zenith-zscaler-support.cs196.force.com/sfsites/c/resource/zScalarResources/zScalarResources/zenithFonts/GT-Haptik-ZS-Bold.woff') format('woff'), /* Modern Browsers */
+       url('https://zenith-zscaler-support.cs196.force.com/sfsites/c/resource/zScalarResources/zScalarResources/zenithFonts/GT-Haptik-ZS-Bold.ttf')  format('truetype'), /* Safari, Android, iOS */
+       url('https://zenith-zscaler-support.cs196.force.com/sfsites/c/resource/zScalarResources/zScalarResources/zenithFonts/GT-Haptik-ZS-Bold.svg#svgFontName') format('svg'); /* Legacy iOS */
+}
+@font-face {
+  font-family: 'Haptik-Medium';
+  src: url('https://zenith-zscaler-support.cs196.force.com/sfsites/c/resource/zScalarResources/zScalarResources/zenithFonts/GT-Haptik-ZS-Medium.eot'); /* IE9 Compat Modes */
+  src: url('https://zenith-zscaler-support.cs196.force.com/sfsites/c/resource/zScalarResources/zScalarResources/zenithFonts/GT-Haptik-ZS-Medium.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('https://zenith-zscaler-support.cs196.force.com/sfsites/c/resource/zScalarResources/zScalarResources/zenithFonts/GT-Haptik-ZS-Medium.woff') format('woff'), /* Modern Browsers */
+       url('https://zenith-zscaler-support.cs196.force.com/sfsites/c/resource/zScalarResources/zScalarResources/zenithFonts/GT-Haptik-ZS-Medium.ttf')  format('truetype'), /* Safari, Android, iOS */
+       url('https://zenith-zscaler-support.cs196.force.com/sfsites/c/resource/zScalarResources/zScalarResources/zenithFonts/GT-Haptik-ZS-Medium.svg#svgFontName') format('svg'); /* Legacy iOS */
+}

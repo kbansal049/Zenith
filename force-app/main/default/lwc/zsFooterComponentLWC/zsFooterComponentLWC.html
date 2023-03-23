@@ -1,0 +1,103 @@
+<template>
+    <div class="container">
+        <div class="slds-grid slds-wrap footerSubContainer">
+            <!-- Branding and Branding Text-->
+            <div class="slds-col slds-size_12-of-12 slds-small-size_12-of-12 slds-medium-size_12-of-12 slds-large-size_3-of-12">
+                <div class="  slds-grid slds-wrap">
+                    <div class="slds-col slds-size_12-of-12 slds-small-size_12-of-12 slds-medium-size_12-of-12 slds-large-size_10-of-12 slds-p-left_small">
+                        <ul>
+                            <li class="footHeading branding_li">Zenith Community</li>
+                            <li><hr class="brandingRuler"></li>
+                            <li class="branding_text branding_li">An open, collaborative knowledge base for customers, users, and partners</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer links -->
+            <div class="slds-col slds-size_12-of-12 slds-small-size_12-of-12 slds-medium-size_12-of-12 slds-large-size_9-of-12">
+                <div class="slds-grid slds-wrap">
+                    <template for:each={fetchFooter} for:item="labels" for:index="index">
+                        <div key={labels.order} data-id={labels.order} class="slds-col slds-size_6-of-12 slds-small-size_6-of-12 slds-medium-size_6-of-12 slds-large-size_3-of-12 slds-p-left_small">
+                            <div class="mainLabels footHeading">
+                                <template if:false={labels.checkParentUrl}>
+                                    <a>{labels.label}</a>
+                                </template>
+                                <template if:true={labels.checkParentUrl}>
+                                    <a href={labels.url}>{labels.label}</a>
+                                </template>
+                            </div>
+                            <template for:each={labels.childTabs} for:item="childTabs" for:index="index">
+                                <span key={childTabs.order} data-id={childTabs.order}>
+                                    <div class="childLabels liChild"><a href={childTabs.url} target="_self">{childTabs.label}</a></div>
+                                </span>
+                            </template>
+                        </div>
+                    </template>
+                    <!-- <div class="slds-col slds-size_6-of-12 slds-small-size_6-of-12 slds-medium-size_6-of-12 slds-large-size_3-of-12">
+                        <div class="slds-grid slds-wrap slds-grid_vertical slds-p-left_small">
+                            <ul>
+                                <li class="slds-col footHeading">Community</li>
+                                <li class="slds-col liFirstChild liChild"><a href="https://community.zscaler.com/c/get-started/123/none">Get Started</a></li>
+                                <li class="slds-col liChild"><a href="https://community.zscaler.com/c/cfa/91">Tech Thoughts</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_6-of-12 slds-small-size_6-of-12 slds-medium-size_6-of-12 slds-large-size_3-of-12">
+                        <div class="slds-grid slds-wrap slds-grid_vertical slds-p-left_small">
+                            <ul>
+                                <li class="slds-col footHeading">Support</li>
+                                <li class="slds-col liFirstChild liChild"><a href="#">Tech Support</a></li>
+                                <li class="slds-col liChild"><a href="#">Documentation</a></li>
+                                <li class="slds-col liChild"><a href="#">Training &amp; Certification</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_6-of-12 slds-small-size_6-of-12 slds-medium-size_6-of-12 slds-large-size_3-of-12">
+                        <div class="slds-grid slds-wrap slds-grid_vertical slds-p-left_small">
+                            <ul>
+                                <li class="slds-col footHeading zsMedium">Zscaler</li>
+                                <li class="slds-col liFirstChild liChild"><a href="https://www.zscaler.com/?_ga=2.255021192.1297045499.1677220324-609912990.1676542979&_gl=1*1mdzzq0*_ga*NjA5OTEyOTkwLjE2NzY1NDI5Nzk.*_ga_10SPJ4YJL9*MTY3NzIyMjYxOS4xOS4xLjE2NzcyMjQzNjIuNi4wLjA">Zscaler.com</a></li>
+                                <li class="slds-col liChild"><a href="https://reg.zenithlive.com/flow/zscaler/zenithlive23/home/page/event?_gl=1%2A1c4rj2d%2A_ga%2ANjA5OTEyOTkwLjE2NzY1NDI5Nzk.%2A_ga_10SPJ4YJL9%2AMTY3NzIyMjYxOS4xOS4xLjE2NzcyMjQ0MjQuNjAuMC4w">Zenith Live</a></li>
+                                <li class="slds-col liChild"><a href="https://www.zscaler.com/it-starts-with-zero?_ga=2.156835003.1297045499.1677220324-609912990.1676542979&_gl=1*1c4rj2d*_ga*NjA5OTEyOTkwLjE2NzY1NDI5Nzk.*_ga_10SPJ4YJL9*MTY3NzIyMjYxOS4xOS4xLjE2NzcyMjQ0MjQuNjAuMC4w">Zscaler Zero Trust</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_6-of-12 slds-small-size_6-of-12 slds-medium-size_6-of-12 slds-large-size_3-of-12">
+                        <div class="slds-grid slds-wrap slds-grid_vertical slds-p-left_small">
+                            <ul>
+                                <li class="slds-col footHeading zsMedium">CXO REvolutionaries</li>
+                                <li class="slds-col liFirstChild liChild"><a href="https://revolutionaries.zscaler.com/?_ga=2.157414202.1297045499.1677220324-609912990.1676542979&_gl=1*1p0i4o4*_ga*NjA5OTEyOTkwLjE2NzY1NDI5Nzk.*_ga_10SPJ4YJL9*MTY3NzIyMjYxOS4xOS4xLjE2NzcyMjQ1MDIuNjAuMC4w">CXO Home</a></li>
+                                <li class="slds-col liChild"><a href="https://revolutionaries.zscaler.com/insights">Insights</a></li>
+                                <li class="slds-col liChild"><a href="https://community.revolutionaries.zscaler.com/login">Knowledge Base</a></li>
+                            </ul>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+
+            <lightning-button variant="base" label="Top" class="btnClass" icon-name="utility:arrowup" icon-position="right" onclick={scrollToTop}></lightning-button>
+
+            <hr class="rulerColor">
+
+            <!-- Privacy and Copyright links -->
+
+            <div class="slds-col slds-size_12-of-12 slds-small-size_12-of-12 slds-medium-size_12-of-12 slds-large-size_8-of-12 slds-p-horizontal_small privacyLinks">
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_2-of-12 slds-medium-size_2-of-12 footerLinks liChild"><a class="privacyAnchor" href={privacyUrl}>Privacy</a></div>
+                    <div class="slds-col slds-size_3-of-12 slds-medium-size_3-of-12 footerLinks liChild"><a class="termsAnchor" href={termsUrl}>Terms of service</a></div>
+                    <div class="slds-col slds-size_2-of-12 slds-medium-size_2-of-12 footerLinks aboutText liChild"><a class="aboutAnchor" href={aboutUrl}>About</a></div>
+                    <div class="slds-col slds-size_1-of-12 slds-medium-size_1-of-12 footerLinks faqText liChild"><a class="faqAnchor" href={faqUrl}>FAQ</a></div>
+                    <div class="slds-col slds-size_4-of-12 slds-medium-size_4-of-12 footerLinks copyrightText liChild">Copyright 2008-2023 Zscaler</div>
+                </div>
+            </div>
+            <div class="slds-col slds-size_12-of-12 slds-small-size_12-of-12 slds-medium-size_12-of-12 slds-large-size_4-of-12 slds-text-align--center slds-p-horizontal_small">
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_3-of-12 "><a href={facebook} target="_blank"><img src={fbLogo} alt="Facebook"></a></div>
+                    <div class="slds-col slds-size_3-of-12 "><a href={linkedIn} target="_blank"><img src={linkedInLogo} alt="LinkedIn"></a></div>
+                    <div class="slds-col slds-size_3-of-12 "><a href={twitter} target="_blank"><img src={twitterLogo} alt="YouTube"></a></div>
+                    <div class="slds-col slds-size_3-of-12 "><a href={youTube} target="_blank"><img src={ytLogo} alt="Twitter"></a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

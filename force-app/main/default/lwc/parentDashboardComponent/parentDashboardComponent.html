@@ -1,0 +1,52 @@
+<template>
+  <lightning-card>
+
+    <!-- Paent Order Tracker Component -->
+  <!--  <template if:true={isShowParentOrderTrackerComponent}> -->
+    <div class="showParent">
+      <div>
+
+        <div style="height: 50px;
+            border-bottom: 1px solid;
+            background-color: rgb(27, 82, 151);">
+          <p style="color: white;
+              padding-left: 23px;
+              padding-top: 14px;
+              font-weight: bold;">ORDER TRACKER</p>
+        </div>
+          <!-- Refresh button -->
+          <div style="margin-right: 30%;margin-bottom: 30px;margin-top: 50px;margin-left: 10px;" class="slds-grid">
+            <lightning-button-icon icon-name="utility:refresh" variant="brand" alternative-text="refresh"
+              title="refresh" onclick={handleRefresh}></lightning-button-icon>
+          </div>
+        <!-- Export All Datatable Button -->
+        <div style="margin-left: 90%;margin-bottom: 10px;margin-top: 10px;margin-right: 10px;" class="slds-grid">
+          <a icon-name="utility:download" target="_self"
+            class="slds-button slds-button_brand slds-col slds-size_12-of-12" onclick={download}
+            style="margin-left: 0%;margin-right: 5px;">Export All</a>
+        </div>
+
+        <!--xlsxMain component calling-->
+        <div class="slds-m-around_medium">
+          <c-xlsx-main-to-export-dashboards header-list={xlsHeader} filename={filename}
+            worksheet-name-list={workSheetNameList} sheet-data={xlsData}></c-xlsx-main-to-export-dashboards>
+        </div>
+
+        <!-- Child Components of Order Tracker Dashboard on based Status value  -->
+        <c-respond-to-rep-dashboard onshowparentcomponent={handleChildDashboard} onnewevent={handleNewEvent} is-back-button-clicked ={isBackButtonClicked} current-page={currentPage}></c-respond-to-rep-dashboard>
+        <c-orders-pending-q-r-dashboard onshowparentcomponent={handleChildDashboard} is-back-button-clicked ={isBackButtonClicked} current-pageqr={currentPageqr}></c-orders-pending-q-r-dashboard>
+        <c-approved-for-processing-dashboard onshowparentcomponent={handleChildDashboard} is-back-button-clicked ={isBackButtonClicked} current-pageap={currentPageap}></c-approved-for-processing-dashboard>
+        <c-po-pending-for-q-c-dashboard onshowparentcomponent={handleChildDashboard} is-back-button-clicked ={isBackButtonClicked} current-pageqc={currentPageqc}></c-po-pending-for-q-c-dashboard>
+        <c-po-pending-for-re-qr onshowparentcomponent={handleChildDashboard} is-back-button-clicked ={isBackButtonClicked} current-page-re-qr={currentPageReQr}></c-po-pending-for-re-qr>
+      </div>
+      </div>
+
+    <!-- Child Mail Chain Component -->
+    <template if:false={isShowParentOrderTrackerComponent}>
+      <c-mail-chain-screen order-tracker-id={orderTrackerId} tracker-type={isEmailTracker}
+        is-show-parent-order-tracker-component={isShowParentOrderTrackerComponent} current-page-re-qr={currentPageReQr} current-page={currentPage} current-pageqc={currentPageqc} current-pageap={currentPageap} current-pageqr={currentPageqr}
+        onshowparentcomponent={handleMailChainEvent}></c-mail-chain-screen>
+    </template>  
+  </lightning-card>
+
+</template>

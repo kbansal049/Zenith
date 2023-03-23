@@ -1,0 +1,60 @@
+.slds-form-element__label{
+    color: rgb(0, 23, 106);
+    font-family: "Lato";
+    font-size: 15px;
+    height: 50px;
+}
+
+.recordEditFormBorder{
+	border: 1px solid #012673;
+    border-radius: 10px;
+    flex-direction: row;
+    height: 100%;
+    padding: 12px 24px;
+    transition: all 1.7s;
+}
+
+.textFormat{
+	color: rgb(0, 23, 106);
+    font-family: "Lato";
+    font-size: 15px;
+    height: 50px;
+}
+
+.formHeaderText{
+	color: rgb(0, 23, 106);
+    font-family: "Lato";
+    font-size: 20px;
+    height: 50px;
+}
+
+.lightning-input-field{
+  color: rgb(0, 23, 106);
+  font-family: "Lato";
+  font-size: 15px;
+  height: 50px;
+}
+
+.btn {
+      background-color: #236bf5;
+      color: #fff;
+      display: inline-block;
+	  font-size: large;
+	  font-weight: 400;
+      letter-spacing: .03em;
+      margin: 12px 0;
+      padding: 12px 8px;
+      text-align: center;
+      transition: ease-in-out .25s;
+      z-index: 1;
+      width: fit-content;
+      cursor: pointer;
+	  border: none;
+	  border-radius: 18px;
+      padding: 7px 29px;
+    }
+	
+.centerBtn {
+    display: flex;
+	justify-content: space-around;
+}

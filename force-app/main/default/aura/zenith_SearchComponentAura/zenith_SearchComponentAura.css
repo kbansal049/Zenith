@@ -1,0 +1,65 @@
+.THIS .searchBar{
+    width: 50%!important;
+    margin-left: 25%!important;
+}
+
+.THIS .contentWrapper{
+    margin-top: 35px;
+    background-color: #fff;
+    border-radius: 3rem;
+}
+
+.THIS .brandingHeader{
+    padding-top: 40px;
+    font-weight: bold;
+    font-size: 48px;
+    font-family: "Haptik-Regular";
+    color: #fff;
+}
+.THIS .brandingText{
+    font-size: 22px;
+    color: #fff;
+    font-family: "Haptik-Regular";
+}
+
+.THIS .slds-input-has-icon{
+    left: 92%;
+}
+.THIS .slds-input__icon.inputIcon{
+    color: #236BF5;
+}
+
+.THIS .inputWrapper{
+    padding-left: 1.3rem;
+}
+
+.THIS .inputSpinner{
+    top: 5.3rem;
+}
+
+@media screen and (min-width: 2100px){
+    .THIS .slds-input-has-icon{
+        left: 95%;
+    }    
+}
+@media screen and (min-width: 768px) and (max-width: 1200px){
+    .THIS .slds-input-has-icon{
+        left: 90%;
+    }    
+}
+@media screen and (min-width: 320px) and (max-width: 425px){
+    .THIS .slds-input-has-icon{
+        left: 85%;
+        visibility: hidden;
+    }    
+}
+@media screen and (min-width: 426px) and (max-width: 767px){
+    .THIS .slds-input-has-icon{
+        left: 87%;
+    }
+    .THIS .searchBar{
+        width: 60%!important;
+        margin-left: 20%!important;
+    }
+    
+}

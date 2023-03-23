@@ -1,0 +1,37 @@
+<template>
+
+
+     <template if:true={showBanner} >
+        <div class=" slds-grid banner  " style="margin-top:1%"  >
+            <div class="width_webkit display_inline widthClass" style="align-items: center;">
+                <template if:true={showBannerIcon}>
+                <span class=" icon display_inline"> <img src={announcementIcon}>
+                </span>
+                </template>
+                <div class="display_inline bannerText">
+                    <div class="TextColor display_inline max_width min_Width">
+                        <div class="ellipses font_size">
+                            <p class="content">
+                            {bannerText}
+                            </p>
+                            
+                            </div>
+                    </div>
+
+                </div>
+                <template if:true={readmore}>
+                    <div class="TextColor" ><a
+                            class="readmoreurl font_size read-more TextColor display_inline" onclick={navigateToSite}
+                            target="_blank">read more
+                        </a></div>
+                </template>
+            </div>
+        </div>
+    </template> 
+
+
+
+   
+
+    
+</template>

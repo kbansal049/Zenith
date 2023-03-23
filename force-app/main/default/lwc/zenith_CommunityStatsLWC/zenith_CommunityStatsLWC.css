@@ -1,0 +1,41 @@
+.container{
+    height: 60px;
+    background-color: #E9F0FE;
+    font-family: "Haptik-Bold";
+    /* font-weight: bold!important; */
+    font-size: 18px;
+    color: black;
+}
+
+/* .likeIcon{
+    --slds-c-icon-color-foreground-default: olive;
+} */
+p{
+    display: inline;
+}
+.divBorders{
+    border-right: 1px solid #D3E1FD;
+}
+
+@media screen and (max-width: 565px){
+    .container{
+        height: 85px!important;
+    }
+}
+
+.imgSpan{
+    padding-right: 5px;
+}
+.pngIcon{
+    margin-top: -7px;
+}
+.postIcon{
+    margin-top: -6px;
+}
+
+@media screen and (min-width: 769px){
+    .contentContainer{
+        margin-left: 8%;
+        margin-right: 8%;
+    }
+}

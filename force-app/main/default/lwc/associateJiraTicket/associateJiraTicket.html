@@ -1,0 +1,246 @@
+<template>
+    <lightning-card>
+        <div class="slds-align_absolute-center" style="height: 3rem;font-size: x-large;font-weight: bold;">
+            <span>Associate {requestType} Ticket</span>
+        </div>
+        <hr />
+
+        <div class="slds-p-horizontal_small">
+            <template if:false={isLoaded}>
+                <div class="slds-is-relative" style="height:100px;">
+                    <lightning-spinner alternative-text="Loading..." variant="brand">
+                    </lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Error Msg -->
+            <template if:true={hasError}>
+                <div class="slds-p-top_x-small">
+                    <div class="demo-only" style="height:2rem">
+                        <div class="slds-notify_container slds-is-relative">
+                            <div class="slds-text-color_error">
+                                <div class="slds-notify__content">
+                                    <h2 class="slds-text-heading_small">{errMsg}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-align_absolute-center slds-p-top_x-large">
+                        <lightning-button variant="base" label="Back to the Request" title="Back to the Request"
+                            onclick={goback}>
+                        </lightning-button>
+                    </div>
+                </div>
+            </template>
+
+            <template if:true={isRedirect}>
+                <div class="slds-p-top_x-small">
+                    <div class="slds-align_absolute-center slds-p-vertical_large">
+                        <p class="slds-text-heading_medium slds-text-color_success">
+                            Your request has been submitted successfully.
+                            </br>
+                            You will be redirected back in (5) seconds : ({count}) seconds
+                        </p>
+                    </div>
+                </div>
+            </template>
+
+            <template if:true={isCancel}>
+                <div class="">
+                    <div class="slds-align_absolute-center slds-p-vertical_small">
+                        <template if:true={rsltWrap}>
+                            <template if:true={rsltWrap.type}>
+                                <p class="slds-text-heading_medium slds-text-color_success">
+                                    You will be redirected to {rsltWrap.type} in (5) seconds : ({count}) seconds
+                                </p>
+                            </template>
+                            <template if:false={rsltWrap.type}>
+                                <p class="slds-text-heading_medium slds-text-color_success">
+                                    You will be redirected to patent record in (5) seconds : ({count}) seconds
+                                </p>
+                            </template>
+                        </template>
+                        <template if:false={rsltWrap}>
+                            You will be redirected to patent record in (5) seconds : ({count}) seconds
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <template if:true={isLoaded}>
+
+                <template if:true={showActions}>
+                    <template if:true={rsltWrap}>
+                        <template if:true={showRecordTable}>
+                            <div>
+                                Kindly select any ticket from the below and click on Submit to associate to the
+                                {rsltWrap.type}.
+                            </div>
+
+                            <table
+                                class="slds-table slds-table_cell-buffer slds-table_bordered slds-var-m-top_medium classic-table-css">
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th class="classic-th-css" scope="col">
+                                            <div class="slds-truncate">
+                                                #
+                                            </div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="JIRA ID">JIRA ID</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="Account">Summary</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="Assignee">Assignee</div>
+                                        </th>
+
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="Status">Status</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="Ticket Type">Ticket Type</div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={rsltWrap.recordWrapperList} for:item="obj">
+                                        <tr id={obj.rowId} key={obj.rowId}>
+                                            <td scope="col">
+                                                <div>
+                                                    <lightning-input data-row-id={obj.rowId} type="checkbox"
+                                                        variant="label-hidden" value={obj.isSelected}
+                                                        onchange={updateTicketSelection}>
+                                                    </lightning-input>
+                                                </div>
+                                            </td>
+                                            <td scope="col">
+                                                <div>
+                                                    {obj.record.JIRA_Ticket_Number__c}
+                                                </div>
+                                            </td>
+                                            <td scope="col">
+                                                <div>
+                                                    <!--{obj.record.Account__c}-->
+                                                    <template if:true={obj.record.Summary__c}>
+                                                        {obj.record.Summary__c}
+                                                    </template>
+                                                </div>
+                                            </td>
+                                            <td scope="col">
+                                                <div>
+                                                    {obj.record.Assignee__c}
+                                                </div>
+                                            </td>
+
+                                            <td scope="col">
+                                                <div>
+                                                    {obj.record.Status__c}
+                                                </div>
+                                            </td>
+                                            <td scope="col">
+                                                <div>
+                                                    {obj.record.Ticket_Type__c}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+
+                            <div class="slds-p-top_large slds-align_absolute-center">
+
+                                <button class="slds-button slds-button_neutral" onclick={goback}
+                                    title="Cancel">Cancel</button>
+                                <button class="slds-button slds-button_brand" onclick={checkForModalConfirmation}
+                                    title="Submit">Submit</button>
+                            </div>
+                        </template>
+                        <template if:false={showRecordTable}>
+                            No records available to associate with {requestType} Ticket.
+                            <br />
+                            <lightning-button variant="base" label="Click here" onclick={goback}>
+                            </lightning-button>&nbsp; to go back to the {rsltWrap.type} record.
+                        </template>
+                    </template>
+                </template>
+                <template if:false={rsltWrap}>
+                    <div class="slds-is-relative" style="height:100px;">
+                        <lightning-spinner alternative-text="Loading..." size="small" variant="brand">
+                        </lightning-spinner>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+
+
+    <!--Use template if:true to display/hide popup based on isModalOpen value-->
+    <template if:true={isModalOpen}>
+        <!-- Modal/Popup Box LWC starts here -->
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box LWC header here -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                            size="small">
+                        </lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Are you sure?
+                    </h2>
+                </header>
+                <!-- Modal/Popup Box LWC body starts here -->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <p>
+                        <b>
+                            Below JIRA ID(s) are already associated with other opportunities of this Account, Please
+                            click on Confirm to dissociate and associate with this opportunity.
+                        </b>
+                    </p>
+                    <table
+                        class="slds-table slds-table_cell-buffer slds-table_bordered slds-var-m-top_medium classic-table-css">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Object">JIRA ID</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Field">Associated Opportunity</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={mappedList} for:item="obj">
+                                <tr id={obj.Id} key={obj.Id}>
+                                    <td scope="col">
+                                        <div>
+                                            {obj.JIRA_Ticket_Number__c}
+                                        </div>
+                                    </td>
+                                    <td scope="col">
+                                        <div>
+                                            {obj.Improvement_Opportunity__r.Name}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+
+                </div>
+                <!-- Modal/Popup Box LWC footer starts here -->
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Cancel</button>
+                    <button class="slds-button slds-button_brand" onclick={submitDetails}
+                        title="Confirm">Confirm</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

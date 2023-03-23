@@ -1,0 +1,107 @@
+<aura:component controller="Executive_Briefing_Request_Controller" implements="lightning:actionOverride,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction,force:appHostable,lightning:isUrlAddressable"
+                access="global">
+    
+    <!--<lightning:navigation aura:id="navService"/>
+    <aura:attribute name="pageReference" type="Object"/>-->
+    <aura:registerEvent name="recordTypeSelectionEvent" type="c:executiveRequestRecordTypeEvent" />
+    <aura:attribute name="url" type="String"/>
+    <aura:attribute name="recordTypeMap" type="Map"/>
+     <aura:attribute name="recordTypeDescMap" type="Map"/>
+    <aura:attribute name="selectedRecordTypeId" type="String"/>
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="oppId" type="Id" />
+    <aura:attribute name="accId" type="Id" />
+    <aura:attribute name="showSpinner" type="boolean" default="true" />
+    <aura:attribute name="showTypeSelection" type="boolean" default="false"/>
+    <aura:attribute name="showEditAccessDiv" type="boolean" default="false"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>  
+   	
+    <aura:if isTrue="{!v.showEditAccessDiv}">
+        <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+          <span class="slds-assistive-text">error</span>
+         
+          <h2>{!$Label.c.VBC_No_Edit_Access}</h2>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <a href="javascript:void(0)" onclick="{!c.closeSelection}">Go Back</a> 
+          
+        </div>
+    </aura:if>
+    
+    
+    
+    <aura:if isTrue="{!v.showSpinner}">
+       <!-- <lightning:spinner variant="brand" size="small" />-->
+        <div  id="LoadingvfDIV" class="slds-spinner_container" style="position: fixed;">
+            <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+                <span class="slds-assistive-text">Loading...</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.showTypeSelection}">
+    	<div class="slds">
+            <div style="height: 640px;" id="mainDivId">
+                <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+                        <header class="slds-modal__header">
+                            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="{!c.closeSelection}">
+                                <lightning:icon iconName="utility:clear" size="small"/> 
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Select Record Type</h2>
+                        </header>
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                            <fieldset class="slds-form-element">
+                                <div class="slds-form-element__control">
+                                    <span class="slds-radio">
+                                      <input type="radio" id="{!v.recordTypeMap[0].value}" value="{!v.recordTypeMap[0].value}" name="default" onchange="{!c.optionChange}" checked="{!if(v.recordTypeMap[0].value == v.selectedRecordTypeId , true, false)}"/>
+                                      <label class="slds-radio__label" for="{!v.recordTypeMap[0].value}">
+                                        <span class="slds-radio_faux"></span>
+                                          <span class="slds-form-element__label"><b>{!v.recordTypeMap[0].label}</b></span>
+                                        <div class="slds-p-left_xx-large" style="padding-right : 10px;">
+                                        	<aura:iteration items="{!v.recordTypeDescMap}" var="desc" indexVar="key">
+                                                <aura:if isTrue="{!desc.value == v.recordTypeMap[0].value}">
+                                                	<span class="slds-form-element__label">{!desc.label}</span><br></br>
+                                                </aura:if>
+                                            	
+                                            </aura:iteration>
+                                           
+                                        </div>
+                                      </label>
+                                    </span>
+                                    <br></br>
+                                    <span class="slds-radio">
+                                      <input type="radio" id="{!v.recordTypeMap[1].value}" value="{!v.recordTypeMap[1].value}" name="default" onchange="{!c.optionChange}" checked="{!if(v.recordTypeMap[1].value == v.selectedRecordTypeId , true, false)}"/>
+                                      <label class="slds-radio__label" for="{!v.recordTypeMap[1].value}">
+                                        <span class="slds-radio_faux"></span>
+                                          <span class="slds-form-element__label"><b>{!v.recordTypeMap[1].label}</b></span>
+                                        <div class="slds-p-left_xx-large" style="padding-right : 10px;">
+                                        	<aura:iteration items="{!v.recordTypeDescMap}" var="desc" indexVar="key">
+                                                <aura:if isTrue="{!desc.value == v.recordTypeMap[1].value}">
+                                                	<span class="slds-form-element__label">{!desc.label}</span><br></br>
+                                                </aura:if>
+                                            	
+                                            </aura:iteration>
+                                           
+                                        </div>
+                                      </label>
+                                    </span>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <footer class="slds-modal__footer">
+                            <button class="slds-button slds-button_brand" onclick="{!c.submitRecordType}">Next</button>
+                        </footer>
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+            </div>
+        </div>
+    </aura:if>
+    
+    
+    
+</aura:component>

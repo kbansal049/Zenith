@@ -1,0 +1,3 @@
+<aura:component implements="force:lightningQuickActionWithoutHeader,flexipage:availableForRecordHome,force:hasRecordId" Controller="ConfirmationBoxApexController" access="global" >
+    <c:createOktaLogin recordId="{!v.recordId}"/> 
+</aura:component>

@@ -1,0 +1,138 @@
+<template>
+    <div class="slds-m-around_xx-large">
+        <template if:false={hasNoError}>
+            <div class="slds-notify slds-notify_toast slds-theme_error slds-align_absolute-center">
+                <span class="slds-assistive-text">error</span>
+                <div class="slds-notify__content">
+                    <h5 class="slds-text-heading_small slds-align_absolute-center">Error Message </h5>
+                    <p class="slds-align_absolute-center"> Please fix the following errors in Opportunity record before
+                        submitting the Loss form </p>
+                    <p class="slds-align_absolute-center">{errorMessage}</p>
+                    <div class="slds-align_absolute-center">
+                        <lightning-button class="slds-m-top_small" label="Back to Opportunity" onclick={handleReset}>
+                        </lightning-button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template if:true={loaded}>
+            <div class="slds-align_absolute-center">
+                <lightning-spinner alternative-text="Loading"></lightning-spinner>
+            </div>
+        </template>
+        <!-- <template if:true={error}>
+      <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+      <span class="slds-assistive-text">error</span>
+      <h2>Error while saving record</h2>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <a href="javascript:void(0)">Go Back</a> 
+      </div>
+  </template> -->
+        <template if:true={renderPage}>
+            <template if:true={renderLossFormType}>
+                <div class="slds-align_absolute-center">
+                    <span style="font-size: large;font-weight: bold;color: rgb(243, 11, 11);">Churn Form is required for
+                        Closed Lost Opportunities</span>
+                </div>
+                <br />
+                <lightning-record-edit-form message="Churn Form is required for Closed Lost Opportunities"
+                object-api-name="Churn__c" onsubmit={handleChurnSubmit} onsuccess={handleChurnSuccess}>
+                <lightning-messages>
+                </lightning-messages>
+                <lightning-input-field field-name='Opportunity__c' value={recordId} disabled>
+                </lightning-input-field>
+                <!--<lightning-input-field field-name='Competitor__c' required onchange={handleCompetitorChange}></lightning-input-field>
+                    <template if:true={isOtherCompetitorRequired}>
+                    <lightning-input-field field-name='Other_Competitors__c' required></lightning-input-field>
+                    </template>-->
+                <lightning-input-field field-name='Reason_Categorisations__c' required>
+                </lightning-input-field>
+                <template if:true={makeRequired}>
+                    <lightning-input-field field-name='Churn_Reason__c'
+                    onchange={churnReasonChange} required></lightning-input-field>
+                    <template if:true={renderChurnDetails}>
+                          <lightning-input-field field-name='Churn_Details__c' required
+                             onchange={churnDetailChange}></lightning-input-field>
+                    </template>
+                
+                </template>
+                <template if:false={makeRequired}>
+                    <lightning-input-field field-name='Churn_Reason__c'
+                    onchange={churnReasonChange} ></lightning-input-field>
+                    <template if:true={renderChurnDetails}>
+                          <lightning-input-field field-name='Churn_Details__c' 
+                             onchange={churnDetailChange}></lightning-input-field>
+                    </template>
+             
+             </template>
+                <lightning-input-field field-name='Detail__c' required="true"></lightning-input-field>
+                <lightning-input-field field-name='Type__c' value="Loss" class="slds-hide">
+                </lightning-input-field>
+                <br />
+                <template if:false={hideButtons}>
+                    <div class="slds-align_absolute-center">
+                        <lightning-button class="slds-m-top_small" type="submit" label="Submit" disabled={hideSubmit}>
+                        </lightning-button>&nbsp;&nbsp;
+                        <lightning-button class="slds-m-top_small" label="Cancel" onclick={handleReset}>
+                        </lightning-button>
+                    </div>
+                </template>
+            </lightning-record-edit-form>
+            </template>
+            <template if:false={renderLossFormType}>
+                <div class="slds-align_absolute-center">
+                    <span style="font-size: large;font-weight: bold;color: rgb(243, 11, 11);">Lost Form is required for
+                        Closed Lost Opportunities</span>
+                </div>
+                <br />
+                <lightning-record-edit-form message="Lost Form is required for Closed Lost Opportunities"
+                          object-api-name="Churn__c" onsubmit={handleChurnSubmit} onsuccess={handleChurnSuccess}>
+                          <lightning-messages>
+                          </lightning-messages>
+                          <lightning-input-field field-name='Opportunity__c' value={recordId} disabled>
+                          </lightning-input-field>
+                          <lightning-input-field field-name='Revisit__c' onchange={handleRevisitChange}></lightning-input-field>
+                          <lightning-input-field field-name='Revisit_Date__c' required={isRevisitRequired}></lightning-input-field>
+                         <!-- <lightning-input-field field-name='Competitor__c' required onchange={handleCompetitorChange}></lightning-input-field>
+                         <template if:true={isOtherCompetitorRequired}>
+                            <lightning-input-field field-name='Other_Competitors__c' required></lightning-input-field>
+                         </template>-->
+                         <lightning-input-field field-name='Reason_Categorisations__c' required>
+                          </lightning-input-field>
+                          <template if:true={makeRequired}>
+                           <lightning-input-field field-name='Churn_Reason__c'
+                           onchange={churnReasonChange} required></lightning-input-field>
+                           <template if:true={renderChurnDetails}>
+                                 <lightning-input-field field-name='Churn_Details__c' required
+                                    onchange={churnDetailChange}></lightning-input-field>
+                           </template>
+                       
+                       </template>
+                       <template if:false={makeRequired}>
+                           <lightning-input-field field-name='Churn_Reason__c'
+                           onchange={churnReasonChange} ></lightning-input-field>
+                           <template if:true={renderChurnDetails}>
+                                 <lightning-input-field field-name='Churn_Details__c' 
+                                    onchange={churnDetailChange}></lightning-input-field>
+                           </template>
+                    
+                    </template>
+                          <lightning-input-field field-name='Detail__c' required></lightning-input-field>
+                          <lightning-input-field field-name='Type__c' value={typeOfLoss} class="slds-hide">
+                          </lightning-input-field>
+                          <br />
+                          <template if:false={hideButtons}>
+                            <div class="slds-align_absolute-center">
+                                <lightning-button class="slds-m-top_small" type="submit" label="Submit" disabled={hideSubmit}>
+                                </lightning-button>&nbsp;&nbsp;
+                                <lightning-button class="slds-m-top_small" label="Cancel" onclick={handleReset}>
+                                </lightning-button>
+                            </div>
+                        </template>
+                      </lightning-record-edit-form>
+            </template>
+        </template>
+    </div>
+    <c-custom-toast-component auto-close-time="3000"></c-custom-toast-component>
+</template>

@@ -1,0 +1,50 @@
+<template>
+    <lightning-card title="Key Operational Contacts" icon-name="utility:people" variant="narrow">
+        <lightning-button-icon icon-name="utility:refresh"  alternative-text="Refresh" title="Refresh" slot="actions" onclick={refreshCall}></lightning-button-icon>
+        
+        <template if:true={showSpinner}>
+            <div class="exampleHolder">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+        
+        <template if:false={showSpinner}>
+            <div class="slds-clearfix">
+                <div class="slds-float_right">
+                    <lightning-layout style="margin-bottom: 5px;">
+                        <lightning-layout-item flexibility="grow">
+                            <lightning-record-edit-form object-api-name="Case">
+                                <lightning-input-field field-name="ContactId" variant="label-hidden" onchange={handleContactChange}></lightning-input-field>
+                            </lightning-record-edit-form>
+                        </lightning-layout-item>
+                        <lightning-layout-item flexibility="grow">
+                            &nbsp;
+                            <lightning-button variant="brand" label="Mark as Operational" title="Mark as Operational" icon-name="utility:linked" disabled={markOperationalDisabled} onclick={handleMarkOperational}></lightning-button>
+                            &nbsp;
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </div>
+            </div>
+            <template if:true={dataExists}>
+                <div class="myTable">
+                    <lightning-datatable
+                        key-field="id"
+                        columns={columns}
+                        data={data}
+                        column-widths-mode	="auto"
+                        show-row-number-column
+                        hide-checkbox-column
+                        onrowaction={callRowAction}>
+                    </lightning-datatable>
+                </div>
+            </template>
+
+            <template if:false={dataExists}>
+                <div class="slds-align_absolute-center">
+                    <lightning-icon icon-name="utility:info" alternative-text="Warning!" title="Warning" size="small"></lightning-icon>&nbsp;No Operational Contacts found!
+                </div> 
+            </template>
+
+        </template>
+    </lightning-card>
+</template>

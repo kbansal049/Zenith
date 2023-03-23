@@ -1,0 +1,7 @@
+.slds-is-incomplete{
+    pointer-events: none;
+}
+
+.oneRecordActionWrapper.overridePresent .actionBody{
+    height: 50rem !important;
+}

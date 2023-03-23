@@ -1,0 +1,174 @@
+<template>
+
+    <div class="slds-container slds-p-around_small" style="min-height: 500px;">
+        <template if:true={showSuceessToast}>
+            <div class="slds-notify_container slds-is-relative">
+                <div class="slds-notify slds-notify_toast slds-theme_success" role="status">
+                    <span class="slds-assistive-text">success</span>
+                    <span
+                        class="slds-icon_container slds-icon-utility-success slds-m-right_small slds-no-flex slds-align-top"
+                        title="Success">
+                        <lightning-icon variant="inverse" icon-name="utility:success" size="small"></lightning-icon>
+                    </span>
+                    <div class="slds-notify__content">
+                        <h2 class="slds-text-heading_small ">Contact saved Successfully.</h2>
+                    </div>
+                    <div class="slds-notify__close">
+                        <button class="slds-button slds-button_icon" title="Close" onclick={closeShowSucessToast}>
+                            <lightning-icon icon-name="utility:close" variant="inverse" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+
+        <lightning-card>
+
+            <!-- Spinner -->
+            <template if:false={isLoadedSuccess}>
+                <div class="spinnerHolder" style="height: 80px;">
+                    <lightning-spinner variant="brand" alternative-text="Loading" size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Data -->
+            <template if:true={isLoadedSuccess}>
+
+                <template if:true={hasError}>
+                    <div class="slds-p-around_small slds-text-align_center slds-text-color_error"
+                        style="font-size: larger;">
+                        {errorMsg}
+                    </div>
+                </template>
+
+                <template if:false={hasError}>
+
+                    <h3 slot="title">
+                        <lightning-icon icon-name="standard:contact" size="small"></lightning-icon>
+                        <span class="slds-p-around_small">{conDetail.Con.Name}</span>
+                    </h3>
+
+                    <template if:true={isContactValid}>
+                        <template if:false={isCaseExist}>
+                            <lightning-button slot="actions" class="slds-p-horizontal_xx-small" label="Save"
+                                variant="brand" onclick={openConfirmModal}></lightning-button>
+
+                            <lightning-button slot="actions" class="slds-p-horizontal_xx-small" label="Cancel"
+                                variant="Neutral" onclick={resetTheData}></lightning-button>
+                        </template>
+                    </template>
+
+                    <lightning-button slot="actions" class="slds-p-horizontal_xx-small" label="Go back to Contact"
+                        variant="brand-outline" data-con-id={recordId} onclick={navigateToContactRecord}>
+                    </lightning-button>
+
+                    <div class="slds-p-horizontal_medium">
+                        <template if:true={isContactValid}>
+                            <div class="slds-p-rigth_small">
+
+                                <div class="slds-p-vertical_small">
+                                    <label class="slds-form-element__label" for="input-title">Title</label>
+                                    <div id="input-title">{conDetail.Con.Title}</div>
+                                </div>
+
+                                <template if:false={conDetail.CaseExist}>
+                                    <div class="slds-p-vertical_small">
+                                        <lightning-combobox label="Send Exec Insights" name={conDetail.Con.Id}
+                                            value={conDetail.Send_Exec_Insights} options={execOptions}
+                                            onchange={handleCIOReportChange}></lightning-combobox>
+
+                                        <template if:true={showValueChangedError}>
+                                            <div class="slds-p-vertical_xx-small slds-text-color_error">
+                                                Please update the value
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+
+                                <template if:true={conDetail.CaseExist}>
+                                    <template if:true={caseCreated}>
+                                        <div class="slds-p-vertical_small">
+                                            A case {conDetail.CaseNumber} created for domain validation. Please reach
+                                            out to the SFDC Support team for status.
+                                        </div>
+                                    </template>
+                                    <template if:false={caseCreated}>
+                                        <div class="slds-p-vertical_small">
+                                            A case {conDetail.CaseNumber} already exists. Please reach out to the SFDC
+                                            Support team for status.
+                                        </div>
+                                    </template>
+                                </template>
+                            </div>
+                        </template>
+                        <template if:false={isContactValid}>
+                            <div class="slds-p-vertical_small">
+                                This contact is no longer available in the company.
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </template>
+        </lightning-card>
+    </div>
+
+    <!-- Confirm Save -->
+    <template if:true={showConfirmModal}>
+        <div style="height: 500px;">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-04" aria-modal="true"
+                aria-describedby="modal-content-id-4" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container notifyModal">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close" onclick={closeConfirmModal}>
+                            <lightning-icon icon-name="utility:close" variant="inverse" alternative-text="Close"
+                                size="medium">
+                            </lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-04" class="slds-text-heading_medium slds-hyphenate">Confirm</h2>
+                    </header>
+                    <div class="saveContactSpinnerHolder" style="position: relative;">
+                        <template if:true={saveContactCalled}>
+                            <lightning-spinner variant="brand" alternative-text="Loading" size="small">
+                            </lightning-spinner>
+                        </template>
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-4">
+                            <div class="slds-text-align_center">
+                                <span style="font-size: medium;">Do you want to proceed?</span>
+                            </div>
+                            <template if:true={willBeCaseCreated}>
+                                <div class="slds-p-vertical_small">
+                                    <span class="slds-p-around_x-small">
+                                        <lightning-icon variant="warning" icon-name="utility:info" size="xx-small"
+                                            alternative-text="Info" title="Info"></lightning-icon>
+                                    </span>
+                                    <span class="slds-p-around_xx-small">
+                                        New Case for Domain verification will be Created for the contact.
+                                    </span>
+                                </div>
+                            </template>
+                        </div>
+                        <footer class="slds-modal__footer">
+                            <div class="slds-align_absolute-center">
+                                <span>
+                                    <lightning-button label="Yes" variant="brand" onclick={saveContact}>
+                                    </lightning-button>
+                                </span>
+                                <span class="slds-p-left_large">
+                                    <lightning-button label="No" variant="neutral" onclick={closeConfirmModal}>
+                                    </lightning-button>
+                                </span>
+                            </div>
+                        </footer>
+
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </template>
+
+</template>

@@ -1,0 +1,21 @@
+.dynamic-related-list .slds-card__header{
+	background: #efefef;
+    padding: 8px!important;
+	margin: 0;
+}
+.dynamic-related-list .slds-card{
+	border: 0.2px solid lightgrey !important;
+}
+.dynamic-related-list .slds-card__body{
+	margin: 0px!important;
+}
+.dynamic-related-list .slds-text-heading_small, .dynamic-related-list .slds-text-heading--small {
+    font-size: 16px;
+}
+.dynamic-related-list .slds-p-horizontal_small, .dynamic-related-list .slds-p-horizontal--small {
+    font-size: 14px;
+    padding-bottom: 3px;
+}
+.dynamic-related-list .slds-spinner_container, .dynamic-related-list .slds-spinner_container{
+    background-color: rgba(255, 255, 255, 0);
+}

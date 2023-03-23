@@ -1,0 +1,44 @@
+<aura:component controller="Create_CR_Component_Controller" implements="lightning:isUrlAddressable,force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader,lightning:actionOverride" >
+	<aura:attribute name="caseId" type="Id" />
+    <aura:attribute name="showModal" type="boolean" default="false"/>
+    <aura:attribute name="desc" type="String"/>
+    <aura:attribute name="summary" type="String"/>
+   	<aura:attribute name="reporter" type="Id"/>
+    <aura:attribute name="assignee" type="Id"/>
+    <aura:attribute name="businessAnalyst" type="Id"/>
+    <aura:attribute name="caseLink" type="String"/>
+    <aura:attribute name="caseNumber" type="String"/>
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+   	<div class="slds">
+        <aura:if isTrue="{!v.showModal}">
+            <div style="height: 640px;" id="mainDivId">
+                <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+                        <header class="slds-modal__header">
+                            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="{!c.closeSelection}">
+                                <lightning:icon iconName="utility:clear" size="small"/> 
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Create Change Request</h2>
+                        </header>
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                            
+							                            
+                            <fieldset class="slds-form-element">
+                                <div class="slds-form-element__control">
+                                    <b>{!v.caseNumber}</b> was already created for this Case. Do you want to create a new CR?  
+                                    
+                            	</div>
+                            </fieldset>
+                        </div>
+                        <footer class="slds-modal__footer">
+                            <button class="slds-button slds-button_brand" onclick="{!c.closeSelection}">Cancel</button>
+                            <button class="slds-button slds-button_brand" onclick="{!c.createCR}">Create New</button>
+                        </footer>
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+            </div>
+        </aura:if>
+        </div>
+</aura:component>

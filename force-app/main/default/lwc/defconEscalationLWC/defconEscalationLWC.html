@@ -1,0 +1,30 @@
+<template>
+    <header class="slds-modal__header">
+        <h2 class="slds-text-heading_medium slds-hyphenate">
+            Escalate Case
+        </h2>
+    </header>
+    <div class="slds-modal__content slds-p-around_medium modalBody">
+            <template if:true={showSpinner}>
+                <lightning-spinner alternative-text="Loading" size="medium" style="background-color: rgba(0, 0, 0, 0) !important;"></lightning-spinner>
+            </template>
+            <div if:true={showError}>
+                <br/>
+                <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                    <span class="slds-assistive-text">warning</span>
+                    <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Description of icon when needed">
+                        <lightning-icon icon-name="utility:warning" alternative-text="Warning" size="small" title="small size"></lightning-icon>
+                    </span>&nbsp;
+                    <h2>{errorMessage}</h2>    
+                </div>
+            </div>
+            <lightning-record-edit-form object-api-name="Case" record-id={recordId} onsubmit={handleSubmit} onload={onFormLoad}>
+                <lightning-input-field field-name="Escalation_Reason__c" required> </lightning-input-field>
+                <lightning-input-field field-name="Escalation_on_behalf_of_Customer__c"> </lightning-input-field>
+                <div class="slds-box slds-box_small" style="text-align: right; border: 0px; border-radius: 0px;">
+                    <lightning-button class="slds-m-right_small" variant="brand" type="submit" name="save" label="Escalate">
+                    </lightning-button>
+                </div>
+            </lightning-record-edit-form>                        
+    </div>
+</template>

@@ -1,0 +1,54 @@
+<template>
+    <lightning-card>
+    <div style="border:solid 1px;background-color:white">
+        
+          <div style="height:45px;border-bottom:solid 1px;background-color:#1B5297">
+            <p style="color: white;
+            padding-left: 40px;
+            padding-top: 13px;
+            font-weight: bold;">EMAIL TRACKER</p>
+          </div>
+          <br>
+          <br>
+         
+          <div class="slds-path">
+            <div class="slds-grid slds-path__track">
+                <div class="slds-grid slds-path__scroller-container">
+                    <div class="slds-path__scroller" role="application">
+                        <div class="slds-path__scroller_inner">
+                            <ul class="slds-path__nav" role="listbox" aria-orientation="horizontal" onselect={selectedTab}>
+                                <li class={AssignedToMeClass} role="presentation" onclick={selectAssignedToMe}>
+                                    <a aria-selected="true" class="slds-path__link" href="javascript:void(0);" id="path-1"
+                                        role="option" tabindex="0">
+                                        <span class="slds-path__stage">
+                                        </span>
+                                        <span class="slds-path__title">Assigned To Me</span>
+                                    </a>
+                                </li>
+                                <li class={AllClass} role="presentation" onclick={selectAll}>
+                                    <a aria-selected="false" class="slds-path__link" href="javascript:void(0);" id="path-2"
+                                        role="option" tabindex="-1">
+                                        <span class="slds-path__stage">
+                                        </span>
+                                        <span class="slds-path__title">All</span>
+                                    </a>
+                                </li>
+                              </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="slds-m-vertical_medium">
+            <template if:true={AssignedToMeSelected}>
+                <c-email-tracker-screen clicked-tab={selectedTab}></c-email-tracker-screen>
+            </template>
+            <template if:true={AllSelected}>
+                <c-email-tracker-screen clicked-tab={selectedTab}></c-email-tracker-screen>
+            </template>
+        </div>
+        </div>
+        </lightning-card>
+    
+</template>

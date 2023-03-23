@@ -1,0 +1,99 @@
+<template>
+    <lightning-card title="Deal Registration Approvals" icon-name="custom:custom63">
+		<lightning-layout multiple-rows="true" vertical-align="center">
+
+            <lightning-layout-item size="6" small-device-size="10" medium-device-size="8" large-device-size="6" padding="around-small">
+                <b><lightning-input type="search" style="display: flex;" onchange={handleKeyChange} 
+                    label="Search Deal Registration Records based on Region" value={strAccName}></lightning-input></b>
+            </lightning-layout-item>
+            
+        </lightning-layout>
+	
+       <!-- <div class="slds-m-around_medium">
+                <lightning-datatable
+                    key-field="Id"
+                    data={processInstanceList}
+                    columns={Columns}
+                    hide-checkbox-column="true"
+                    show-row-number-column="true">
+                </lightning-datatable>
+        </div>-->
+		
+		<div if:true={processInstanceList} class="slds-m-around_medium">
+            <!--for demo wrap-->
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_col-bordered slds-table_striped">
+                <thead>
+                    <tr>
+                        <th scope="col" title="OriginalActorName" onclick={doSorting} style="width: 274px">Assigned To&nbsp;&nbsp;
+                            <lightning-icon title="OriginalActorName" icon-name="utility:sort" size="xx-small"></lightning-icon>
+                        </th>
+                        <th scope="col" title="ActorName" onclick={doSorting} style="width: 274px">Actual Approver&nbsp;&nbsp;
+                            <lightning-icon title="ActorName" icon-name="utility:sort" size="xx-small"></lightning-icon>
+                        </th>
+                        <th scope="col" title="targetObjName" onclick={doSorting} style="width: 274px">Record&nbsp;&nbsp;
+                            <lightning-icon title="targetObjName" icon-name="utility:sort" size="xx-small"></lightning-icon>
+                        </th>
+                        <th scope="col" title="Region" onclick={doSorting} style="width: 274px">Region&nbsp;&nbsp;
+                            <lightning-icon title="Region" icon-name="utility:sort" size="xx-small"></lightning-icon>
+                        </th>
+                        <th scope="col" title="Area" onclick={doSorting} style="width: 274px">Sub Region&nbsp;&nbsp;
+                            <lightning-icon title="Area" icon-name="utility:sort" size="xx-small"></lightning-icon>
+                        </th>
+                        <th scope="col" title="status" onclick={doSorting} style="width: 274px">Status&nbsp;&nbsp;
+                            <lightning-icon title="status" icon-name="utility:sort" size="xx-small"></lightning-icon>
+                        </th>
+                        <th scope="col" title="Action" onclick={doSorting} style="width: 274px">Action&nbsp;&nbsp;
+                            <lightning-icon title="Action" icon-name="utility:sort" size="xx-small"></lightning-icon>
+                        </th>
+                    </tr>
+                </thead>
+            <tbody >
+            <template for:each={processInstanceList} for:item="p">
+                <tr key={p.Id}>
+                    <td scope="col" style="border-left: hidden;border-right: hidden;" >
+                        <lightning-formatted-url title={p.OriginalActorName} value={p.OriginalActorId}
+                            label={p.OriginalActorName} target="_blank">
+                        </lightning-formatted-url>
+                    </td>
+                    <td scope="col" style="border-left: hidden;border-right: hidden;">
+                        <lightning-formatted-url title={p.ActorName} value={p.ActorId}
+                            label={p.ActorName} target="_blank"> 
+                        </lightning-formatted-url>
+                    </td>
+                    <td scope="col" style="border-left: hidden;border-right: hidden;">
+                        <lightning-formatted-url title={p.targetObjName} value={p.targetObjId}
+                            label={p.targetObjName} target="_blank">
+                        </lightning-formatted-url>
+                    </td>
+                    <td scope="col" style="border-left: hidden;border-right: hidden;">
+                        <lightning-formatted-text value={p.Region}>
+                        </lightning-formatted-text>
+                    </td>
+                    <td scope="col" style="border-left: hidden;border-right: hidden;">
+                        <lightning-formatted-text value={p.Area}>
+                        </lightning-formatted-text>
+                    </td>
+                    <td scope="col" style="border-left: hidden;border-right: hidden;">
+                        <lightning-formatted-text value={p.status}>
+                        </lightning-formatted-text>
+                    </td>
+                    <td scope="col" style="border-left: hidden;border-right: hidden;">
+                        <lightning-formatted-url title={p.Action2} value={p.Id}
+                            label={p.Action2} target="_blank">
+                        </lightning-formatted-url>
+                        <lightning-formatted-url title={p.Action} value={p.Id1}
+                            label={p.Action} target="_blank">
+                        </lightning-formatted-url>
+                    </td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+    </div>
+        <div if:false={processInstanceList}>
+            <h3>No Records to display</h3>
+        </div>
+		
+    </lightning-card>
+	<div class="slds-text-align--center" style="font-size: 1.5em;"><b>End of Records/Report</b></div>
+</template>

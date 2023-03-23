@@ -1,0 +1,47 @@
+<apex:page standardController="SBQQ__Quote__c" extensions="QuoteExtController" action="{!onSubmit}">
+    <apex:pageMessages />
+    <apex:slds />
+    <apex:form >
+        <apex:outputPanel rendered="{!isCustomScheduleNotAvailable}">
+            <div class="slds-box">
+            <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_info slds-text-heading_small"
+                 role="alert">
+                <span class="slds-assistive-text">info</span>
+                <span class="slds-icon_container slds-icon-utility-user slds-m-right_x-small" title="Info">
+                    <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink"
+                             xlink:href="/icons/utility-sprite/svg/symbols.svg#user"></use>
+                    </svg>
+                </span>
+                <h1>The billing frequency on the quote is set to Custom Schedule. Please build the custom schedule by clicking the 'Customer Billing Schedule' button and then submit the quote for approval.</h1>
+            </div><br /><br />
+            
+            <div class="slds-align_absolute-center">
+            <apex:commandButton action="{!onCancel}" value="Back" styleclass="slds-button slds-button_brand"></apex:commandButton>
+            </div>
+            </div>
+        </apex:outputPanel>
+            
+        <apex:outputPanel rendered="{!customScheduleLessThanTCV}">
+            <div class="slds-box">
+            <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_info slds-text-heading_small"
+                 role="alert">
+                <span class="slds-assistive-text">info</span>
+                <span class="slds-icon_container slds-icon-utility-user slds-m-right_x-small" title="Info">
+                    <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink"
+                             xlink:href="/icons/utility-sprite/svg/symbols.svg#user"></use>
+                    </svg>
+                </span>
+                <h1>The Custom Billing Schedule is not matching with the TCV. Please adjust the schedule to match with TCV.</h1>
+            </div><br /><br />
+            
+            <div class="slds-align_absolute-center">
+                <apex:commandButton action="{!onCancel}" value="Back" styleclass="slds-button slds-button_brand"></apex:commandButton>
+            </div>
+            </div>
+        </apex:outputPanel>
+        
+        
+    </apex:form>
+</apex:page>

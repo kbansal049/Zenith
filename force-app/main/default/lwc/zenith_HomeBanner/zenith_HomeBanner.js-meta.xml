@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>56.0</apiVersion>
+
+    <isExposed>true</isExposed>
+
+
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="bannerText" type="String"
+                default="This is to test the banner made in community for announcement purspose."
+                label="Banner Heading" />
+            <property name="backgroundColor" type="Color" default="rgba(0, 255, 255, 1)"
+                label="Banner Background color" />
+            <property name="TextColor" type="Color" default="rgba(0, 255, 255, 1)"
+                label="Banner Text color" />
+            <property name="showBanner" type="Boolean" default="true" label="Show Banner" />
+            <property name="readmore" type="String" default="www.google.com" label="Read More URL" />
+            <property name="showBannerIcon" type="Boolean" default="false" label="Show Banner Icon"/>
+        </targetConfig>
+    </targetConfigs>
+
+
+</LightningComponentBundle>

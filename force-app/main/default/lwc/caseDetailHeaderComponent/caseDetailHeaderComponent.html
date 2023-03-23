@@ -1,0 +1,63 @@
+<template>
+<div class="zs-case-details">
+    <div class="zs-case-header-comp">
+        <lightning-card>
+            <div class="grid">
+                <div class="flex"> 
+                    <lightning-icon icon-name="standard:case" size="medium"></lightning-icon>
+                    <div>
+                        <p class="slds-item casenumber">
+                            {caseHeader}
+                        </p>
+                        <p class="slds-item subject">
+                            {caseSubject}
+                        </p>        
+                            <div class="status">
+                                <p class={statuscss}>
+                                    {caseStatus}
+                                </p>
+                            </div>                   
+                    </div>
+                    <div>
+                        <template if:true ={escalateTagVisibleDefcon5}>
+                            <p class="slds-item zs-closed-status">
+                                Escalated by Agent
+                            </p>
+                        </template>
+                        <template if:true ={escalateTagVisibleDefconOthers}>
+                            <p class="slds-item zs-closed-status">
+                                Escalated
+                            </p>
+                        </template>
+                    </div>
+                </div>
+                <div>
+                    <template if:true={showclosedetails}>
+                        <lightning-button class="margin" label="Reopen Case" onclick={reOpenCase} slot="actions"></lightning-button>
+                    </template>
+                    <template if:true={showResolvedButtons}>
+                        <lightning-button class="margin"  label="Yes, Issue Resolved" onclick={issueResolved} slot="actions"  variant="success"></lightning-button>
+                        <lightning-button class="margin"  label="No, Need help" onclick={helpNeeded} slot="actions"></lightning-button>
+                    </template>
+                    <template if:true={showUpdatePriority}>
+                        <lightning-button class="margin" label="Update Priority" onclick={updatePriority} slot="actions"></lightning-button>
+                    </template>
+                    <template if:false={isClosed}>
+                        <template if:true ={displayEscalateButton}>
+                                <lightning-button class="margin" label="Escalate Case" onclick={escalateCase}
+                                    slot="actions" variant="destructive"></lightning-button>
+                        </template>
+                        <lightning-button class="margin" label="Close Case" onclick={closeCase} slot="actions"></lightning-button>
+                    </template>
+                </div>
+            </div>
+            
+        </lightning-card>
+    </div>
+    <c-customer-escalation-l-w-c case-id={recordId}></c-customer-escalation-l-w-c>
+    <c-need-help-comment-l-w-c onhelpneededvaluechange={handlehelpneededvaluechange} case-id={recordId}></c-need-help-comment-l-w-c>
+    <c-case-close-customer-component case-id={recordId}></c-case-close-customer-component>
+    <c-customer-case-reopen-component case-id={recordId}></c-customer-case-reopen-component>
+    <c-customer-priority-update-component-l-w-c case-id={recordId}></c-customer-priority-update-component-l-w-c>
+</div>
+</template>

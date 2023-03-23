@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata" fqn="RelatedList">
+    <apiVersion>49.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__RecordPage</target>
+        <target>lightning__AppPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage,lightning__AppPage">
+            <property name="strTitle" type="String" label="Title" description="Enter the title"/>
+            <property name="objectName" type="String" label="Object Name" description="Enter the object name"/>
+            <property name="childRelFieldAPIName" type="String" label="Relationship field API Name (on child)" description="Relationship field API Name (on child)"/>
+            <property name="parentRelFieldAPIName" type="String" label="Relationship field API Name (on parent)" description="Relationship field API Name (on parent)"/>
+            <property name="filterCriteia" type="String" label="Filter Criteria (Except for Parent field Id filter)" description="Filter Criteria (Except for Parent field Id filter)"/>
+            <property name="allowInlineEdit" type="Boolean" label="Allow Inline Edit?" description="Allow Inline Edit?"/>
+            <property name="fieldSet" type="String" label="Field Set API Name" description="Enter API Name for the fieldSet"/>
+            <property name="showStandardView" type="Boolean" label="Show View - Row Action" description="Show View - Row Action"/>
+            <property name="showStandardEdit" type="Boolean" label="Show Edit - Row Action" description="Show Edit - Row Action"/>
+            <property name="showStandardDelete" type="Boolean" label="Show Delete - Row Action" description="Show Delete - Row Action"/>
+            <property name="showNew" type="Boolean" label="Show New - Related List level" description="Show New - Related List level"/>
+            <property name="newRT" type="String" label="New Record - Record type (API)" description="New Record - Record type (API)"/>
+            <property name="numofrecords" type="Integer" label="Number of records (per page)" description="Number of records (per page)"/>
+            <property name="showAccordion" type="Boolean" label="Show Accordion" description="Show Accordion"/>
+            <property name="showExpanded" type="Boolean" label="Open Accordion by Default" description="Open Accordion by Default"/>
+            <property name="showCustomstyle" type="Boolean" label="Show Custom Style" description="Show Custom Style"/>
+            <property name="showAllInDocs" type="Boolean" label="Show All in doc" description="Show All in doc button"/>
+            <property name="actionFieldSetName" type="String" label="New Action Field Set API Name" description="While Performing New Action, these fieldset will determine the fields to be shown."/>
+            <property name="actionFieldSetNameEdit" type="String" label="Edit Action Field Set API Name" description="While Performing Edit Action, these fieldset will determine the fields to be shown." />
+        
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

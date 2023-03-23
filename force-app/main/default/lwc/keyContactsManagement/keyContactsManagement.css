@@ -1,0 +1,13 @@
+.tableScroll {
+    max-height: 12rem;
+    overflow-y:auto;
+}
+
+.paddingSearch {
+    padding-top: 3px;
+    padding-bottom: 15px
+}
+
+.slds-spinner_container {
+    background-color: rgba(0, 0, 0, 0);
+}

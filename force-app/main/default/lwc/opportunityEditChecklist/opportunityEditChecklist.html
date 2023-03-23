@@ -1,0 +1,82 @@
+<template>
+    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-02" aria-modal="true" class="slds-modal slds-fade-in-open slds-modal_medium" style="z-index:9999;">
+        <div class="slds-modal__container slds-is-relative modal-dialog">
+           <lightning-record-edit-form id="recordViewForm" record-id={recordId} record-type-id={recordTypeId} object-api-name="Opportunity"  mode="edit" onload={handleOnCustomLoad} onsubmit={handleSubmit} onsuccess={handleSuccess} >
+              <header class="slds-modal__header">
+                 <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                    title="Close" onclick={closeModal}>
+                    <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                       size="small"></lightning-icon>
+                    <span class="slds-assistive-text">Close</span>
+                 </button>
+                <!-- <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">{fieldLabel}</h2>-->
+              </header>
+              
+             
+                    <div class="slds-modal__content slds-is-relative slds-p-around_medium modal-body slds-scrollable" id="modal-content-id-2" style="max-height:30rem">
+                        <template if:true={isLoading}>
+                            <lightning-spinner alternative-text="Loading" variant="brand" size="large">
+                            </lightning-spinner>
+                         </template>
+                        <template if:false={isLoading}>
+                            <lightning-progress-indicator current-step={currentStep} type="base" variant="base">
+                                <template for:each={fieldsList} for:item="field">
+                                    <lightning-progress-step key={field.stageVal} label={field.stageVal} value={field.stageVal} onclick={handleOnStepClick}></lightning-progress-step>
+                                </template>
+                            </lightning-progress-indicator>
+                                
+                            <template for:each={fields} for:item="fld">
+                                <div class="slds-p-horizontal_small slds-p-around_medium" key={fld.fieldName}>
+                                    <template if:true={fld.isFile}>
+                                    
+                                        <lightning-file-upload name="fileUploader" label={fld.fieldLabel} onuploadfinished={handleUploadFinished}  file-field-name="Source_fileupload__c" file-field-value={fld.fieldLabel} class="fileUpload" data-name={fld.fieldName}  style="display:flex">
+                                        </lightning-file-upload>
+                                        <template if:true={fld.fileName}>
+                                            <span style="padding: 2px;" key={fld.fileId}>
+                                                <lightning-pill label={fld.fileName} data-id={fld.fileId} onremove={handleDelete} data-name={fld.fieldName}>
+                                                </lightning-pill>
+                                            </span>
+                                        </template>
+                                    
+                                    </template>
+                                    <template if:false={fld.isFile}>
+                                        <template if:false={fld.isCustomPicklist}>
+                                            <lightning-input-field key={fld.fieldName} field-name={fld.fieldName} onchange={handleSubChange} variant="label-inline" class="subDependent" required label={fld.fieldLabel} data-name={fld.fieldName} value={fld.value}></lightning-input-field>
+                                        </template>
+                                        <template if:true={fld.isCustomPicklist}>
+                                            <template if:true={biOptions.length}>
+                                                <lightning-dual-listbox name="Buyer Initiative"
+                                                      label="Buyer Initiative"
+                                                      source-label="Available"
+                                                      selected-label="Selected"
+                                                      field-level-help="Buyer Initiative"
+                                                      options={biOptions}
+                                                      onchange={handleBuyer} class="buyerCmp" value={buyerVal} required></lightning-dual-listbox>
+                                             </template>
+                                        </template>
+                                        
+                                    </template>
+                                </div>
+                            </template>
+        
+                        </template>
+                    </div>
+            
+            <footer class="slds-modal__footer slds-align--absolute-center">
+               
+                <!--<template if:true={prevStage}>
+                    <lightning-button variant="brand" class="slds-m-horizontal_small" label="Back" onclick={handlePrev} if:false={isLoading}></lightning-button>
+                </template>-->
+            
+                <template if:true={nextStage}>
+                    <lightning-button label="Next" class="slds-m-horizontal_small" variant="brand" onclick={handleNext} if:false={isLoading}></lightning-button>
+                </template>
+                <template if:false={nextStage}>
+                    <lightning-button label="Submit" class="slds-m-horizontal_small" variant="brand" onclick={handleFinish} if:false={isLoading}></lightning-button>
+                </template>
+                    
+            </footer>
+        </lightning-record-edit-form>
+    </div>
+</section>
+</template>

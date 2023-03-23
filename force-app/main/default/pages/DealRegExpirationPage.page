@@ -1,0 +1,32 @@
+<apex:page standardController="Deal_Reg__c" sidebar="false" lightningstylesheets="true">
+    <apex:slds />
+    <apex:includeLightning />
+    <div id="LoadingvfDIV" class="slds-spinner_container" style="position: fixed;">
+        <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+            <span class="slds-assistive-text">Loading...</span>
+            <div class="slds-spinner__dot-a"></div>
+            <div class="slds-spinner__dot-b"></div>
+        </div>
+    </div>
+    <div id="lightning" />
+
+    <script>
+        $Lightning.use("c:Deal_Reg_Expiration_Aura_App", function () {
+            $Lightning.createComponent("c:expireDealRegLWC", {
+                dealRegtoConvert: "{!$CurrentPage.parameters.drtoConvert}",
+                recordId: "{!$CurrentPage.parameters.id}",
+                dealRegname: "{!Deal_Reg__c.Name}",
+                dealRegStatus: "{!Deal_Reg__c.Status__c}",
+                dealRegExpirationReason: "{!Deal_Reg__c.Reason_for_Expiration__c}",
+                opptyId: "{!$CurrentPage.parameters.oppId}"
+            },
+                "lightning",
+                function (cmp) {
+                    console.log("LWC component was created");
+                    document.getElementById("LoadingvfDIV").style.display = "none";
+                    // do some stuff
+                }
+            );
+        });
+    </script>
+</apex:page>

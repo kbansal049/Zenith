@@ -1,0 +1,73 @@
+<apex:page standardController="Commission_Exception__c" extensions="CommExceptionApprovalPreviewCtrlr">
+
+    <Style>
+        body {
+          font-family: Calibri, Segoe, "Segoe UI", "Gill Sans", "Gill Sans MT", sans-serif;
+        }
+        /* It's supposed to look like a tree diagram */
+        .tree, .tree ul, .tree li {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }    
+        .tree {
+            text-align: center;
+        	margin-left: auto;
+        	margin-right: auto;
+        }
+        .tree, .tree ul {
+            display: table;
+        }
+        .tree ul {
+          width: 100%;
+        }
+        .tree li {
+            display: table-cell;
+            padding: 1vw 0 0;
+            vertical-align: top;
+        }    
+        .tree code{
+            border: solid 1px #666;
+            display: inline-block;
+            border-radius: 5px;
+            padding: 0.5vw 1vw;
+        	box-shadow: 5px 5px 10px 0px grey;
+        }    
+        /* | */
+        .tree ul:before {
+            outline: solid 1px #666;
+            content: "";
+            height: 1vw;/* keep it same as padding for .tree li */
+            left: 50%;
+            position: absolute;
+        }
+        .tree ul:first-child:before {
+            outline: none;
+          }
+        .previewdiv{
+            display: flex;
+            justify-content: center;
+        }
+    </Style>
+
+    <apex:slds />    
+    <div class="slds-scope">
+        <apex:variable value="{!1}" var="rowNum"/>
+        <div class="previewdiv">
+            <figure>
+                <ul class="tree">
+                    <apex:repeat var="user" value="{!approverNames}">
+                        <ul>
+                            <li><code>
+                                <apex:outputText >{!rowNum}. </apex:outputText> <apex:outputLink value="{!$Site.BaseUrl}/{!user.Id}">{!user.Name}</apex:outputLink>                            
+                                </code>
+                            </li>
+                        </ul>
+                        <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                    </apex:repeat>  
+                </ul>
+            </figure>
+        </div>
+    </div>
+</apex:page>

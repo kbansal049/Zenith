@@ -1,0 +1,10 @@
+<template>
+    <div class="slds-box">
+    <lightning-card title="Select Distributor" icon-name="standard:partner_fund_request">
+        <div style="padding-bottom:.5rem"></div>
+        <lightning-datatable key-field="Id" data={existingDistributors} columns={columns} resize-column-disabled="true"
+            selected-rows={selectedRows} max-row-selection={maxRowSelection} onrowselection={handleRowSelection}>
+        </lightning-datatable>
+    </lightning-card>
+    </div>
+</template>

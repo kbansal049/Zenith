@@ -1,0 +1,54 @@
+.THIS .searchBar{
+    width: 75%;
+    margin-left: 15%;
+}
+.THIS.featuredcontentDiv{
+    padding-top: 25px !important;
+  /* margin: 0% 10%;*/
+    
+}
+
+.THIS .contentWrapper{
+    margin-top: 35px;
+    background-color: #fff;
+    border-radius: 3rem;
+}
+
+.THIS .brandingHeader{
+    padding-top: 40px;
+    font-weight: bold;
+    font-size: 48px;
+    color: #fff;
+}
+.THIS .brandingText{
+    font-size: 22px;
+    color: #fff;
+}
+
+.THIS.colorGrey{
+    background-color:#f6f6f6 !important;
+    margin-top:4.6875rem;
+}
+
+
+
+@media screen and (min-width: 1024px){
+	.THIS .bodyDiv{
+    	margin: 0% 10%;
+        padding-top:3.125rem;
+        padding-bottom:93px;
+	}   
+    .THIS.featuredcontentDiv{
+    	margin: 0% 10%;
+	}  
+}
+
+@media screen and (max-width: 1023px){
+	.THIS.bodyDiv{
+    	margin: 0% 0%!important;
+        
+	}  
+    .THIS.featuredcontentDiv{
+    	margin: 0% 0%;
+	}  
+}

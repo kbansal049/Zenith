@@ -1,0 +1,34 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:html tag="style">
+        .salesforceIdentityLoginBody2 {
+        <!-- background: #012673 !important;-->
+        background-image: -webkit-linear-gradient(
+        -25deg
+        ,#633b97 0,#336cb5 52%,#3293ab 81%,#30baa1 100%) !important;
+        }
+        .slds-col, [class*=slds-col_padded], [class*=slds-col--padded] {
+        background: #FFF !important;
+        Width: 125% ! important;
+        }
+        .salesforceIdentityLoginForm2 .inverseTextColor{
+        color: #3795BD !important ;
+        }
+        .salesforceIdentityLoginBody2 a:hover {
+        color: #3795BD !important;
+        }
+        .salesforceIdentityEmployeeLoginLink2.employeeLoginLink a.inverseTextColor {
+        color: #3795BD !important ;<!-- color: olive !important; -->
+        }
+        .salesforceIdentityLoginForm2 .inputBox {
+        width: 85%;
+        line-height: unset !important; 
+        }
+        .salesforceIdentityLoginForm2 .uiButton {
+        <!-- background-image: linear-gradient(lightgreen, yellow) !important; -->
+        }
+        .salesforceIdentityLoginForm2 .inputIcon {
+        padding-top: 7px !important;
+        }            
+    </aura:html>
+    
+</aura:component>

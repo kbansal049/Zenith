@@ -1,0 +1,9 @@
+.green-icon{
+    --lwc-colorTextIconDefault: #00b500;
+}
+.blue-icon{
+    --lwc-colorTextIconDefault: #066ebe;
+}
+.red-icon{
+    --lwc-colorTextIconDefault: #F62217;
+}

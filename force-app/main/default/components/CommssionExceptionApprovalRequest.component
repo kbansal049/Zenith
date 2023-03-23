@@ -1,0 +1,47 @@
+<apex:component access="global" controller="GetCommssionExceptionDetails">
+    <apex:attribute name="ebId1" description="This field is used to display list of Proposal products" type="String" assignTo="{!ebId}"/>
+    <apex:attribute type="String" name="typeofTemplate1" assignTo="{!typeofTemplate}" description="Type of template" />
+    <apex:attribute type="String" name="approverName1" assignTo="{!recipientName}" description="Type of template" />
+    <style>
+        html{
+            background: #f8f8f8;
+        }
+    </style>
+    <div style="font-family:'Helvetica','Arial',sans-serif; width:700px; border:1px solid #bcc0be; background-color:#FFFFFF;">
+        <apex:outputPanel >
+            <div class="zscaler-logo" style="padding:10px;">
+                <img style="margin-left: 12px;" src="http://info.zscaler.com/rs/zscaler/images/zlogo-pms306-200x44.png" border="0" alt="Zscaler" height="36" />
+            </div>
+            <div class="approval-status" style="background:#00b3e3; color:#fff; padding:10px 20px; font-size:23px; font-weight:100; line-height:40px;">
+                <span><apex:outputPanel rendered="{!typeofTemplate == 'ApprovalRequired'}">Commission Exception Approval Request : {!commissionException.Name}</apex:outputPanel></span>
+            </div>
+            <div class="info-container" style="color: #555555; padding:10px 20px; font-size:14px;">
+                <p>Hello 
+                    <apex:outputPanel rendered="{!typeofTemplate == 'ApprovalRequired'}">
+                        {!recipientName},
+                    </apex:outputPanel>
+                </p>
+                <p>{!commissionException.Owner.Name} has submitted a Commission Exception request for your review and approval:</p>
+                <p><b>Commission Exception Information:</b></p>
+                <ul>
+                    <p><b>Commission Exception Name: </b> <apex:outputLink value="{!url+'/'+ebId}">{!commissionException.Name}</apex:outputLink> </p>
+                    <p><b>Opportunity Name: </b> {!commissionException.Opportunity__r.Name}</p>
+                    <p><b>Commission Amount (USD): </b> <apex:outputText value="{0, Number, Currency}"><apex:param value="{!commissionException.Commission_Amount__c}" /> </apex:outputText></p>
+                    <p><b>Request Status: </b>  {!commissionException.Request_Status__c}</p>
+                    <!-- <apex:outputPanel rendered="{!commissionException.Sub_Status__c != null }"><p><b>Sub Status: </b>  {!commissionException.Sub_Status__c}</p></apex:outputPanel> -->
+                    <p><b>Sub Status: </b>  {!commissionException.Sub_Status__c}</p>
+                    <p><b>Approved With Reservation: </b>  <apex:outputText value="{!IF(commissionException.Approved_With_Reservation__c, 'Yes' , 'No')}" /></p>
+                    <p><b>Justification: </b>  {!commissionException.Justification__c}</p>
+                </ul>
+                <p>If you have any queries, Please contact Sales Commission for more info.</p>
+                <p>Thanks, </p>
+                <p>{!commissionException.LastModifiedBy.Name} </p>
+                </div>
+            <footer>
+                <div class="footer" style="background:#252d34; color:#999999; text-align:center; padding:15px; font-size:11px;">
+                    <span>Copyright {!yearVal} Zscaler, Inc.</span>
+                </div>
+            </footer>
+        </apex:outputPanel>    
+    </div>
+</apex:component>

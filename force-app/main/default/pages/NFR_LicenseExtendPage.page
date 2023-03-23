@@ -1,0 +1,15 @@
+<apex:page sidebar="false" showHeader="true" standardStylesheets="false" standardController="NFR__c">
+    <apex:includeLightning />
+    <apex:slds />
+    
+    <div id="extendPgId" />    
+    <script>
+    $Lightning.use("c:NFR_LicenseExtendApp", function() {
+        $Lightning.createComponent("c:NFR_ExtendCmp",
+                                   { "recordId" : "{!$CurrentPage.parameters.Id}",
+                                    "fromVF"   : true
+                                   },
+                                   "extendPgId", function(component) {});
+    });
+    </script>
+</apex:page>

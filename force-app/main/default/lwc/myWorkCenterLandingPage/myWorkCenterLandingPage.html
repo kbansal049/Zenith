@@ -1,0 +1,40 @@
+<template>
+    <lightning-card class="slds-p-around_small">
+        <template if:true={isManager}>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_2-of-8">
+                    <span>
+
+                    </span>
+                </div>
+                <div class="slds-col slds-size_2-of-8">
+                    <span>
+                        <button class="slds-button slds-button_icon slds-button_icon-brand custom-icon-class"
+                            title="My WorkCenter" onclick={handleMyWorkCenterClick}>
+                            <lightning-icon icon-name="standard:avatar" class="custom-icon-class"
+                                alternative-text="My WorkCenter" title="My WorkCenter">
+                            </lightning-icon>
+                        </button>
+                        <p class="slds-p-around_small">My WorkCenter</p>
+                    </span>
+                </div>
+                <div class="slds-col slds-size_2-of-8">
+                    <span>
+                        <button class="slds-button slds-button_icon slds-button_icon-brand custom-icon-class"
+                            title="Team WorkCenter" onclick={handleTeamWorkCenterClick}>
+                            <lightning-icon icon-name="standard:customers" class="custom-icon-class"
+                                alternative-text="Team WorkCenter" title="Team WorkCenter">
+                            </lightning-icon>
+                        </button>
+                        <p class="slds-p-around_small">Team WorkCenter</p>
+                    </span>
+                </div>
+                <div class="slds-col slds-size_2-of-8">
+                    <span>
+
+                    </span>
+                </div>
+            </div>
+        </template>
+    </lightning-card>
+</template>

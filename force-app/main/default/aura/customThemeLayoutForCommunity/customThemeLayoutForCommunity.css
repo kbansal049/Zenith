@@ -1,0 +1,8 @@
+.THIS {
+    position: absolute;
+    
+}
+
+.THIS .mainContentArea{
+    z-index: 5
+}

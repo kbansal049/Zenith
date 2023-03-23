@@ -1,0 +1,100 @@
+<!--**********************************************************************************************************************
+* @CompName 	: Provisioning_Request_New 
+* @Author   	: Priyanka J
+* @Date     	: 01 March, 2020
+* @Description	: Lightning component that invokes New PR in Opportunity
+************************************************************************************************************ -->
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader,lightning:availableForFlowScreens,lightning:availableForFlowActions" 
+                access="global" controller="ProvisioningRequestNewController"> 
+    <aura:attribute name="record" type="Opportunity" />
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="accountId" type="String" />
+    <aura:attribute name="oppId" type="String" default=""/>
+    <aura:attribute name="currentUser" type="User"/>
+    <aura:attribute name="spinner" type="boolean" default="false"/>
+    <aura:attribute name="openPopup" type="Boolean" default="false"/>
+    <aura:attribute name="lstOfRecordType" type="String[]" />
+    <aura:attribute name="isOpen" type="boolean" default="false" />
+    <aura:attribute name="isSelectedNo" type="boolean" default="false" />
+    <aura:attribute name="isSelectedYes" type="boolean" default="false" />
+    <aura:attribute name="isFirstScreen" type="boolean" default="true" />
+    <aura:handler name="init" value="{!this}" action="{!c.recordUpdate}" />
+    <aura:attribute name="options" type="List" default="[
+    {'label': 'Yes', 'value': 'Yes'},
+    {'label': 'No', 'value': 'No'}
+    ]"/>
+    <aura:attribute name="value" type="String" default="Yes"/>
+    <aura:html tag="style">
+        .cuf-content {
+            padding: 0 0rem !important;
+        }
+        .slds-p-around--medium {
+            padding: 0rem !important;
+        }       
+        .slds-modal__content{
+            overflow-y:hidden !important;
+            height:unset !important;
+            max-height:unset !important;
+        }
+    </aura:html>
+    <!--<force:recordData aura:id="recordLoader" recordId="{!$SObjectType.CurrentUser.Id}" 
+                      fields="UserRole.Name" targetFields="{!v.currentUser}"/>
+    <force:recordData aura:id="recordLoader"
+                      recordId="{!v.recordId}"
+                      fields="StageName,Account_Org_Domain__c,Name,SE_Name__c,AccountId"
+                      targetFields="{!v.record}"
+                      recordUpdated="{!c.recordUpdate}"
+                      /> -->
+    <aura:if isTrue="{!v.openPopup}">
+        <div class="slds-modal__content slds-m-around--medium">
+        {!$Label.c.PR_FeVa_Msg}       
+        <br/>{!$Label.c.Do_you_want_to_continue}        
+        <br/><br/><br/>
+        <center>
+            <lightning:button variant="brand" label="Ok" onclick="{! c.createFeVaCloudRec }" />
+            <lightning:button label="Cancel" onclick="{! c.handleCancel }" />
+        </center>
+        </div>
+    </aura:if> 
+    <aura:if isTrue="{!v.isOpen}">
+               <div class="slds-modal__header">                    
+                   <h2 id="header43" class="slds-text-heading--medium" >{!$Label.c.New_Provision_Request}</h2>
+                </div>
+        		<aura:if isTrue="{!v.isFirstScreen}">
+                    <div class = "slds-m-around_small slds-text-title_bold">
+                        To request new tenant for ZIA, ZPA, ZDX, Zscaler for Users, CBI or Workload Communication select Yes. Otherwise select No
+                    </div>
+                    <div class = "slds-m-around_small">
+                        <lightning:radioGroup name="radioGroupRequired"
+                              label="Select"
+                              options="{! v.options }"
+                              value="{! v.value }"
+                              type="radio"
+                              onchange="{! c.handleChange }"/>
+                    </div>
+        		</aura:if>
+                <aura:if isTrue="{!v.isSelectedNo}">
+                    <div class="slds-modal__content slds-m-around--medium">
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-size--1-of-3 slds-large-size--1-of-3">
+                                <div class="slds-align--absolute-center">{!$Label.c.Select_a_Record_Type}</div>                            
+                            </div>
+                            <div class="slds-size--2-of-3 slds-large-size--2-of-3">
+                                <ui:inputSelect aura:id="selectid">
+                                    <aura:iteration items="{!v.lstOfRecordType}" var="rtlable">                            
+                                        <ui:inputSelectOption text="{!rtlable}" label="{!rtlable}"  />
+                                    </aura:iteration>
+                                </ui:inputSelect>
+                            </div>&nbsp; &nbsp;
+                        </div>                   
+                    </div>
+                </aura:if>
+        	    <aura:if isTrue="{!v.isSelectedYes}">
+                	<c:newTenantComponentAction aura:id="manageProvisioning" recordId="{!v.recordId}" accountId = "{!v.accountId}"></c:newTenantComponentAction>    
+        		</aura:if>
+                <div class="slds-modal__footer">
+                    <lightning:button class="slds-button slds-button--neutral" onclick="{!c.handleCancel}">Cancel</lightning:button>
+                    <lightning:button class="slds-button slds-button--brand" onclick="{!c.recordTypeSelected}">Next</lightning:button>
+                </div>
+    </aura:if>
+</aura:component>

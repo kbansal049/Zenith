@@ -1,0 +1,48 @@
+<template>
+      <!--HEADER Section-->
+          <c-custom-toast-component auto-close-time="3000"></c-custom-toast-component>
+
+                <div class="slds-modal__header">
+                    <h1 id="modal-heading-03" class="slds-modal__title slds-hyphenate">Provisioning Request Group Extension</h1>
+                </div>
+                <template  if:false={prgisprovisioned}>
+                    <div>
+                        &nbsp;<p style="color:red;margin-left: 163px;margin-bottom: 20px;">   Tenant Extension Request cannot be submitted when PRG is not Provisioned.
+
+                        </p>
+    
+                    </div>
+    
+                </template>
+                <template if:true={prgisprovisioned}>
+                <template  if:true={prginApproval}>
+                    <div>
+                        &nbsp;<p style="color:red;margin-left: 163px;margin-bottom: 20px;">   Provisioning Request Group Extention request is already submitted and waiting for the approval.
+
+                        </p>
+    
+                    </div>
+    
+                </template>
+           
+                <template  if:false={prginApproval}>
+                <!--Body Section-->
+                <div id="modal-content-id-3" class="slds-modal__content slds-p-around_medium slds-scrollable_none" style="height:250px">
+
+                    <div class="slds-align_absolute-left">
+
+                        &nbsp;<lightning-input label="Extension Date" type="date" id="endDate" value={endDateValue} variant="label-inline" disabled></lightning-input>
+                        <lightning-textarea label="Extension Reason" type="text" placeholder="type extesnion reason here..." id="extensionReason" value={extensionReason} onchange={handleExtensionReason} variant="label-inline" required></lightning-textarea>
+                        <lightning-spinner alternative-text="Loading..." size="small" if:true={isPrExtSpinnerLoading}></lightning-spinner>
+                    </div>
+                    <div><br/></div>
+                    <div class="slds-align_absolute-center">
+                        <!--<lightning-button label="Cancel" variant="brand-outline" onclick={closeExtensionModal}></lightning-button>&nbsp;&nbsp; -->
+                        <lightning-button label="Extend" variant="brand" onclick={saveExtension} disabled={isPrExtBtnDisabled}></lightning-button>
+                    </div>
+                </div>
+            </template>
+        </template>
+           
+
+</template>

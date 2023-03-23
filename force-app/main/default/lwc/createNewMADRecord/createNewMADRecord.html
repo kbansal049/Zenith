@@ -1,0 +1,83 @@
+<template>
+
+    <template if:true={isModalOpen}>
+
+        <lightning-record-edit-form object-api-name={objectApiName} onload={handleLoad} onsuccess={handleSuccess}
+            onsubmit={handleSubmit} onerror={handleError}>
+
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close" onclick={closeModal}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                                size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">New Transaction Details</h2>
+                    </header>
+
+                    <!-- BOBY START -->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <lightning-card>
+
+                            <lightning-messages data-id="message">
+                            </lightning-messages>
+
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_1-of-2">
+                                    <template for:each={fieldAPINameList} for:item="record">
+                                        <div key={record.Id}>
+                                            <template if:true={record.Is_Column_1__c}>
+                                                <lightning-input-field data-id={record.Field_API_Name__c}
+                                                    field-name={record.Field_API_Name__c} variant="label-stacked"
+                                                    onchange={handleFieldChange}>
+                                                </lightning-input-field>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2">
+                                    <template for:each={fieldAPINameList} for:item="record">
+                                        <div key={record.Id}>
+                                            <template if:true={record.Is_Column_2__c}>
+                                                <lightning-input-field data-id={record.Field_API_Name__c}
+                                                    field-name={record.Field_API_Name__c} variant="label-stacked"
+                                                    onchange={handleFieldChange}>
+                                                </lightning-input-field>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+
+                        </lightning-card>
+                    </div>
+                    <!-- BOBY END -->
+
+                    <footer class="slds-modal__footer">
+                        <div class="slds-align_absolute-center">
+                            <lightning-button class="slds-m-top_small slds-p-right_x-small " variant="brand" name="save"
+                                type="submit" label="Save"></lightning-button>
+                            <lightning-button class="slds-m-top_small slds-p-left_x-small" variant="brand" type="Cancel"
+                                name="Cancel" label="Cancel" onclick={closeModal}></lightning-button>
+                        </div>
+                    </footer>
+
+                </div>
+
+                <template if:true={showSpinner}>
+                    <lightning-spinner variant="brand" alternative-text="Loading" size="medium">
+                    </lightning-spinner>
+                </template>
+
+            </section>
+
+        </lightning-record-edit-form>
+
+    </template>
+
+    <div class="slds-backdrop slds-backdrop_open"></div>
+
+</template>

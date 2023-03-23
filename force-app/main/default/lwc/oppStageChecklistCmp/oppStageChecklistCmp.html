@@ -1,0 +1,315 @@
+<template>
+   <lightning-card>
+      <template if:false={isLoading}>
+         <div class="slds-p-around_x-medium slds-align_absolute-center slds-p-top_medium">
+            <!--<div class="slds-float_left">
+               <lightning-button variant="brand" type="submit" name="submit" label="Prev Stage" class="slds-m-horizontal_small slds-align_absolute-center" if:true={displayRegress}  onclick={regressStage} disabled={disablePrevious}></lightning-button>
+            </div>
+            <div>
+               <lightning-button variant="brand" type="submit" name="submit" label="Next Stage" class="slds-m-horizontal_small slds-align_absolute-center" disabled={disabledFlag} onclick={progressStage} ></lightning-button>
+            </div>
+            <div class="slds-float_right">-->
+               <button class="slds-m-horizontal_small slds-align_absolute-center slds-button slds-button_destructive" data-id="Stage" data-value={stageVal}   
+                  data-name="StageName" data-dependent-fields="Sub_Stage__c" data-label="PICKLIST" onclick={openModal} if:true={ShowClosedLostButton} disabled={disableClosed}>Closed Lost</button> 
+            <!--</div>
+         </div>
+         <div class="slds-p-around_x-medium slds-align_absolute-center slds-p-top_medium">
+            <lightning-button variant="brand" type="submit" name="submit" label="Edit Required Activities" class="slds-m-horizontal_small slds-align_absolute-center"   onclick={openEditModal} disabled={disablePrevious}></lightning-button>
+         --></div>
+      </template>
+
+      <!--Group Of lightning Tab Set-->
+      <!--<lightning-tabset active-tab-value={activeTab}>
+         <div class="slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">-->
+            <!-- Key Required Activities -->
+           <!-- <lightning-tab label="Required Activities" value="1" onactive={handleActive}>
+               <div class="slds-p-horizontal_small">
+                  <div>
+                     <div style="font-size: small;" >The following pre requisites need to be met to move to next stage</div>
+                     <div style="font-size: small;padding-top: 5px; color:gray;">(The system will not allow you to move opportunity to next stage until all pre-requisites are met)</div>
+                  </div>
+                  <template for:each={requiredFieldsCustom} for:item="fieldProp">
+                     <ul class="slds-has-dividers_around-space slds-p-around_x-small" key={fieldProp.randomId}>
+                        <template if:true={fieldProp.booleanValue}>
+                           <li class="slds-item greenItem slds-p-around_x-medium">
+                              <span style="position:relative; top:-3px;padding-right: 3px;">
+                                 <lightning-icon class="app-icon" size="xx-small" icon-name="utility:check"
+                                    alternative-text="Approved" title="Approved"></lightning-icon>
+                              </span>
+                              <span style="position:relative; padding-right: 3px;">
+                                 {fieldProp.fieldLabel}
+                                 <template if:true={fieldProp.hoverText}>
+                                    <lightning-helptext icon-name="utility:info" content={fieldProp.hoverText}></lightning-helptext>
+                                 </template>
+                                 <template if:true={fieldProp.displayFieldValue}>
+                                    <template if:true={fieldProp.isNumberType}>
+                                       <span style="padding-left: 0.5rem;" class="fieldValue">
+                                          <lightning-formatted-number value={fieldProp.fieldValue} maximum-fraction-digits="2"></lightning-formatted-number>
+                                       </span>
+                                    </template>
+                                    <template if:false={fieldProp.isNumberType}>
+                                       <template if:true={fieldProp.picklistLabel}>
+                                          <span style="padding-left: 0.5rem;" class="fieldValue">
+                                             {fieldProp.picklistLabel}
+                                          </span>
+                                       </template>
+                                       <template if:false={fieldProp.picklistLabel}>
+                                          <span style="padding-left: 0.5rem;" class="fieldValue">
+                                             {fieldProp.fieldValue}
+                                          </span>
+                                       </template>
+                                    </template>
+                                 </template>
+                                 <template if:true={fieldProp.attrs}>
+                                    <template for:each={fieldProp.attrs} for:item="att">
+                                       <a style="padding-left: 5px;" class="lineHeader" href="#" key={att.recId} data-id={att.recId} data-name={att.objectName} onclick={redirectToRecord}>{att.recValue}</a>
+                                    </template>
+                                 </template>
+                                 <template if:true={fieldProp.fileInfo}>
+                                    <template if:false={fieldProp.displayFieldValue}>
+                                       <span style="padding: 2px;" key={fieldProp.fileInfo.fileId}>
+                                       <a style="padding-left: 5px;" class="lineHeader"   data-id={fieldProp.fileInfo.fileId} onclick={previewFile}>{fieldProp.fileInfo.Title}</a>
+                                       </span>
+                                    </template>
+                                 </template>
+                                 <template if:true={fieldProp.allowInput}>
+                                    <span style="padding-left: 0.4rem;">
+                                       <template if:true={fieldProp.fileInfo}>
+                                          <lightning-button-icon icon-name="utility:edit" variant="bare"  alternative-text="Edit Field Value" class="slds-m-left_small lineHeader" title="Edit"
+                                          onclick={openModal} data-id={fieldProp.fieldLabel} data-value={fieldProp.fieldValue} data-file-name={fieldProp.fileInfo.Title} data-file-id={fieldProp.fileInfo.fileId}  
+                                             data-dependent-fields={fieldProp.dependentFieldNames} data-err-msg={fieldProp.errMsg} data-allowed-values={fieldProp.allowedValues} data-name={fieldProp.fieldName} data-label={fieldProp.fieldType} >
+                                          </lightning-button-icon>
+                                       </template>
+                                       <template if:false={fieldProp.fileInfo}>
+                                          <lightning-button-icon icon-name="utility:edit" variant="bare"   alternative-text="Edit Field Value" class="slds-m-left_small lineHeader" title="Edit" onclick={openModal} data-id={fieldProp.fieldLabel}
+                                             data-dependent-fields={fieldProp.dependentFieldNames}   data-value={fieldProp.fieldValue} data-name={fieldProp.fieldName} data-label={fieldProp.fieldType} data-err-msg={fieldProp.errMsg} data-allowed-values={fieldProp.allowedValues} >
+                                          </lightning-button-icon>
+                                       </template>
+                                    </span>
+                                 </template>
+                              </span>
+                           </li>
+                        </template>
+                        <template if:false={fieldProp.booleanValue}>
+                           <li class="slds-item redItem slds-p-around_x-medium" >
+                              <span style="position:relative; top:-3px;padding-right: 3px;">
+                                 <lightning-icon class="rej-icon" size="xx-small" icon-name="utility:close" alternative-text="Reject" title="Reject"></lightning-icon>
+                              </span>
+                              <span class="redItem">
+                                 {fieldProp.fieldLabel}
+                                 <template if:true={fieldProp.hoverText}>
+                                    <lightning-helptext icon-name="utility:info" content={fieldProp.hoverText}></lightning-helptext>
+                                 </template>
+                                 <template if:true={fieldProp.allowInput}>
+                                    <span style="padding-left: 0.4rem;">
+                                       <lightning-button-icon icon-name="utility:add"   alternative-text="Add Field Value" class="slds-m-left_small lineHeader" title="Add"
+                                       onclick={openModal} data-id={fieldProp.fieldLabel} data-value={fieldProp.fieldValue} 
+                                          data-dependent-fields={fieldProp.dependentFieldNames} data-err-msg={fieldProp.errMsg} data-allowed-values={fieldProp.allowedValues} data-name={fieldProp.fieldName} data-label={fieldProp.fieldType} >
+                                       </lightning-button-icon>
+                                    </span>
+                                 </template>
+                                 <template if:true={fieldProp.actionName}>
+                                    <span style="padding-left: 0.4rem;">
+                                    <button  class="slds-button" onclick={redirectToRecord} data-name={fieldProp.actionObjectName}>
+                                    <span style="padding-left: 0.2rem;" class="lineHeader">{fieldProp.actionName}</span>
+                                    </button >
+                                    </span>
+                                 </template>
+                              </span>
+                           </li>
+                        </template>
+                     </ul>
+                  </template>
+               </div>
+               <template if:false={isLoading}>
+                  <div class="slds-p-around_x-medium slds-align_absolute-center slds-p-top_medium">
+                     <div class="slds-float_left">
+                        <lightning-button variant="brand" type="submit" name="submit" label="Prev Stage" class="slds-m-horizontal_small slds-align_absolute-center" if:true={displayRegress}  onclick={regressStage} disabled={disablePrevious}></lightning-button>
+                     </div>
+                     <div>
+                        <lightning-button variant="brand" type="submit" name="submit" label="Next Stage" class="slds-m-horizontal_small slds-align_absolute-center" disabled={disabledFlag} onclick={progressStage} ></lightning-button>
+                     </div>
+                     <div class="slds-float_right">
+                        <button class="slds-m-horizontal_small slds-align_absolute-center slds-button slds-button_destructive" data-id="Stage" data-value={stageVal}   
+                           data-name="StageName" data-dependent-fields="Sub_Stage__c" data-label="PICKLIST" onclick={openModal} if:true={ShowClosedLostButton} disabled={disableClosed}>Closed Lost</button> 
+                     </div>
+                  </div>
+                  <div class="slds-p-around_x-medium slds-align_absolute-center slds-p-top_medium">
+                     <lightning-button variant="brand" type="submit" name="submit" label="Edit Required Activities" class="slds-m-horizontal_small slds-align_absolute-center"   onclick={openEditModal} disabled={disablePrevious}></lightning-button>
+                  </div>
+               </template>
+            </lightning-tab>-->
+            <!-- Guide for Success 
+            <lightning-tab label="Other Activities" value="2" onactive={handleActive}>
+               <div class="slds-p-horizontal_small">
+                  <div style="font-size: small;">The following activities are nice to have to move to next stage </div>
+                  <div style="font-size: small;padding-top: 5px; color:gray;">(The system will let you move opportunity to next stage even if these activities are not met) </div>
+                  <template for:each={optionalFields} for:item="fieldProp">
+                     <ul class="slds-has-dividers_around-space slds-p-around_x-small" key={fieldProp.randomId}>
+                        <template if:true={fieldProp.booleanValue}>
+                           <li class="slds-item greenItem slds-p-around_x-medium">
+                              <span style="position:relative; top:-3px;padding-right: 3px;">
+                                 <lightning-icon class="app-icon" size="xx-small" icon-name="utility:check"
+                                    alternative-text="Approved" title="Approved"></lightning-icon>
+                              </span>
+                              <span style="position:relative; padding-right: 3px;">
+                                 {fieldProp.fieldLabel}
+                                 <template if:true={fieldProp.hoverText}>
+                                    <lightning-helptext icon-name="utility:info" content={fieldProp.hoverText}></lightning-helptext>
+                                 </template>
+                                 <template if:true={fieldProp.displayFieldValue}>
+                                    
+                                   
+                                    <template if:true={fieldProp.picklistLabel}>
+                                       <span style="padding-left: 0.5rem;" class="fieldValue">
+                                          {fieldProp.picklistLabel}
+                                       </span>
+                                    </template>
+                                    <template if:false={fieldProp.picklistLabel}>
+                                       <span style="padding-left: 0.5rem;" class="fieldValue">
+                                          {fieldProp.fieldValue}
+                                       </span>
+                                    </template>
+                                    
+                                 </template>
+                                 <template if:true={fieldProp.attrs}>
+                                    <template for:each={fieldProp.attrs} for:item="att">
+                                       <a style="padding-left: 5px;" class="lineHeader" href="#" key={att.recId} data-id={att.recId} data-name={att.objectName} onclick={redirectToRecord}>{att.recValue}</a>
+                                    </template>
+                                 </template>
+                                 <template if:true={fieldProp.fileInfo}>
+                                    <template if:false={fieldProp.displayFieldValue}>
+                                       <span style="padding: 2px;" key={fieldProp.fileInfo.fileId}>
+                                       <a style="padding-left: 5px;" class="lineHeader" href="#"  data-id={fieldProp.fileInfo.fileId} onclick={previewFile}>{fieldProp.fileInfo.Title}</a>
+                                       </span>
+                                    </template>
+                                 </template>
+                                 <template if:true={fieldProp.allowInput}>
+                                    <span style="padding-left: 0.4rem;">
+                                       <template if:true={fieldProp.fileInfo}>
+                                          <lightning-button-icon icon-name="utility:edit" variant="bare"  alternative-text="Edit Field Value" class="slds-m-left_small lineHeader" title="Edit"
+                                          onclick={openModal} data-id={fieldProp.fieldLabel} data-value={fieldProp.fieldValue} data-file-name={fieldProp.fileInfo.Title} data-file-id={fieldProp.fileInfo.fileId}  
+                                             data-dependent-fields={fieldProp.dependentFieldNames} data-err-msg={fieldProp.errMsg} data-allowed-values={fieldProp.allowedValues} data-name={fieldProp.fieldName} data-label={fieldProp.fieldType} >
+                                          </lightning-button-icon>
+                                       </template>
+                                       <template if:false={fieldProp.fileInfo}>
+                                          <lightning-button-icon icon-name="utility:edit" variant="bare"   alternative-text="Edit Field Value" class="slds-m-left_small lineHeader" title="Edit" onclick={openModal} data-id={fieldProp.fieldLabel}
+                                             data-dependent-fields={fieldProp.dependentFieldNames}   data-value={fieldProp.fieldValue} data-name={fieldProp.fieldName} data-label={fieldProp.fieldType} data-err-msg={fieldProp.errMsg} data-allowed-values={fieldProp.allowedValues} >
+                                          </lightning-button-icon>
+                                       </template>
+                                    </span>
+                                 </template>
+                              </span>
+                           </li>
+                        </template>
+                        <template if:false={fieldProp.booleanValue}>
+                           <li class="slds-item redItem slds-p-around_x-medium" >
+                              <span style="position:relative; top:-3px;padding-right: 3px;">
+                                 <lightning-icon class="rej-icon" size="xx-small" icon-name="utility:close" alternative-text="Reject" title="Reject"></lightning-icon>
+                              </span>
+                              <span class="redItem">
+                                 {fieldProp.fieldLabel}
+                                 <template if:true={fieldProp.hoverText}>
+                                    <lightning-helptext icon-name="utility:info" content={fieldProp.hoverText}></lightning-helptext>
+                                 </template>
+                                 <template if:true={fieldProp.allowInput}>
+                                    <span style="padding-left: 0.4rem;">
+                                       <lightning-button-icon icon-name="utility:add"   alternative-text="Add Field Value" class="slds-m-left_small lineHeader" title="Add"
+                                       onclick={openModal} data-id={fieldProp.fieldLabel} data-value={fieldProp.fieldValue} 
+                                          data-dependent-fields={fieldProp.dependentFieldNames} data-err-msg={fieldProp.errMsg} data-allowed-values={fieldProp.allowedValues} data-name={fieldProp.fieldName} data-label={fieldProp.fieldType} >
+                                       </lightning-button-icon>
+                                    </span>
+                                 </template>
+                                 <template if:true={fieldProp.actionName}>
+                                    <span style="padding-left: 0.4rem;">
+                                    <button  class="slds-button" onclick={redirectToRecord} data-name={fieldProp.actionObjectName}>
+                                    <span style="padding-left: 0.2rem;" class="lineHeader">
+                                       <lightning-button-icon icon-name="utility:location"   alternative-text="Add location" >{fieldProp.actionName}</lightning-button-icon>
+                                    </span>
+                                    </button >
+                                    </span>
+                                 </template>
+                              </span>
+                           </li>
+                        </template>
+                     </ul>
+                  </template>
+               </div>
+            </lightning-tab>
+            <lightning-tab label="Guide for Success" value="3" onactive={handleActive}>
+               <div class="slds-p-horizontal_small">
+                  <div class="slds-grid slds-gutters slds-p-around_x-small">
+                     <div style="font-size: x-small;vertical-align: middle;" class="slds-col lineHeader">No. of Days in the current Stage</div>
+                     <div style="font-size: small; font-weight:bold;" class="slds-col slds-size_5-of-7" >{daysinCurrentStage}</div>
+                  </div>
+                  <div class="slds-grid slds-gutters slds-p-around_x-small">
+                     <div style="font-size: x-small;vertical-align: middle;" class="slds-col lineHeader">Stage Description</div>
+                     <div style="font-size: x-small;" class="slds-col slds-size_5-of-7" >
+                        <lightning-formatted-rich-text value={stageDescription} ></lightning-formatted-rich-text>
+                     </div>
+                  </div>
+                  <div class="slds-grid slds-gutters slds-p-around_x-small">
+                     <div class="slds-col lineHeader" style="font-size: x-small;">Action Steps &amp; Owner</div>
+                     <div class="slds-col slds-size_5-of-7" style="font-size: x-small; text-align: left;">
+                        <lightning-formatted-rich-text value={actorsInvolved}></lightning-formatted-rich-text>
+                     </div>
+                  </div>
+                  <div class="slds-grid slds-gutters slds-p-around_x-small">
+                     <div class="slds-col lineHeader" style="font-size: x-small;">Important Links</div>
+                     <div class="slds-col slds-size_5-of-7" style="font-size: x-small; text-align: left; word-wrap: break-word;">
+                        <template if:true={importantLinks}>
+                           <template for:each={importantLinks} for:item="obj">
+                              <a class="lineHeader"  href="#" key={obj.recId} data-id={obj.recId} data-name={obj.objectName} onclick={redirectToRecord}>{obj.recValue} <br/></a>
+                           </template>
+                        </template>
+                     </div>
+                  </div>-->
+                  <!--
+                     <div class="slds-grid slds-gutters slds-p-around_x-small">
+                        <div class="slds-col lineHeader" style="font-size: small;">Created By</div>
+                        <div class="slds-col  slds-size_4-of-7" style="font-size: small; text-align: left;">{createdByName}</div>
+                     </div>
+                     <div class="slds-grid slds-gutters slds-p-around_x-small">
+                        <div class="slds-col lineHeader" style="font-size: small;">Opp Owner</div>
+                        <div class="slds-col slds-size_4-of-7" style="font-size: small; text-align: left;">{ownerName}</div>
+                     </div>
+                     <div class="slds-grid slds-gutters slds-p-around_x-small">
+                        <div class="slds-col lineHeader" style="font-size: small;">Rep Forecast Category</div>
+                        <div class="slds-col slds-size_4-of-7" style="font-size: small; text-align: left;">{forecastCategory}</div>
+                     </div>
+                     <div class="slds-grid slds-gutters slds-p-around_x-small">
+                        <div class="slds-col lineHeader" style="font-size: small;">Current Stage Creation Date</div>
+                        <div class="slds-col slds-size_4-of-7" style="font-size: small; text-align: left;">{lastChangedDate}</div>
+                     </div>
+                     -->
+              <!-- </div>
+            </lightning-tab>
+         </div>
+      </lightning-tabset>-->
+      <template if:true={modalWindow}>
+         <!--   <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">-->
+         <c-opp-stage-checklist-child-cmp record-id={recordId} record-type-id={recordTypeId} field-name={fieldName} field-label={fieldLabel}  field-val ={fieldVal} file-name={fileName} file-id={fileId} field-type={fieldType}
+            allowed-values={allowedValues} dependent-fields={dependentFieldNames} err-msg={errMsg} oncallpasstoparent={handleChildMessage} onchildclose={handleChildClose}></c-opp-stage-checklist-child-cmp>
+         <!--</div>
+            </section>-->
+         <div class="slds-backdrop slds-backdrop_open"></div>
+      </template>
+      <!--
+      <template if:true={editWindow}>-->
+         <!--   <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">-->
+         <!-- <c-opportunity-edit-checklist record-id={recordId} oncallpasstoparent={handleChildMessage} onchildclose={handleChildClose}></c-opportunity-edit-checklist> -->
+         <!--</div>
+            </section>-->
+       <!--  <div class="slds-backdrop slds-backdrop_open"></div>
+      </template>-->
+      <template if:true={isLoading}>
+         <div class="slds-p-around_x-large">
+            <lightning-spinner alternative-text="Loading" size="large" variant="brand"></lightning-spinner>
+         </div>
+      </template>
+   </lightning-card>
+</template>

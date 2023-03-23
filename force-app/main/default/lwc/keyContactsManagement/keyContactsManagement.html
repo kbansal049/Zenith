@@ -1,0 +1,118 @@
+<template>
+    <lightning-quick-action-panel header="Key Contacts Management">
+        <lightning-layout multiple-rows>
+            <template lwc:if={loadPage}>
+                <lightning-layout-item size="12">
+                    <lightning-formatted-rich-text class="slds-cell-wrap" value={helpText}>
+                    </lightning-formatted-rich-text>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="3">
+                    <lightning-input placeholder="Search Contact" type="search" onchange={handleContactSearch}
+                        variant="label-hidden" oncommit={handleContactSearch}>
+                    </lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item size="2">
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="3">
+                    <template lwc:if={showpagination}>
+                        <div class="slds-align_absolute-center">
+                            <c-paginator-l-w-c total-records={totalRecords} current-page-number={currentpgnum}
+                                page-size={numofrecords} onselectedpage={handlePageChange}></c-paginator-l-w-c>
+                        </div>
+                    </template>
+                </lightning-layout-item>
+                <lightning-layout-item size="2">
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" alignment-bump="right" size="1">
+                    <lightning-button variant="neutral" label="Cancel"
+                        onclick={handleCloseScreenAction}></lightning-button>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" alignment-bump="right" size="1">
+                    <template lwc:if={showData}>
+                        <lightning-button variant="brand" label="Save" onclick={handleSave}></lightning-button>
+                    </template>
+                </lightning-layout-item>
+            </template>
+            <template lwc:if={showData}>
+                <lightning-layout-item size="12">
+                    <div class="slds-table--header-fixed_container" style={setDatatableHeight}>
+                        <div class="slds-scrollable_y">
+                            <table
+                                class="slds-table slds-table_bordered slds-table_header-fixed slds-table_fixed-layout slds-table_resizable-cols">
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <template for:each={headers} for:item="header">
+                                            <th key={header} scope="col">
+                                                <div class="slds-truncate slds-cell-fixed slds-p-horizontal_x-small slds-p-vertical_xx-small"
+                                                    title={header}>{header}</div>
+                                            </th>
+                                        </template>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={data} for:item="record">
+                                        <tr class="slds-hint-parent" key={record.contactId}>
+                                            <td data-label="Contact Name">
+                                                <lightning-formatted-url class="slds-cell-wrap"
+                                                    value={record.contactUrl} label={record.contactName}
+                                                    target="_blank"></lightning-formatted-url>
+                                            </td>
+                                            <td data-label="Contact Title">
+                                                <lightning-formatted-text class="slds-cell-wrap"
+                                                    value={record.contactTitle}>
+                                                </lightning-formatted-text>
+                                            </td>
+                                            <td data-label="Contact Validation Date">
+                                                <lightning-formatted-date-time class="slds-cell-wrap"
+                                                    value={record.lastValidationDate}>
+                                                </lightning-formatted-date-time>
+                                            </td>
+                                            <td data-label="Head Of IT">
+                                                <input class="slds-cell-wrap" type="checkbox" name="Head Of IT"
+                                                    data-id={record.contactId} data-key="headOfIT"
+                                                    value={record.headOfIT} checked={record.headOfIT}
+                                                    onclick={handleCTMFields} />
+                                            </td>
+                                            <td data-label="Head Of Networking">
+                                                <input class="slds-cell-wrap" type="checkbox" name="Head Of Networking"
+                                                    data-id={record.contactId} data-key="headOfNetworking"
+                                                    value={record.headOfNetworking}
+                                                    checked={record.headOfNetworking} onclick={handleCTMFields} />
+                                            </td>
+                                            <td data-label="Head Of Security">
+                                                <input class="slds-cell-wrap" type="checkbox" name="Head Of Security"
+                                                    data-id={record.contactId} data-key="headOfSecurity"
+                                                    value={record.headOfSecurity} checked={record.headOfSecurity}
+                                                    onclick={handleCTMFields} />
+                                            </td>
+                                            <td data-label="Head Of Architecture">
+                                                <input class="slds-cell-wrap" type="checkbox" name="Head Of Architecture"
+                                                    data-id={record.contactId} data-key="headOfArchitecture"
+                                                    value={record.headOfArchitecture}
+                                                    checked={record.headOfArchitecture} onclick={handleCTMFields} />
+                                            </td>
+                                            <td data-label="Validate">
+                                                <input class="slds-cell-wrap" type="checkbox" name="Validate"
+                                                    data-id={record.contactId} data-key="isValidated"
+                                                    value={record.isValidated} checked={record.isValidated}
+                                                    onclick={handleValidate} />
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </lightning-layout-item>
+            </template>
+        </lightning-layout>
+        <template lwc:if={showSpinner}>
+            <lightning-spinner variant="brand" alternative-text="Loading" size="medium"></lightning-spinner>
+        </template>
+        <template lwc:if={noDataFound}>
+            <div class="slds-text-body_regular slds-text-color_weak slds-align_absolute-center"><em>No Records
+                    to
+                    display</em></div>
+        </template>
+    </lightning-quick-action-panel>
+</template>

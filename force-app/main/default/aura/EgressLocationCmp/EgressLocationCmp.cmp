@@ -1,0 +1,29 @@
+<aura:component controller="EgressLocationPageController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction,lightning:actionOverride" access="global" >
+	
+    <aura:attribute name="loaded" type="Boolean" default="false" />
+	<lightning:spinner variant="brand" alternativeText="Loading..." class="{!(v.loaded? 'slds-show': 'slds-hide')}" />
+    <lightning:overlayLibrary aura:id="overlayLib"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="PassesValueFromVF" type="string"/>
+    <aura:attribute name="optyURL" type="string"/>
+    <aura:attribute name="accObj" type="Object"/>
+    <aura:attribute name="pageReference" type="Object"/>
+    <lightning:navigation aura:id="navigation"/>
+    <lightning:card title="" class="slds-col slds-size_1-of-2">
+    <lightning:recordEditForm objectApiName="Egress_Location__c" onsubmit="{!c.handleSubmit}" onsuccess="{!c.handleSuccess}">
+         <lightning:messages />
+         <lightning:inputField fieldName="Name" />
+         <lightning:inputField fieldName="Account__c" required="true" aura:id="accId"/>
+         <lightning:inputField fieldName="Egress_Location__c" required="true" aura:id="OpptyId"/>
+         <lightning:inputField fieldName="Number_of_users__c" required="true" aura:id="noOfUsers"/>
+        <lightning:inputField fieldName="Nearest_Zscaler_Datacenter__c" required="true" aura:id="dataCentr"/>
+         <lightning:inputField fieldName="Nearest_Datacetner_Location_Proposed__c" aura:id="dataCentrproposed"/>
+         <lightning:button variant="brand" aura:id="submit" type="submit" label="Save" class="slds-m-top_medium btn" />
+         <lightning:button variant="brand" label="Cancel" title="Cancel" onclick="{!c.handleSuccess}" class="slds-m-top_medium btn"></lightning:button>
+
+    	
+</lightning:recordEditForm>
+    </lightning:card>                       
+                       
+    
+</aura:component>

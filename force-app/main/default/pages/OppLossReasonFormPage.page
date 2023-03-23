@@ -1,0 +1,34 @@
+<apex:page showHeader="true" sidebar="false" >
+    <apex:includeLightning />
+    <div id="OppLossReasonFormId" />
+    <script>
+        $Lightning.use("c:OppLossReasonFormAPP", function() {
+            /*$Lightning.createComponent("c:OppLossReasonFormCMP",
+            { 
+                "recordId" : "{!$CurrentPage.parameters.id}",
+                "oppId" : "{!$CurrentPage.parameters.oppId}",
+                "custpartowneremails" : "{!$CurrentPage.parameters.custpartowneremails}",
+                "terminationTemplateId" : "{!$CurrentPage.parameters.terminationTemplateId}",
+                "subject" : "{!$CurrentPage.parameters.subject}"
+            },
+            "OppLossReasonFormId",
+            function(cmp) {
+                console.log('Component created, do something cool here');
+            });*/
+            $Lightning.createComponent("c:opportunityCloseLossInfo",
+
+            { 
+                "recordId" : "{!$CurrentPage.parameters.oppId}",
+                "subStageType" : "{!$CurrentPage.parameters.subStage}",
+                "technicalValStage" : "{!$CurrentPage.parameters.technicalValStage}",
+                /*Priyanka : CR# 1325 - Added below params to enable profile & split value based validation*/
+                "profileName" : "{!$CurrentPage.parameters.userProfile}",
+                "optySplitType" : "{!$CurrentPage.parameters.splitType}"
+            },
+            "OppLossReasonFormId",
+            function(cmp) {
+                //console.log('Component created, do something cool here');
+            })
+        });
+    </script>
+</apex:page>

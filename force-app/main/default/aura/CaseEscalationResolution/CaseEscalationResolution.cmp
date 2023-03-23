@@ -1,0 +1,95 @@
+<!--
+@description       : 
+@author            : ChangeMeIn@UserSettingsUnder.SFDoc
+@group             : 
+@last modified on  : 08-19-2020
+@last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+Modifications Log 
+Ver   Date         Author                               Modification
+1.0   08-19-2020   ChangeMeIn@UserSettingsUnder.SFDoc   Initial Version
+-->
+<aura:component controller="CaseEscalationResolutionController" implements="flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+<aura:attribute name="recordId" type="Id" />
+<aura:attribute name="caseNoteHistory" type="Case_Notes_History__c" />
+<aura:handler name="init" value="{!this}" action="{!c.myAction}" />
+<aura:handler event="force:refreshView" action="{!c.myAction}" />
+
+
+
+<lightning:card iconName="standard:case"  title="Case Escalation Progress" class="container">
+<aura:iteration var="caseNotes" items="{!v.caseNoteHistory}">
+<div class="slds-form form-horizontal " role="list" data-aura-rendered-by="3090:0">
+    <div class="slds-grid slds-gutters_small mdp cols-2 forcePageBlockSectionRow" data-aura-rendered-by="3046:0" data-aura-class="forcePageBlockSectionRow">
+        <div class="slds-col slds-grid slds-has-flexi-truncate  mdp forcePageBlockItem forcePageBlockItemView" role="listitem" data-aura-rendered-by="3015:0" data-aura-class="forcePageBlockItem forcePageBlockItemView">
+            <div class="slds-form-element slds-form-element_readonly slds-form-element_edit slds-grow slds-hint-parent override--slds-form-element" data-aura-rendered-by="3016:0">
+                <div class="test-id__field-label-container slds-form-element__label" data-aura-rendered-by="3017:0"><span class="test-id__field-label" data-aura-rendered-by="3018:0">Escalation Stage</span></div>
+                <div class="slds-form-element__control slds-grid itemBody" data-aura-rendered-by="3020:0">
+                    <span class="test-id__field-value slds-form-element__static slds-grow " data-aura-rendered-by="3021:0">
+                        <span data-aura-rendered-by="3012:0">
+                            {!caseNotes.Escalation_Stage__c }
+                        </span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="slds-col slds-grid slds-has-flexi-truncate  mdp forcePageBlockItem forcePageBlockItemView" role="listitem" data-aura-rendered-by="3033:0" data-aura-class="forcePageBlockItem forcePageBlockItemView">
+            <div class="slds-form-element slds-form-element_readonly slds-form-element_edit slds-grow slds-hint-parent override--slds-form-element" data-aura-rendered-by="3034:0">
+                <div class="test-id__field-label-container slds-form-element__label" data-aura-rendered-by="3035:0"><span class="test-id__field-label" data-aura-rendered-by="3036:0">Customer Temperature</span></div>
+                <div class="slds-form-element__control slds-grid itemBody" data-aura-rendered-by="3038:0">
+                    <span class="test-id__field-value slds-form-element__static slds-grow " data-aura-rendered-by="3039:0">
+                        <span data-aura-rendered-by="3030:0">
+                            {!caseNotes.Customer_Temperature__c}
+                        </span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid slds-gutters_small mdp cols-2 forcePageBlockSectionRow" data-aura-rendered-by="3083:0" data-aura-class="forcePageBlockSectionRow">
+        <div class="slds-col slds-grid slds-has-flexi-truncate  mdp long-text forcePageBlockItem forcePageBlockItemView" role="listitem" data-aura-rendered-by="3056:0" data-aura-class="forcePageBlockItem forcePageBlockItemView">
+            <div class="slds-form-element slds-form-element_readonly slds-form-element_edit slds-grow slds-hint-parent override--slds-form-element" data-aura-rendered-by="3057:0">
+                <div class="test-id__field-label-container slds-form-element__label" data-aura-rendered-by="3058:0"><span class="test-id__field-label" data-aura-rendered-by="3059:0">Escalation Reason</span></div>
+                <div class="slds-form-element__control slds-grid itemBody" data-aura-rendered-by="3061:0">
+                    <span class="test-id__field-value slds-form-element__static slds-grow " data-aura-rendered-by="3062:0">
+                        <div class="slds-rich-text-editor__output uiOutputRichText forceOutputRichText" dir="ltr" data-aura-rendered-by="3053:0" data-aura-class="uiOutputRichText forceOutputRichText">
+                            {!caseNotes.Escalation__c}
+                        </div>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid slds-gutters_small mdp cols-2 forcePageBlockSectionRow" data-aura-rendered-by="3083:0" data-aura-class="forcePageBlockSectionRow">
+        <div class="slds-col slds-grid slds-has-flexi-truncate  mdp long-text forcePageBlockItem forcePageBlockItemView" role="listitem" data-aura-rendered-by="3056:0" data-aura-class="forcePageBlockItem forcePageBlockItemView">
+            <div class="slds-form-element slds-form-element_readonly slds-form-element_edit slds-grow slds-hint-parent override--slds-form-element" data-aura-rendered-by="3057:0">
+                <div class="test-id__field-label-container slds-form-element__label" data-aura-rendered-by="3058:0"><span class="test-id__field-label" data-aura-rendered-by="3059:0">Escalation Progress Notes</span></div>
+                <div class="slds-form-element__control slds-grid itemBody" data-aura-rendered-by="3061:0">
+                    <span class="test-id__field-value slds-form-element__static slds-grow " data-aura-rendered-by="3062:0">
+                        <div class="slds-rich-text-editor__output uiOutputRichText forceOutputRichText" dir="ltr" data-aura-rendered-by="3053:0" data-aura-class="uiOutputRichText forceOutputRichText">
+                            <ui:outputRichText class="slds-text-longform" value="{!caseNotes.Escalation_Notes__c}"/>
+                        </div>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <aura:if isTrue="{!caseNotes.Escalation_Stage__c=='Closed'}">
+            <div class="slds-grid slds-gutters_small mdp cols-2 forcePageBlockSectionRow" data-aura-rendered-by="3083:0" data-aura-class="forcePageBlockSectionRow">
+                <div class="slds-col slds-grid slds-has-flexi-truncate  mdp long-text forcePageBlockItem forcePageBlockItemView" role="listitem" data-aura-rendered-by="3056:0" data-aura-class="forcePageBlockItem forcePageBlockItemView">
+                    <div class="slds-form-element slds-form-element_readonly slds-form-element_edit slds-grow slds-hint-parent override--slds-form-element" data-aura-rendered-by="3057:0">
+                        <div class="test-id__field-label-container slds-form-element__label" data-aura-rendered-by="3058:0"><span class="test-id__field-label" data-aura-rendered-by="3059:0">Escalation Resolution Notes</span></div>
+                        <div class="slds-form-element__control slds-grid itemBody" data-aura-rendered-by="3061:0">
+                            <span class="test-id__field-value slds-form-element__static slds-grow " data-aura-rendered-by="3062:0">
+                                <div class="slds-rich-text-editor__output uiOutputRichText forceOutputRichText" dir="ltr" data-aura-rendered-by="3053:0" data-aura-class="uiOutputRichText forceOutputRichText">
+                                    <ui:outputRichText class="slds-text-longform" value="{!caseNotes.Case__r.Escalation_Closure_Notes__c}"/>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </aura:if>         
+</div>
+</aura:iteration>
+</lightning:card>
+</aura:component>

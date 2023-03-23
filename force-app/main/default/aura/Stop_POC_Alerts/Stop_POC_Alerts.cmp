@@ -1,0 +1,16 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader,lightning:actionOverride" access="global" >
+    <aura:handler name="change" value="{!v.record}" action="{!c.StopPOCAlerts}"/>
+    <aura:attribute name="record" type="Provisioning_Request__c"/>
+    <aura:attribute name="error" type="String"/>
+    <aura:attribute name="showSpinner" type="boolean" default="false"/>
+	
+     <force:recordData aura:id="recordHandler"
+                      recordId="{!v.recordId}"
+                      fields="Id,Email_Sent__c,Send_Reminder_Emails__c"
+                      mode="EDIT"
+					  targetRecord="{!v.record}"
+                      targetError="{!v.error}" />
+    <aura:if isTrue="{!v.showSpinner}">
+            <lightning:spinner variant="brand" size="medium" />
+    </aura:if>
+</aura:component>

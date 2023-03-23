@@ -1,0 +1,57 @@
+<template>
+    <article class="slds-card">
+        <div class="slds-card__body slds-card__body_inner">
+            <div class="slds-path">
+                <div class="slds-grid slds-path__track">
+                    <div class="slds-grid slds-path__scroller-container">
+                        <div class="slds-path__scroller" role="application">
+                            <div class="slds-path__scroller_inner">
+                                <template if:true={showSubCategory}>
+                                    <ul class="slds-path__nav" role="listbox" aria-orientation="horizontal" style="margin-left : 30px; margin-right: 30px">
+                                        <template for:each={listOfPath} for:item="currpath">
+                                            <li class={currpath.pathClass} role="presentation" data-id={currpath.subCatId} id={currpath.subCatId} onclick={handleSubCategoryChange} key={currpath.subCatId}>
+                                                <a aria-selected="false" class="slds-path__link" href="javascript:void(0);" role="option" tabindex="-1">
+                                                    <span class="slds-path__stage">
+                                                        <lightning-icon icon-name="utility:check" size="x-small" alternative-text="check" title="Check"></lightning-icon>
+                                                        <span class="slds-assistive-text">{currpath.subCategory}</span>
+                                                    </span>
+                                                    <span class="slds-path__title">{currpath.subCategory}</span>
+                                                </a> 
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </template>
+                                <template if:false={showSubCategory}>
+                                    <ul class="slds-path__nav" role="listbox" aria-orientation="horizontal">
+                                        <template for:each={listOfPath} for:item="currpath">
+                                            <li class={currpath.pathClass} role="presentation" data-id={currpath.subCatId} id={currpath.subCatId} onclick={handleCategoryChange} key={currpath.subCatId}>
+                                                <a aria-selected="false" class="slds-path__link" href="javascript:void(0);" role="option" tabindex="-1">
+                                                    <span class="slds-path__stage">
+                                                        <lightning-icon icon-name="utility:check" size="x-small" alternative-text="check" title="Check"></lightning-icon>
+                                                        <span class="slds-assistive-text">{currpath.subCategory}</span>
+                                                    </span>
+                                                    <span class="slds-path__title">{currpath.subCategory}</span>
+                                                </a> 
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </template>
+                                
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+    <br/>
+    <template if:true={showSubCategory}>
+        <template for:each={listOfPath} for:item="currpath">
+            <div data-id={currpath.fieldSetName} class={currpath.recordFormClass} key={currpath.fieldSetName}>
+                <c-generic-record-edit-form-l-w-c fld-set-a-p-i-name={currpath.fieldSetName} cmp-read-only=false cmp-density="compact" cmp-columns={currpath.columns} record-id={recordId} object-api-name="PS_Questionnaire__c" opportunity-id={opportunityId} project-id={projectId} record-type-id={recordTypeId} oncallhandlespinner={handleFormLoaded} oncallformsubmitsuccess={handleFormSubmitSuccess}></c-generic-record-edit-form-l-w-c>
+            </div>
+        </template>
+    </template>
+    
+</template>

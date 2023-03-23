@@ -1,0 +1,269 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 07-12-2022
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<template>
+    <c-custom-toast-component auto-close-time="3000"></c-custom-toast-component>
+    <lightning-record-view-form record-id={recordId} object-api-name="Account">
+        <lightning-card variant="Narrow" title={acctName} icon-name="standard:account">
+            <lightning-button label="Zscaler Internal Employee Tenant Requests"  onclick={navigateToManageInternalProvisioning} slot="actions" class="slds-p-right_small"></lightning-button>
+            <lightning-button label="Back to Account" slot="actions" onclick ={navigateToAccountRecord} class="slds-p-right_small"></lightning-button>
+            <div class="slds-p-horizontal_small">
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-output-field field-name="Name"></lightning-output-field>
+                        <lightning-output-field field-name="Domain__c"></lightning-output-field>
+                        <lightning-output-field field-name="ZIA_Customer_Id__c"></lightning-output-field>
+                        <lightning-output-field field-name="Additional_Organization_Domains__c"></lightning-output-field>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-output-field field-name="Type"></lightning-output-field>
+                        <lightning-output-field field-name="Geo__c"></lightning-output-field>
+                        <lightning-output-field field-name="Market_Segment__c"></lightning-output-field>
+                    </div>
+                </div>
+            </div>
+        </lightning-card>
+    </lightning-record-view-form>
+
+    <template if:true={isPendingPGExists}>
+        <div class="slds-p-vertical_small"></div>
+        <lightning-card variant="Narrow">
+            <h3 class="slds-section-title--divider slds-m-bottom--small" style="background-color: rgb(176 196 223);color: black; text-align: center;">
+                <b>Pending Provisioning</b>
+            </h3>
+            <div class="slds-m-around_medium">
+                <lightning-button label="Expand All" variant="brand-outline" disabled={isPendingExpandAllButtonDisabled} value="Pending Provisions Accordian Section" class="slds-m-around_small" onclick={expandAllActiveAccordianSections}></lightning-button>
+                <lightning-button label="Collapse All" variant="brand-outline" disabled={isPendingCollapseAllButtonDisabled} value="Pending Provisions Accordian Section" class="slds-m-around_small" onclick={collapseAllActiveAccordianSections}></lightning-button>
+            </div>
+            <template if:true={pgWrap}>
+                <template if:true={pgWrap.tenantList}>
+                    <lightning-accordion allow-multiple-sections-open active-section-name={pendingProvisionActiveSections}>
+                        <template for:each={pgWrap.tenantList} for:item="tenant">
+                            <lightning-accordion-section name={tenant.sectionName} label={tenant.sectionName} style="font-weight: bold;" key={tenant.sectionName}>
+                                <template if:true={tenant.isTrialTenant}>
+                                    <div class="slds-p-vertical_small">
+                                        <span class="slds-badge_lightest">
+                                            <lightning-button variant="brand-outline" label={tenant.pGroup.Name} title={tenant.pGroup.Name} value={tenant.pGroup.Id} icon-name="utility:new_window" icon-position="right" class="slds-m-left_x-small" onclick={navigateToPRGRecPage}></lightning-button>&nbsp;&nbsp;&nbsp;
+                                        </span>
+                                        <span class="slds-badge slds-theme_info" style="background-color: rgb(235 245 255);color: black; text-align: center;">
+                                            Type: {tenant.pGroup.Provisioning_Type__c} &nbsp;&nbsp;||&nbsp;&nbsp; Status: {tenant.pGroup.Status__c} &nbsp;&nbsp;||&nbsp;&nbsp; Product Line: {tenant.pGroup.Product_Line__c} &nbsp;&nbsp;||&nbsp;&nbsp; Process: {tenant.pGroup.Provisioning_Process__c}&nbsp;&nbsp;||&nbsp;&nbsp; Approval Status: {tenant.pGroup.Approval_Status__c}
+                                        </span>
+                                    </div>
+                                </template>
+                                <template if:true={tenant.isSubscriptionTenant}>
+                                    <span class="slds-badge_lightest">
+                                        <lightning-button variant="brand-outline" label={tenant.pGroup.Name} title={tenant.pGroup.Name} value={tenant.pGroup.Id} icon-name="utility:new_window" icon-position="right" class="slds-m-left_x-small" onclick={navigateToPRGRecPage}></lightning-button>&nbsp;&nbsp;&nbsp;
+                                    </span>
+                                    <span class="slds-badge slds-theme_info" style="background-color: rgb(235 250 240);color: black; text-align: center;">
+                                        Type: {tenant.pGroup.Provisioning_Type__c} Status: {tenant.pGroup.Status__c} &nbsp;&nbsp;||&nbsp;&nbsp; &nbsp;&nbsp;||&nbsp;&nbsp; Product Line: {tenant.pGroup.Product_Line__c}
+                                        <template if:true={tenant.pGroup.Opportunity__r.Netsuite_Sales_Order_Number__c}>
+                                            &nbsp;&nbsp;||&nbsp;&nbsp; SO Number: {tenant.pGroup.Opportunity__r.Netsuite_Sales_Order_Number__c}
+                                        </template>
+                                        <template if:false={tenant.pGroup.Opportunity__r.Netsuite_Sales_Order_Number__c}>
+                                            &nbsp;&nbsp;||&nbsp;&nbsp; SO Number: NA
+                                        </template>
+                                    </span>
+                                </template>
+                                <div class="slds-p-vertical_small">
+                                    <lightning-datatable 
+                                        key-field="Id" 
+                                        data={tenant.pProducts} 
+                                        columns={columnsTT} 
+                                        hide-checkbox-column=true 
+                                        show-row-number-column=true 
+                                        resize-column-disabled=true 
+                                        class="datatable-custom-style">
+                                    </lightning-datatable>
+                                </div>
+                            </lightning-accordion-section>
+                        </template>
+                    </lightning-accordion>
+                </template>
+            </template>
+        </lightning-card>
+    </template>
+    
+    <template if:true={isProvisionedPGExists}>
+        <div class="slds-p-vertical_small"></div>
+        <lightning-card variant="Narrow">
+            <h3 class="slds-section-title--divider slds-m-bottom--small" style="background-color: rgb(176 196 224);color: black; text-align: center;">
+                <b>Provisioned Tenants</b>
+            </h3>
+            <lightning-tabset active-tab-value={activeTabName}>
+                <lightning-tab label="Trial Tenants" value="Trial Tenants">
+                    <template if:true={isAtleastOneProvisionedTrailTenantExists}>
+                        <div class="slds-m-around_medium">
+                            <lightning-button label="Expand All" variant="brand-outline" disabled={isProvisionedTrailTenantExpandAllButtonDisabled} value="Provisioned Trail Tenants Accordian Section" class="slds-m-around_small slds-align_absolute_right" onclick={expandAllActiveAccordianSections}></lightning-button>
+                            <lightning-button label="Collapse All" variant="brand-outline" disabled={isProvisionedTrailTenantCollapseAllButtonDisabled} value="Provisioned Trail Tenants Accordian Section" class="slds-m-around_small slds-align_absolute_right" onclick={collapseAllActiveAccordianSections}></lightning-button>
+                        </div>
+                        <lightning-accordion allow-multiple-sections-open active-section-name={provisionedTraialTenantActiveSections}>
+                            <template if:true={tenantwrap}>
+                                <template for:each={tenantwrap} for:item="tenant">
+                                    <template if:true={tenant.isTrialTenant}>
+                                        <template if:true={tenant.zscObjWrapper}>
+                                            <lightning-accordion-section name={tenant.zscObjWrapper.Name} label={tenant.zscObjWrapper.Name} style=" font-weight: bold;" key={tenant.zscObjWrapper.Name}>
+                                                <div class="slds-p-vertical_small">
+                                                    <span class="slds-badge_lightest">
+                                                        <lightning-button variant="brand-outline" label={tenant.zscObjWrapper.Name} title={tenant.zscObjWrapper.Name} value={tenant.zscObjWrapper.Id} icon-name="utility:new_window" icon-position="right" class="slds-m-left_x-small" onclick={navigateToZSCRecPage}></lightning-button>&nbsp;&nbsp;&nbsp;
+                                                    </span>
+                                                    <template if:true={tenant.isDecommissionedTenant}>
+                                                        <span class="slds-badge slds-theme_info" style="background-color: rgb(255 235 225);color: black; text-align: center;">
+                                                            Type: {tenant.zscObjWrapper.Cloud_Type__c} &nbsp;&nbsp;||&nbsp;&nbsp; Status: {tenant.zscObjWrapper.Status__c} &nbsp;&nbsp;||&nbsp;&nbsp; Domain: {tenant.zscObjWrapper.Zscaler_Cloud_Domain__c}
+                                                            <template if:true={tenant.displayAssociatedCloud}>
+                                                                &nbsp;&nbsp;||&nbsp;&nbsp; Associated Cloud: {tenant.zscObjWrapper.Associated_Cloud__r.Name}
+                                                            </template>
+                                                            <template if:false={tenant.displayAssociatedCloud}>
+                                                                &nbsp;&nbsp;||&nbsp;&nbsp; Associated Cloud: NA
+                                                            </template>
+                                                            
+                                                            <template if:true={tenant.zscObjWrapper}>
+                                                                &nbsp;&nbsp;||&nbsp;&nbsp; Tenant Name: {tenant.zscObjWrapper.Org_Name__c}
+                                                            </template>
+                                                        </span>
+                                                    </template>
+                                                    <template if:true={tenant.isNonProvisionedTenant}>
+                                                        <span class="slds-badge slds-theme_info" style="background-color: rgb(235 245 255);color: black; text-align: center;">
+                                                            Type: {tenant.zscObjWrapper.Cloud_Type__c} &nbsp;&nbsp;||&nbsp;&nbsp; Status: {tenant.zscObjWrapper.Status__c} &nbsp;&nbsp;||&nbsp;&nbsp; Domain: {tenant.zscObjWrapper.Zscaler_Cloud_Domain__c}
+                                                            <template if:true={tenant.displayAssociatedCloud}>
+                                                                &nbsp;&nbsp;||&nbsp;&nbsp; Associated Cloud: {tenant.zscObjWrapper.Associated_Cloud__r.Name}
+                                                            </template>
+                                                            <template if:false={tenant.displayAssociatedCloud}>
+                                                                &nbsp;&nbsp;||&nbsp;&nbsp; Associated Cloud: NA
+                                                            </template>
+                                                            
+                                                            <template if:true={tenant.zscObjWrapper}>
+                                                                &nbsp;&nbsp;||&nbsp;&nbsp; Tenant Name: {tenant.zscObjWrapper.Org_Name__c}
+                                                            </template>
+                                                        </span>
+                                                    </template>
+                                                    <template if:true={tenant.isProvisionedTenant}>
+                                                        <span class="slds-badge slds-theme_info" style="background-color: rgb(235 250 240);color: black; text-align: center;">
+                                                            Type: {tenant.zscObjWrapper.Cloud_Type__c} &nbsp;&nbsp;||&nbsp;&nbsp; Status: {tenant.zscObjWrapper.Status__c} &nbsp;&nbsp;||&nbsp;&nbsp; Domain: {tenant.zscObjWrapper.Zscaler_Cloud_Domain__c}
+                                                            <template if:true={tenant.displayAssociatedCloud}>
+                                                                &nbsp;&nbsp;||&nbsp;&nbsp; Associated Cloud: {tenant.zscObjWrapper.Associated_Cloud__r.Name}
+                                                            </template>
+                                                            <template if:false={tenant.displayAssociatedCloud}>
+                                                                &nbsp;&nbsp;||&nbsp;&nbsp; Associated Cloud: NA
+                                                            </template>
+                                                            
+                                                            <template if:true={tenant.zscObjWrapper}>
+                                                                &nbsp;&nbsp;||&nbsp;&nbsp; Tenant Name: {tenant.zscObjWrapper.Org_Name__c}
+                                                            </template>
+                                                        </span>
+                                                    </template>
+                                                </div>
+                                                <template if:true={tenant.pgWrapper}>
+                                                    <div class="slds-p-vertical_small">
+                                                        <h3 class="slds-section-title--divider slds-m-bottom--small" style="background-color: rgb(238 238 238);color: black;border-radius:25px;text-align: center;">
+                                                            <b>Products</b>
+                                                        </h3>
+                                                        <lightning-datatable 
+                                                            key-field="Id" 
+                                                            data={tenant.pgWrapper.Provisioning_Products__r} 
+                                                            columns={columnsTT} 
+                                                            hide-checkbox-column=true 
+                                                            show-row-number-column=true 
+                                                            resize-column-disabled=true 
+                                                            class="datatable-custom-style">
+                                                        </lightning-datatable>
+                                                    </div>
+                                                    <div class="slds-p-vertical_small">
+                                                        <h3 class="slds-section-title--divider slds-m-bottom--small" style="background-color: rgb(238 238 238);color: black;border-radius:25px;text-align: center;">
+                                                            <b>Contacts</b>
+                                                        </h3>
+                                                        <lightning-datatable 
+                                                            key-field="Id" 
+                                                            data={tenant.pgWrapper.Provisioning_Contacts__r} 
+                                                            columns={columnsCC} 
+                                                            hide-checkbox-column=true 
+                                                            show-row-number-column=true 
+                                                            resize-column-disabled=true 
+                                                            class="datatable-custom-style">
+                                                        </lightning-datatable>
+                                                    </div>
+                                                </template>
+                                            </lightning-accordion-section>
+                                        </template>
+                                    </template>
+                                </template>
+                            </template>
+                        </lightning-accordion>
+                    </template>
+                </lightning-tab>
+                <lightning-tab label="Subscribed Tenants" value="Subscribed Tenants">
+                    <template if:true={isAtleastOneProvisionedSubscribedTenantExists}>
+                        <div class="slds-m-around_medium">
+                            <lightning-button label="Expand All" variant="brand-outline" disabled={isProvisionedSubscribedTenantExpandAllButtonDisabled} value="Provisioned Subscribed Tenants Accordian Section" class="slds-m-around_small slds-align_absolute_right" onclick={expandAllActiveAccordianSections}></lightning-button>
+                            <lightning-button label="Collapse All" variant="brand-outline" disabled={isProvisionedSubscribedTenantCollapseAllButtonDisabled} value="Provisioned Subscribed Tenants Accordian Section" class="slds-m-around_small slds-align_absolute_right" onclick={collapseAllActiveAccordianSections}></lightning-button>
+                        </div>
+                        <lightning-accordion allow-multiple-sections-open active-section-name={provisionedSubscribedTenantActiveSections}>    
+                            <template for:each={tenantwrap} for:item="tenant">
+                                <template if:true={tenant.isScriptionTenant}>
+                                    <lightning-accordion-section name={tenant.zscObjWrapper.Name} label={tenant.zscObjWrapper.Name} style=" font-weight: bold;" key={tenant.zscObjWrapper.Name}>
+                                        <template if:true={tenant.zscObjWrapper}>
+                                            <div class="slds-p-vertical_small">
+                                                <span class="slds-badge_lightest">
+                                                    <lightning-button variant="brand-outline" label={tenant.zscObjWrapper.Name} title={tenant.zscObjWrapper.Name} value={tenant.zscObjWrapper.Id} icon-name="utility:new_window" icon-position="right" class="slds-m-left_x-small" onclick={navigateToZSCRecPage}></lightning-button>&nbsp;&nbsp;&nbsp;
+                                                </span>
+                                                <span class="slds-badge slds-theme_info" style="background-color: rgb(235 245 255);color: black; text-align: center;">
+                                                    Type: {tenant.zscObjWrapper.Cloud_Type__c} &nbsp;&nbsp;||&nbsp;&nbsp; Status: {tenant.zscObjWrapper.Status__c} &nbsp;&nbsp;||&nbsp;&nbsp; Domain: {tenant.zscObjWrapper.Zscaler_Cloud_Domain__c}
+                                                    <template if:true={tenant.displayAssociatedCloud}>
+                                                        &nbsp;&nbsp;||&nbsp;&nbsp; Associated Cloud: {tenant.zscObjWrapper.Associated_Cloud__r.Name}
+                                                    </template>
+                                                    <template if:false={tenant.displayAssociatedCloud}>
+                                                        &nbsp;&nbsp;||&nbsp;&nbsp; Associated Cloud: NA
+                                                    </template>
+                                                    
+                                                    <template if:true={tenant.zscObjWrapper}>
+                                                        &nbsp;&nbsp;||&nbsp;&nbsp; Tenant Name: {tenant.zscObjWrapper.Org_Name__c}
+                                                    </template>
+                                                </span>
+                                            </div>
+                                        </template>
+                                        <template if:true={tenant.pgWrapper}>
+                                            <div class="slds-p-vertical_small">
+                                                <h3 class="slds-section-title--divider slds-m-bottom--small" style="background-color: rgb(238 238 238);color: black;border-radius:25px;text-align: center;">
+                                                    <b>Products</b>
+                                                </h3>
+                                                <lightning-datatable 
+                                                    key-field="Id" 
+                                                    data={tenant.pgWrapper.Provisioning_Products__r} 
+                                                    columns={columnsST} 
+                                                    hide-checkbox-column=true 
+                                                    show-row-number-column=true 
+                                                    resize-column-disabled=true 
+                                                    class="datatable-custom-style">
+                                                </lightning-datatable>
+                                            </div>
+                                            <div class="slds-p-vertical_small">
+                                                <h3 class="slds-section-title--divider slds-m-bottom--small" style="background-color: rgb(238 238 238);color: black;border-radius:25px;text-align: center;">
+                                                    <b>Contacts</b>
+                                                </h3>
+                                                <lightning-datatable 
+                                                    key-field="Id" 
+                                                    data={tenant.pgWrapper.Provisioning_Contacts__r} 
+                                                    columns={columnsCC} 
+                                                    hide-checkbox-column=true 
+                                                    show-row-number-column=true 
+                                                    resize-column-disabled=true 
+                                                    class="datatable-custom-style">
+                                                </lightning-datatable>
+                                            </div>
+                                        </template>
+                                    </lightning-accordion-section>
+                                </template>
+                            </template>
+                        </lightning-accordion>
+                    </template>
+                </lightning-tab>
+            </lightning-tabset>
+        </lightning-card>
+    </template>
+    
+
+   
+</template>

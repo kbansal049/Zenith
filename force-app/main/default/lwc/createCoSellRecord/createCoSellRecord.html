@@ -1,0 +1,74 @@
+<template>
+    <div class="demo-only" style="height: 640px;">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Close" onclick={cancelCreation}>
+                        <lightning-icon icon-name="utility:close" size="medium">
+                        </lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 class="slds-text-heading_medium slds-hyphenate">
+                        Create Cosell Activity
+                    </h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <template if:true={loading}>
+                        <div class="slds-spinner_container">
+                            <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+                        </div>
+                    </template>
+                    <template if:true={errormsg}>
+                        <div class="slds-box slds-theme_error" style="margin-bottom:5px;">
+                            {errormsg}
+                        </div>
+                    </template>
+                    <lightning-record-edit-form layout-type="compact" density="comfy"
+                        object-api-name="Cosell_Activities__c" onerror={handleError} onsuccess={handleSuccess}
+                        onsubmit={handleSubmit} onload={handleload}>
+                        <lightning-messages></lightning-messages>
+                        <div>
+                            <lightning-layout pull-to-boundary="medium" multiple-rows="true">
+                                <lightning-layout-item size="6" padding="around-medium">
+                                    <lightning-combobox name="Activity" label="Activity" value=""
+                                        placeholder="Select Activity Type" options={options}
+                                        onchange={handleActivityChange} required></lightning-combobox>
+                                </lightning-layout-item>
+                                <!--<lightning-layout-item size="6" padding="around-medium">
+                                    <lightning-input-field onchange={handleFieldChange} field-name='Deal_Reg__c'>
+                                    </lightning-input-field>
+                                </lightning-layout-item>-->
+                                <lightning-layout-item size="6" padding="around-medium">
+                                    <lightning-input-field field-name='Partner__c' required
+                                        onchange={handleFieldChange}>
+                                    </lightning-input-field>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="6" padding="around-medium">
+                                    <lightning-input-field onchange={handleFieldChange} field-name='Partner_Contact__c'
+                                        required>
+                                    </lightning-input-field>
+                                </lightning-layout-item>
+
+                            </lightning-layout>
+                        </div>
+                        <hr style="margin-top: 10px; margin-bottom:10px;">
+                        <template if:false={loading}>
+                            <div class="slds-box slds-box_small"
+                                style="text-align: right;border: 0px; border-radius: 0px;">
+                                <lightning-button class="slds-m-right_small" variant="brand" type="submit" name="save"
+                                    label="Save">
+                                </lightning-button>
+                                <lightning-button variant="neutral" name="cancel" label="Cancel"
+                                    onclick={cancelCreation}>
+                                </lightning-button>
+                            </div>
+                        </template>
+                    </lightning-record-edit-form>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </div>
+</template>

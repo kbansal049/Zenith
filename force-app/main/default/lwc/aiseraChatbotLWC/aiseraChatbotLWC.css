@@ -1,0 +1,156 @@
+.widthContainer{
+    display: none !important;
+}
+
+
+.mainDiv{
+    /*height: 100px !important;*/
+    /*margin: 25px  0 !important;*/
+    /*margin-bottom: -0.3px !important;*/
+    margin-bottom: -24px !important;
+    background-color: #F2FAFF;
+
+}
+
+.mainDivMaster{
+    background-color: #F2FAFF;
+}
+
+.welcomeDiv{
+    margin-top: 25px !important;
+    /*background-color: #D3D3D3;*/
+    /*background-color: rgb(117, 172, 212);*/
+    background-color: white;
+    height: 55px !important;
+    font-family: Roboto, Roboto, sans-serif !important;
+    font-size: 1.5rem;
+}
+
+.mainDivHeader{
+    /*background-color: rgb(0, 118, 190);*/
+    background: linear-gradient(to right, #213f98 10%, #1ea1a1 100%);
+    height: 75px !important;
+}
+
+.zacheader{
+    /*font-size: 1.7rem;*/
+    font-size: 1.30rem;
+    font-family: Roboto, Roboto, sans-serif !important;
+    margin-left: 10px !important;
+    color: rgb(67, 67, 67) !important;
+    margin-right: 10px !important;
+    margin-bottom: 8px !important;
+}
+
+.inline-content {
+    display: flex;
+    align-items: center;
+    margin: 16px  0 !important;
+}
+
+.zacheader2{
+    font-size: 1.10rem;
+    font-family: Roboto, Roboto, sans-serif !important;
+    margin-left: 20px !important;
+    color: rgb(67, 67, 67) !important;
+}
+
+.zacImg{
+    
+    /*height: 100px !important;*/
+    height: 160px !important;
+    margin-left: 30px !important;
+    margin-right: 25px !important;
+    margin-bottom: 10px !important;
+    margin-top: -40px !important;
+
+}
+
+.zacImg2{
+    height: 80px !important;
+    margin-left: 20px !important;
+    margin-right: 10px !important;
+    /*margin-bottom: 10px !important;*/
+    margin-top: -17px !important;
+
+}
+
+.quoteIcon{
+    height: 30px !important;
+}
+
+.quoteIconOpen{
+    margin-bottom: -10px !important;
+}
+
+.quoteOpen{
+    margin-top: -10px !important;
+}
+
+.quoteClose{
+    margin-bottom: -20px !important;
+}
+.chatButton{
+    
+    margin-left: 48px !important;
+    --sds-c-button-radius-border: 1.5rem;
+    /*--sds-c-button-brand-color-background: rgb(0, 118, 190);*/
+    /*--sds-c-button-text-color: rgb(0, 118, 190) !important;*/
+    --sds-c-button-brand-text-color: rgb(0, 118, 190) !important;
+    --sds-c-button-brand-color-background: rgba(243, 243, 243, 1) !important;
+    /*--sds-c-button-brand-color-border: #FFFFFF;*/
+    --sds-c-button-brand-color-border: rgb(0, 118, 190);
+    --sds-c-button-sizing-border: 2px;
+    --sds-c-button-line-height: 40px;
+    --sds-c-button-brand-color-border-hover: #FFFFFF;
+    --sds-c-button-brand-color-background-hover: rgb(0, 118, 190);
+    font-family: Roboto, Roboto, sans-serif !important;
+    color:rgb(0, 118, 190) !important;
+    font-size: 25px;
+}
+
+.chatButton2{
+    
+    /*margin-left: 80px !important;*/
+    /*--sds-c-button-radius-border: 1.5rem;*/
+    --sds-c-button-radius-border: 0.5rem;
+    --sds-c-button-brand-text-color: #FFFFFF !important;
+    --sds-c-button-brand-color-background: rgb(0, 118, 190) !important;
+    /*--sds-c-button-brand-color-border:rgb(67, 67, 67);*/
+    --sds-c-button-brand-color-border: #005F99;
+    --sds-c-button-sizing-border: 2px;
+    --sds-c-button-line-height: 40px;
+    --sds-c-button-brand-color-border-hover: rgb(0, 118, 190);
+    --sds-c-button-brand-color-background-hover: #FFFFFF;
+    font-family: Roboto, Roboto, sans-serif !important;
+    /*font-size: 25px;*/
+    background-color:#005F99 !important;
+    color: white !important;
+    /*width: 160px !important;*/
+    width: 145px !important;
+    
+}
+
+
+
+
+.chatButton2:hover{
+    background-color: rgba(243, 243, 243, 1) !important;
+    color:#0076be !important;
+}
+
+.chatButton2:hover svg{
+    fill: #005F99;
+}
+
+.chatButton2{
+    font-family: Roboto, Roboto, sans-serif !important;
+    /*font-size: 25px;*/
+    font-size: 16px;
+    margin-bottom: 10px !important;
+}
+
+.inverted-comma{
+    font-size: 2.0rem;
+    font-family: Roboto, Roboto, sans-serif !important;
+}

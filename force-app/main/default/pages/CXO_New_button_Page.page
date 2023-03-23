@@ -1,0 +1,86 @@
+<apex:page standardController="CXO_Advisor_Request__c" extensions="CXO_New_Button_VF_Controller">
+    <!-- <apex:includeLightning />
+<span id="erBanner">{!accId}</span>
+<flow:interview name="New_CXO_Advisor_Request_Creation_Flow"/>-->
+    
+    <html>
+        <head>
+            <apex:includeLightning />
+        </head>
+        <body class="slds-scope">
+            <div id="flowContainer" />
+            <script>
+            try{
+                var accountID = "{!accId}";
+                var recdId = "{!recId}";
+                var recordTypeName = "{!recordTypeName}";
+                var recordTypeDeveloperName = "{!recordTypeDeveloperName}";
+                console.log('recid'+recordTypeName);
+                console.log('recordTypeDeveloperName :'+recordTypeDeveloperName);
+                
+                $Lightning.use("c:CXO_New_Button_Aura_App", function() {
+                    // Create the flow component and set the onstatuschange attribute
+                    $Lightning.createComponent("lightning:flow", {"onstatuschange":statusChange},
+                                               "flowContainer",
+                                               function (component) {
+                                                   // Set the input variables
+                                                   var inputVariables = [
+                                                       {
+                                                           name : 'recordId',
+                                                           type : 'String',
+                                                           value : accountID
+                                                       },
+                                                       { 
+                                                           name : 'RecordTypeId',
+                                                           type : 'String',
+                                                           value : recdId
+                                                       },
+                                                       {
+                                                           name : 'RecordTypeName',
+                                                           type : 'String',
+                                                           value : recordTypeName
+                                                       },
+                                                       {
+                                                           name : 'recordTypeDeveloperName',
+                                                           type : 'String',
+                                                           value : recordTypeDeveloperName
+                                                       }  
+                                                   ];                                                   
+                                                   // Start an interview in the flowContainer div, and 
+                                                   // initializes the input variables.
+                                                   component.startFlow("New_CXO_Advisor_Request_Creation_Flow",inputVariables);                                
+                                               });
+                });
+                var statusChange = function (event) {
+                    if(event.getParam("status") === "FINISHED") {
+                        // Control what happens when the interview finishes
+                        var outputVariables = event.getParam("outputVariables");
+                        console.log('var'+JSON.stringify(outputVariables));
+                        //var key;
+                        //for(var i = 0; i < outputVariables.length; i++) {
+                        //key = outputVariables[i];
+                        outputVariables.forEach(function (key) {
+                            console.log('name'+key.name);
+                            if(key.name === "var_NewTransformationRecordId") {
+                                console.log('value'+key.value);
+                                // Do something with an output variable
+                                var urlEvent = $A.get("e.force:navigateToSObject");
+                                var recordIDstr = '\"'+key.value+'\"';
+                                urlEvent.setParams({
+                                    "recordId": recordIDstr,
+                                    "isredirect": "true"
+                                });
+                                urlEvent.fire();
+                            }
+                        });
+                    }
+                };
+            }
+            catch(error){
+                console.log('error is:'+error);
+                console.log('error is:'+JSON.stringify(error));
+            }
+            </script>
+        </body>
+    </html>
+</apex:page>

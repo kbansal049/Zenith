@@ -1,0 +1,15 @@
+h3 {
+  display: block !important;
+}
+c-deal-reg-conversion-record-display:nth-of-type(odd) {
+  background-color: #e0e0e0;
+}
+.field-label {
+  font-family: Salesforce Sans, Arial, sans-serif !important;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+table {
+  table-layout: fixed;
+  width: 100%;
+}

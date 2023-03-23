@@ -1,0 +1,20 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader,lightning:actionOverride" access="global" >
+    <aura:handler name="change" value="{!v.record}" action="{!c.createPR}" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="record" type="Opportunity"/>
+    <aura:attribute name="parentId" type="String"/>
+    <aura:attribute name="loadOppData" type="Boolean" default="false"/>
+    <aura:attribute name="showSpinner" type="boolean" default="true"/>
+    <!-- This is equivalent of Standard Constroller -->
+    <aura:if isTrue="{!v.loadOppData}">
+        <force:recordData aura:id="forceRecordCmp"
+                          recordId="{!v.parentId}"
+                          fields="Id,Name, Account_Org_Domain__c, SE_Name__c,AccountId, StageName"
+                          mode="VIEW"
+                          targetRecord="{!v.record}"
+                          targetError="{!v.error}" />
+    </aura:if>
+    <aura:if isTrue="{!v.showSpinner}">
+        <lightning:spinner variant="brand" size="medium" />
+    </aura:if>
+</aura:component>

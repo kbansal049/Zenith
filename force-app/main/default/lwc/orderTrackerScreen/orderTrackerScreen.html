@@ -1,0 +1,888 @@
+<template>
+   <template if:true={isShowParentOrderTrackerComponent}>
+
+      <template if:true={isSpinnerLoading}>
+         <lightning-spinner alternative-text="Loading" variant="brand" size="large">
+         </lightning-spinner>
+      </template>
+
+      <!--PO & PO Lines Modal Starts Here
+      <template if:true={showPOModal}>
+         <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-08" aria-modal="true"
+            class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container customContainer">
+               <header class="slds-modal__header">
+                  <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                     onclick={closePOModal}>
+                     <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small">
+                     </lightning-icon>
+                     <span class="slds-assistive-text">Close</span>
+                  </button>
+                  <h2 id="modal-heading-08" class="slds-text-heading_medium slds-hyphenate">PO Detail & PO Line Items</h2>
+               </header>
+               <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-8">
+                  <c-po-detail-n-line-l-w-c  str-record-id={selectedPOID}></c-po-detail-n-line-l-w-c>
+               </div>
+            </div>
+         </section>
+         <div class="slds-backdrop slds-backdrop_open"></div>
+      </template>
+      PO & PO Lines Modal Ends Here-->
+
+
+      <!--File Uplaod Component Modal Here-->
+      <template if:true={showPOFileUploadModal}>
+         <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-09" aria-modal="true"
+            class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container customContainer">
+               <!-- Modal/Popup Box To Show Message  -->
+               <header class="slds-modal__header">
+                  <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                     onclick={closePOFileUploadModal}>
+                     <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small">
+                     </lightning-icon>
+                     <span class="slds-assistive-text">Close</span>
+                  </button>
+                  <h2 id="modal-heading-09" class="slds-text-heading_medium slds-hyphenate">Please attached the verified PO document only.</h2>
+               </header>
+               <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-9">
+                  <lightning-file-upload label="Attach PO Document" name="fileUploader" record-id={selectedMailChainId} onuploadfinished={handleUploadFinished} file-field-name="Source_fileupload__c" file-field-value={fileFieldValue}>
+                  </lightning-file-upload>
+               </div>
+            </div>
+         </section>
+         <div class="slds-backdrop slds-backdrop_open"></div>
+      </template>
+      <!--File Uplaod Component Modal Here-->
+
+            <!--File Uplaod Component Modal Here-->
+      <template if:true={showPOFileModifyModal}>
+         <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-09" aria-modal="true"
+            class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container customContainer">
+               <!-- Modal/Popup Box To Show Message  -->
+               <header class="slds-modal__header">
+                  <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                     onclick={closePOFileModifyModal}>
+                     <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small">
+                     </lightning-icon>
+                     <span class="slds-assistive-text">Close</span>
+                  </button>
+                  <h2 id="modal-heading-10" class="slds-text-heading_medium slds-hyphenate">Modify PO document</h2>
+               </header>
+               <div class="slds-modal__content slds-p-around_medium modalBody" id="modal-content-id-10">
+                  <template if:true={showSpinner} >
+                     <lightning-spinner alternative-text="Loading" size="medium" class="spinnerClass" variant="brand"></lightning-spinner>
+                  </template>
+
+                  <table class=" slds-table slds-table_bordered slds-table_col-bordered slds-table_striped">
+                     <thead>
+                        <tr>
+                           <th>File</th>
+                           <th></th>
+                        </tr>
+                     </thead>
+                     <tbody>   
+                        <template for:each={selectedOTFiles} for:item="item" for:index="index">
+                           <tr key={item}>   
+                              <td class= "slds-cell-wrap">
+                                 <a data-id={item.fileId} class="slds-cell-wrap"
+                                 onclick={handleAttachmentClick}>{item.fileTitle}</a>
+                              </td>
+                              <td style="align-items:center">
+                                 <button class="slds-button slds-button_icon slds-button_icon-inverse" title="delete" onclick={deleteFile}  name={item.fileId}>
+                                     <lightning-icon icon-name="utility:delete" alternative-text="delete" size="small" style="margin:5px;" name={item.fileId}></lightning-icon>
+                                  </button>    
+                             </td>
+                           </tr>
+                        </template>
+                  </tbody>
+                  </table> 
+                  <div style="margin:10px;">
+                     <lightning-input type="checkbox" name="reQcInputCheckbox" onchange={SubmitOTForReQc} label="Submit For Re - QC"> </lightning-input>
+                  </div>                 
+                  <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-11" style="margin-top:10px;">
+                     <lightning-file-upload label="Attach PO Document" name="fileUploader" record-id={selectedMailChainId} onuploadfinished={handleUploadFinished} file-field-name="Source_fileupload__c" file-field-value={fileFieldValue}>
+                     </lightning-file-upload>
+                  </div> 
+               </div>
+               <footer class="slds-modal__footer">
+                  <button class="slds-button slds-button_brand" onclick={saveForReQc} title="save">Save</button>
+               </footer>
+            </div>
+         </section>
+         <div class="slds-backdrop slds-backdrop_open"></div>
+      </template>
+      <!--File Uplaod Component Modal Here-->
+
+      <!--Warning Pop-Up when assignee picklist changes-->
+      <template if:true={openAssignedUserModal}>
+         <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-07" aria-modal="true"
+            class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+               <!-- Modal/Popup Box To Show Message  -->
+               <header class="slds-modal__header">
+                  <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                     onclick={closeAssignedUserModal}>
+                     <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small">
+                     </lightning-icon>
+                     <span class="slds-assistive-text">Close</span>
+                  </button>
+                  <h2 id="modal-heading-07" class="slds-text-heading_medium slds-hyphenate">Warning !!</h2>
+               </header>
+               <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-7">
+                  <span style="font-size: initial;
+                     text-align: center;">This ticket is assigned to <span
+                     style="font-weight:bold;">{assignedUser}</span>, Do you want to assign it to <span
+                     style="font-weight:bold;">{newAssignee}</span>?</span>
+               </div>
+               <footer class="slds-modal__footer">
+                  <button class="slds-button slds-button_neutral" onclick={closeAssignedUserModal} title="No">No</button>
+                  <button class="slds-button slds-button_brand" onclick={saveChangedAssignedUser} title="Yes">Yes</button>
+               </footer>
+            </div>
+         </section>
+         <div class="slds-backdrop slds-backdrop_open"></div>
+      </template>
+      <!--Warning Pop-Up  Close-->
+      <!--Remarks Editor-->
+      <template if:true={openRemarksEditor}>
+         <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+               <!-- Modal/Popup Box To Edit Remarks  -->
+               <header class="slds-modal__header">
+                  <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                     onclick={closeRemarksModal}>
+                     <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small">
+                     </lightning-icon>
+                     <span class="slds-assistive-text">Close</span>
+                  </button>
+                  <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Edit Remarks</h2>
+               </header>
+               <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                  <lightning-textarea name="Remarks" onchange={editRemarks} label="Remarks" value={oldRemarksValue}>
+                  </lightning-textarea>
+               </div>
+               <footer class="slds-modal__footer">
+                  <button class="slds-button slds-button_neutral" onclick={closeRemarksModal} title="Cancel">Cancel</button>
+                  <button class="slds-button slds-button_brand" onclick={saveChangedRemarks} title="Save">Save</button>
+               </footer>
+            </div>
+         </section>
+         <div class="slds-backdrop slds-backdrop_open"></div>
+      </template>
+      <!--Remarks Editor Closed-->
+      <!--Partner and End User Editor-->
+      <template if:true={openPartnerandEndUserEditor}>
+         <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+               <!-- Modal/Popup Box To Edit Remarks  -->
+               <header class="slds-modal__header">
+                  <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                     onclick={closePartnerEndUserModal}>
+                     <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small">
+                     </lightning-icon>
+                     <span class="slds-assistive-text">Close</span>
+                  </button>
+                  <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Edit {fieldName}</h2>
+               </header>
+               <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                  <lightning-input type="text" name={fieldName} onchange={editPartnerEndUser} label={fieldName}
+                     value={oldPartnerEndUserValue}></lightning-input>
+               </div>
+               <footer class="slds-modal__footer">
+                  <button class="slds-button slds-button_neutral" onclick={closePartnerEndUserModal}
+                     title="Cancel">Cancel</button>
+                  <button class="slds-button slds-button_brand" onclick={saveChangedPartnerEndUser} title="Save">Save</button>
+               </footer>
+            </div>
+         </section>
+         <div class="slds-backdrop slds-backdrop_open"></div>
+      </template>
+      <!--Partner and End User Editor End-->
+      <!--Currency fields Editor-->
+      <template if:true={openCurrencyModalEditor}>
+         <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+               <!-- Modal/Popup Box To Edit Remarks  -->
+               <header class="slds-modal__header">
+                  <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                     onclick={closeCurrencyModal}>
+                     <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small">
+                     </lightning-icon>
+                     <span class="slds-assistive-text">Close</span>
+                  </button>
+                  <h2 id="modal-heading-03" class="slds-text-heading_medium slds-hyphenate">Edit {fieldName}</h2>
+               </header>
+               <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-3">
+                  <lightning-input type="number" name={fieldName} onchange={editCurrency} label={fieldName}
+                     value={oldCurrencyValue} formatter="currency" step="0.01"></lightning-input>
+               </div>
+               <footer class="slds-modal__footer">
+                  <button class="slds-button slds-button_neutral" onclick={closeCurrencyModal} title="Cancel">Cancel</button>
+                  <button class="slds-button slds-button_brand" onclick={saveChangedCurrency} title="Save">Save</button>
+               </footer>
+            </div>
+         </section>
+         <div class="slds-backdrop slds-backdrop_open"></div>
+      </template>
+
+      <template if:true={openMergeModal}>
+         <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container widthContainer">
+               <!-- Modal/Popup Box To Edit Remarks  -->
+               <header class="slds-modal__header">
+                  <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                     onclick={closeMergeModal}>
+                     <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small">
+                     </lightning-icon>
+                     <span class="slds-assistive-text">Close</span>
+                  </button>
+                  <h2 id="modal-heading-05" class="slds-text-heading_medium slds-hyphenate">Merge Records</h2>
+               </header>
+               <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-5">
+                  <div style= "margin-left: 10px;margin-top: 1px;margin-bottom:30px;">
+                     <b>Select a primary order tracker record </b>
+                   </div>
+                  <table class=" slds-table slds-table_bordered slds-table_col-bordered slds-table_striped">
+                     <thead>
+                        <tr>
+                           <th></th>
+                           <th>Ticket #</th>
+                           <th>Subject</th>
+                        </tr>
+                     </thead>
+                     <tbody>   
+                        <template for:each={selectedRecords} for:item="item" for:index="index">
+                           <tr key={item}>   
+                              <td>
+                                 <lightning-input type="checkbox" name="primaryInputCheckbox" onchange={makeOrderPrimary} data-id={index}> </lightning-input>
+                              </td>
+                              <td>
+                                 {item.Ticket__c}
+                              </td>
+                              <td class= "slds-cell-wrap">
+                                 {item.Email_Subject__c}
+                              </td>
+                           </tr>
+                        </template>
+                  </tbody>
+                   </table>
+               </div>
+               <footer class="slds-modal__footer">
+                  <button class="slds-button slds-button_neutral" onclick={closeMergeModal} title="Cancel">Cancel</button>
+                  <button class="slds-button slds-button_brand" onclick={saveChangedMerge} title="Save">Save</button>
+               </footer>
+            </div>
+         </section>
+         <div class="slds-backdrop slds-backdrop_open"></div>
+      </template>
+      <!--Currency fields Editor Closed-->
+      <template if:false={disableSearch}>
+         <div>
+            <div style="margin-right: 30%;
+               margin-top: 20px;
+               margin-bottom: 20px;
+               margin-left: 10px;" class="slds-grid">
+               <div class="slds-col slds-size_2-of-12">
+                  <span>
+                     <lightning-combobox name="View" label="View" disabled={disableSearch} class="comboBox"
+                        value={selectedViewvalue} options={viewPicklistValues} placeholder={selectedViewvalue}
+                        onchange={handleViewChange}>
+                     </lightning-combobox>
+                  </span>
+               </div>
+               <div class="slds-col slds-size_2-of-12" style="margin-left: 50px;margin-top: 1px;">
+                  <span>
+                     <lightning-combobox name="Source" label="Search Source" disabled={disableSearch} class="comboBox"
+                        value={selectedSourcevalue} options={sourcePicklistValues} placeholder={selectedSourcevalue}
+                        onchange={handleSourceChange}>
+                     </lightning-combobox>
+                  </span>
+               </div>
+               <div style="margin-left: 50px;margin-top: 1px;" class="slds-col slds-size_2-of-12">
+                  <span>
+                     <lightning-input name="enter-search"  label="Search PO Number" type="search" value={searchedPOValue}
+                        onchange={handlePOSearchInput} disabled={disableSearch}  onkeypress={handleEnter}></lightning-input>
+                  </span>
+               </div>
+               <div style="margin-left: 50px;margin-top: 1px;" class="slds-col slds-size_2-of-12">
+                  <lightning-input name="enter-search" label="Search SO Number" type="search" value={searchedSOValue}
+                     onchange={handleSOSearchInput} disabled={disableSearch} onkeypress={handleEnter}></lightning-input>
+               </div>
+               <div class="slds-col slds-size_2-of-12" style="margin-left: 50px;margin-top: 1px;">
+                  <lightning-input name="enter-search" label="Search Proposal" type="search" value={searchedProposalValue} onkeypress={handleEnter}
+                     onchange={handleProposalSearchInput} disabled={disableSearch}></lightning-input>
+               </div>
+            </div>
+         </div>
+         <div>
+            <div style="margin-right: 30%;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            margin-left: 10px;" class="slds-grid">
+            <div class="slds-col slds-size_5-of-12">
+               <lightning-input name="enter-search" label="Universal Search" type="search" value={universalSearchValue}
+                 onkeypress={handleEnter} onchange={handleUniversalSearchInput} disabled={disableSearch} field-level-help= "Universal Filter will Not take any other Filter into Consideration"></lightning-input>
+            </div>
+<!--            <div style="margin-left: 30px;margin-top: 1px;" class="slds-col slds-size_2-of-12">
+               <lightning-input name="enter-search" label="Search Email Subject" type="search" value={searchedSubjectValue}
+                  onchange={handleSubjectSearchInput} disabled={disableSearch}></lightning-input>
+            </div>
+            <div style="margin-left: 30px;margin-top: 1px;" class="slds-col slds-size_2-of-12">
+               <lightning-input name="enter-search" label="Search Ticket" type="search" value={searchedTicketValue}
+                  onchange={handleTicketSearchInput} disabled={disableSearch}></lightning-input>
+            </div> -->
+            <div style="margin-left: 50px;margin-top: 1px;" class="slds-col slds-size_5-of-12">
+               <lightning-input name="enter-search" label="Search" type="search" value={searchedTicketAndEmailValue} onkeypress={handleEnter}
+                  onchange={handleTicketEmailSearchInput} disabled={disableSearch} field-level-help= "Search By Ticket Number Or Email Subject"></lightning-input>
+            </div>
+            <div style="margin-left: 30px;margin-top: 23px;" class="slds-col slds-size_1-of-12">
+               <lightning-button-icon disabled={disableSearch} icon-name="utility:search" variant="brand"
+                  alternative-text="Search" title="Search" onclick={handleSearchedValue}></lightning-button-icon>
+            </div>
+            <div style="margin-left: 30px; margin-top: 23px" class="slds-col slds-size_1-of-12">
+               <lightning-button-icon icon-name="utility:refresh" variant="brand" alternative-text="refresh"
+                  title="refresh" onclick={handleRefresh}></lightning-button-icon>
+            </div>
+            </div>
+         </div>
+      </template>
+      
+      <template if:true={showMergeButton}>
+         <div class= "slds-align_absolute-center" style="margin-top: 40px;">
+            <lightning-button label="Merge Records" name="mergeRecords" onclick={mergeRecordHandler} variant="brand"></lightning-button>
+         </div>
+      </template>
+
+      <!--Main Data Table-->
+      <template if:false={noRecords}>
+         <div
+            style="margin-top: 40px;margin-left: 10px;margin-right: 10px;border-left:solid 1px;border-left-color: lightgrey;border-bottom:solid 1px;border-bottom-color: lightgrey;border-right:solid 1px;border-right-color: lightgrey;background-color:white">
+            <div class="slds-scrollable_x" style="width:100%;overflow-y:auto;">
+               <div class="tableFixHead">
+                  <table class=" slds-table slds-table_bordered slds-table_col-bordered slds-table_striped" id="resizeMe">
+                     <thead>
+                        <tr style="height:40px">
+                           <th class="" scope="col">
+                              <div style="padding-right: 40px;"></div>
+                           </th>
+                           <th class="" scope="col">
+                              <div style="padding-right: 40px;" title="Ticket #">Ticket #</div>
+                           </th>
+                            <th class="" scope="col">
+                              <div style="padding-right: 150px;" title="PO #">PO #</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div style="padding-right: 5px;" title="Source">Source</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div style="padding-right: 20px;" title="Vendor PO">PO Attached</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div style="padding-right:160px;" title="Email Subject">Email Subject</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div style="padding-right: 40px;" title="PO #">PO Detail</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div title="Proposal # for initiating QC">Proposal # for initiating QC</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div title="Bot QC Document">Bot QC Document</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div title="Mail Forwarded">Mail Forwarded</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div style="padding-right: 150px;" title="Status">Status</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div style="padding-right: 100px;" title="Region">Region</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div style="padding-right: 60px;" title="Received Date">Received Date</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div style="padding-right: 160px;" title="Partner">Partner</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div style="padding-right: 60px;" title="Order Type">Order Type</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div title="Customer ID">Customer ID</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div style="padding-right: 64px;" title="End User">End User
+                              </div>
+                           </th>
+                           <th class="" scope="col">
+                              <div title="Checking OP Rep/QC Rep">Checking OP Rep/QC Rep
+                              </div>
+                           </th>
+                           <th class="" scope="col">
+                              <div title="OP Rep Following Up">OP Rep Following Up</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div style="padding-right: 64px;" title="Final Approver">Final Approver</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div title="Processing OP Rep">Processing OP Rep</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div style="padding-right: 100px;" title="SO #">SO #</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div style="padding-right: 100px;" title="ACV (USD)">ACV (USD)</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div style="padding-right: 64px;" title="PO Amount (USD)">PO Amount (USD)</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div style="padding-right: 40px;" title="1st Billing Amount (USD)">1st Billing Amount (USD)</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div title="Billing Frequency">Billing Frequency</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div title="Attachment on NS and SF">Attachment on NS and SF</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div style="padding-right: 100px;" title="ZA Updated">ZA Updated</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div title="All SFDC Processes Updated">All SFDC Processes Updated</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div title="Confirm if all dependent PRs are moved to Production">Confirm if all dependent PRs are
+                                 moved to Production
+                              </div>
+                           </th>
+                           <th class="" scope="col">
+                              <div title="Bot Auto QC done">Bot Auto QC done</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div title="Bot Re QC Required">Bot Re QC Required</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div title="NS SFDC Integration Status">NS SFDC Integration Status</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div style="padding-right: 200px;" title="Remarks(if any)">Remarks(if any)
+                              </div>
+                           </th>
+                           <th class="" scope="col">
+                              <div title="Status">Primary Ticket Number</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div title="TAT(QC Check) (HH:MM)">TAT(QC Check) (HH:MM)</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div title="TAT(Order Approval) (HH:MM)">TAT(Order Approval) (HH:MM)</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div title="TAT(Billing) (HH:MM)">TAT(Billing) (HH:MM)</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div title="Total Reminder Email">Total Reminder Email</div>
+                           </th>
+                           <th class="" scope="col">
+                              <div title="Last Reminder Timestamp">Last Reminder Timestamp</div>
+                           </th>
+                          
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <template for:each={enhancedTableOrderTrackers} for:item="order" for:index="index">
+                           <tr key={order.Id}>
+                              <td>
+                                 <div class="slds-cell-wrap">
+                                    <lightning-input type="checkbox"  name="selectrowInput" data-id={index} onchange={onrowSelectHandler}></lightning-input>
+                                 </div>
+                              </td>
+                              <td style="">
+                                 <div class="slds-cell-wrap " title={order.Ticket__c}>
+                                    {order.Ticket__c}
+                                    <template if:true={order.isNewFlag__c}>
+                                       <span style="float: right;">
+                                          <lightning-icon class="newMail" icon-name="utility:email" size="small">
+                                          </lightning-icon>
+                                       </span>
+                                    </template>
+                                    <template if:false={order.isNewFlag__c}>
+                                       <span style="float: right;">
+                                          <lightning-icon icon-name="utility:email_open" size="small">
+                                          </lightning-icon>
+                                       </span>
+                                    </template>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap" title={order.PO__c}>
+                                    <a data-id={order.Id} onclick={handleOrderTracker}>{order.PO__c}</a>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap" title={order.Source__c}>
+                                    {order.Source__c}
+                                 </div>
+                              </td>
+                              <td class="" scope="col">
+                                 <div class="slds-cell-wrap" title="Vendor PO" if:false={order.POFromEDI}>
+                                    <template if:true={order.pofileAttachment}>
+                                         <!--<template for:each={order.pofileAttachment} for:item="file">
+                                             <div title={file.fileTitle} class="slds-cell-wrap" key={file.fileId}>
+                                                <a data-id={file.fileId} class="slds-cell-wrap"
+                                                   onclick={handleAttachmentClick}>{file.fileTitle}
+                                                </a>
+                                             </div>
+                                             <br key={file.fileId}>
+                                         </template>-->
+                                         <lightning-button label="Modify PO" data-id={order.mailChainId} data-ot={order.Id} onclick={handlePOFileModifyButtonClick} ></lightning-button>
+                                    </template>
+                                    <template if:false={order.pofileAttachment}>
+                                       <template if:true={order.mailChainId}>
+                                          <lightning-button label="Attach PO" data-id={order.mailChainId} data-ot={order.Id} onclick={handlePOFileUploadButtonClick} ></lightning-button>
+                                       </template>
+                                    </template>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " style="word-break: break-all;" title={order.Email_Subject__c}>
+                                    {order.Email_Subject__c}
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " style="word-break: break-all;" title="PO Detail">
+                                    <template if:true={order.PO_ID}>
+                                        <!--<lightning-button label="Update PO"  data-ot={order.Id} data-id={order.PO_ID} onclick={handlePODetailButtonClick} class="slds-m-left_x-small"></lightning-button>-->
+                                        <a  data-ot={order.Id} data-id={order.PO_ID} onclick={handlePODetailButtonClick}>{order.PO_NAME}</a>
+                                    </template>
+                                    <!--<template if:false={order.PO_ID}>
+                                        <lightning-button label="Create PO"  data-ot={order.Id} onclick={handleCreatePODetail} class="slds-m-left_x-small"></lightning-button>
+                                    </template>-->
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.Proposal_for_initiating_QC__c}>
+                                    <span>{order.Proposal_for_initiating_QC__c}</span>
+                                    <span style="float:right">
+                                       <lightning-icon class="pointer" name="Proposal for initiating QC" data-id={index}
+                                          onclick={openEditPartnerEndUserModal} size="xx-small" icon-name="utility:edit"
+                                          ></lightning-icon>
+                                    </span>
+                                 </div>
+                              </td>
+                              <td>
+                                 <template if:true={order.fileAttachment}>
+                                    <template for:each={order.fileAttachment} for:item="file" for:index="index">
+                                       <div title={file.fileTitle} class="slds-cell-wrap" key={file.fileId}>
+                                          <a data-id={file.fileId} class="slds-cell-wrap"
+                                             onclick={handleAttachmentClick}>{file.fileTitle}</a>
+                                       </div>
+                                       <br key={file.fileId}>
+                                    </template>
+                                 </template>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.Mail_Forwarded__c}>
+                                    <lightning-combobox data-id={index} name="Mail Forwarded" variant="label-hidden"
+                                       value={order.Mail_Forwarded__c} options={Mail_Forwarded_Picklist}
+                                       placeholder="Yes/No" onchange={handlepicklistValueChange}>
+                                    </lightning-combobox>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap" title={order.Status__c}>
+                                    <lightning-combobox data-id={index} name="Status" variant="label-hidden" value={order.Status__c}
+                                       options={statusPicklistValues} placeholder={order.Status__c}
+                                       onchange={handlepicklistValueChange} disabled={order.disableStatus}></lightning-combobox>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.Region__c}>
+                                    <lightning-combobox data-id={index} name="Region" variant="label-hidden" value={order.Region__c}
+                                       options={regionPicklistValues} placeholder={order.Region__c}
+                                       onchange={handlepicklistValueChange}></lightning-combobox>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.Received_Date__c}>
+                                    {order.Received_Date__c}
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap" title={order.Partner__c}>
+                                    <span>{order.Partner__c}</span>
+                                    <span
+                                       style="float:right">
+                                       <lightning-icon class="pointer" name="Partner" data-id={index}
+                                          onclick={openEditPartnerEndUserModal} size="xx-small" icon-name="utility:edit"
+                                          ></lightning-icon>
+                                    </span>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.Order_Type__c}>
+                                    <lightning-combobox data-id={index} name="Order Type" variant="label-hidden"
+                                       value={order.Order_Type__c} options={OrderTypePicklist} placeholder={order.Order_Type__c}
+                                       onchange={handlepicklistValueChange}></lightning-combobox>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.Customer_ID__c}>{order.Customer_ID__c}</div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap" title={order.End_User__c}>
+                                    <span>{order.End_User__c}</span>
+                                    <span style="float:right">
+                                       <lightning-icon name="End User" class="pointer" data-id={index}
+                                          onclick={openEditPartnerEndUserModal} size="xx-small" icon-name="utility:edit"
+                                          ></lightning-icon>
+                                    </span>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.Checking_OP_Rep_QC_Rep__c}>
+                                    <lightning-combobox data-id={index} name="Checking OP Rep/QC Rep" variant="label-hidden"
+                                       disabled={order.disableChecking} value={order.Checking_OP_Rep_QC_Rep__c}
+                                       options={checkingOPRepPicklist} placeholder={order.Checking_OP_Rep_QC_Rep__c}
+                                       onchange={handlepicklistValueChange}></lightning-combobox>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.OP_Rep_Following_Up__c}>
+                                    <lightning-combobox data-id={index} name="OP Rep Following Up" variant="label-hidden"
+                                       disabled={order.disableOPRep} value={order.OP_Rep_Following_Up__c}
+                                       options={OPRepFollowingUpPicklist} placeholder={order.OP_Rep_Following_Up__c}
+                                       onchange={handlepicklistValueChange}></lightning-combobox>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.Final_Approver__c}>
+                                    <lightning-combobox data-id={index} name="Final Approver" variant="label-hidden"
+                                       disabled={order.disableFinalApp} value={order.Final_Approver__c} options={finalApproverPicklist}
+                                       placeholder={order.Final_Approver__c} onchange={handlepicklistValueChange}></lightning-combobox>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.Processing_OP_Rep__c}>
+                                    <lightning-combobox data-id={index} name="Processing OP Rep" variant="label-hidden"
+                                       disabled={order.disableProcessing} value={order.Processing_OP_Rep__c}
+                                       options={processingOPRepPicklist} placeholder={order.Processing_OP_Rep__c}
+                                       onchange={handlepicklistValueChange}></lightning-combobox>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.SO__c}>
+                                    <span>{order.SO__c}</span>
+                                    <span style="float:right">
+                                       <lightning-icon name="SO" class="pointer" data-id={index} onclick={openEditPartnerEndUserModal}
+                                          size="xx-small" icon-name="utility:edit"  >
+                                       </lightning-icon>
+                                    </span>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.ACV__c}>
+                                    <span>
+                                       <template if:true={order.ACV__c}>
+                                          $
+                                       </template>
+                                       <lightning-formatted-number value={order.ACV__c}></lightning-formatted-number>
+                                    </span>
+                                    <span style="float:right">
+                                       <lightning-icon name="ACV" class="pointer" data-id={index} onclick={openCurrencyModal}
+                                          size="xx-small" icon-name="utility:edit"  >
+                                       </lightning-icon>
+                                    </span>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.PO_Amount__c}>
+                                    <span>
+                                       <template
+                                          if:true={order.PO_Amount__c}>
+                                          $
+                                       </template>
+                                       <lightning-formatted-number value={order.PO_Amount__c}></lightning-formatted-number>
+                                    </span>
+                                    <span style="float:right">
+                                       <lightning-icon name="PO Amount" class="pointer" data-id={index} onclick={openCurrencyModal}
+                                          size="xx-small" icon-name="utility:edit"  >
+                                       </lightning-icon>
+                                    </span>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.X1st_Billing_Amount_USD__c}>
+                                    <span>
+                                       <template
+                                          if:true={order.X1st_Billing_Amount_USD__c}>
+                                          $
+                                       </template>
+                                       <lightning-formatted-number value={order.X1st_Billing_Amount_USD__c}>
+                                       </lightning-formatted-number>
+                                    </span>
+                                    <span style="float:right">
+                                       <lightning-icon name="1st Billing Amount" class="pointer" data-id={index}
+                                          onclick={openCurrencyModal} size="xx-small" icon-name="utility:edit" 
+                                          ></lightning-icon>
+                                    </span>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.Billing_Frequency__c}>
+                                    <lightning-combobox data-id={index} name="Billing Frequency" variant="label-hidden"
+                                       value={order.Billing_Frequency__c} options={billingPicklistValues}
+                                       placeholder={order.Billing_Frequency__c} onchange={handlepicklistValueChange}>
+                                    </lightning-combobox>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.Attachment_on_NS_SF__c}>
+                                    <lightning-combobox data-id={index} name="Attachment on NS and SF" variant="label-hidden"
+                                       value={order.Attachment_on_NS_SF__c} options={attachmentOnNsSFPicklist}
+                                       placeholder={order.Attachment_on_NS_SF__c} onchange={handlepicklistValueChange}>
+                                    </lightning-combobox>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.ZA_Updated__c}>
+                                    <lightning-combobox data-id={index} name="ZA Updated" variant="label-hidden"
+                                       value={order.ZA_Updated__c} options={ZA_UpdatedPicklist} placeholder={order.ZA_Updated__c}
+                                       onchange={handlepicklistValueChange}></lightning-combobox>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.All_SFDC_Processses_Updated__c}>
+                                    <lightning-combobox data-id={index} name="All SFDC Processes Updated" variant="label-hidden"
+                                       value={order.All_SFDC_Processses_Updated__c} options={All_SFDC_Processses_UpdatedPicklist}
+                                       placeholder={order.All_SFDC_Processses_Updated__c} onchange={handlepicklistValueChange}>
+                                    </lightning-combobox>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.confirm_all_dependant_PRs_moved_to_prod__c}>
+                                    <lightning-combobox data-id={index} name="Confirm if all dependent PRs are moved to Production"
+                                       variant="label-hidden" value={order.confirm_all_dependant_PRs_moved_to_prod__c}
+                                       options={Confirm_all_dependant_PRs_moved_to_prodPicklist}
+                                       placeholder={order.confirm_all_dependant_PRs_moved_to_prod__c}
+                                       onchange={handlepicklistValueChange}></lightning-combobox>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.BOT_Auto_QC_Done__c}>
+                                    <lightning-combobox data-id={index} name="Bot Auto QC done" variant="label-hidden"
+                                       value={order.BOT_Auto_QC_Done__c} options={BOT_Auto_QC_DonePicklist}
+                                       placeholder={order.BOT_Auto_QC_Done__c} onchange={handlepicklistValueChange}>
+                                    </lightning-combobox>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.BOT_Re_QC_Required__c}>
+                                    <lightning-combobox data-id={index} name="Bot Re QC Required" variant="label-hidden"
+                                       value={order.BOT_Re_QC_Required__c} options={BOT_Re_QC_RequiredPicklist}
+                                       placeholder={order.BOT_Re_QC_Required__c} onchange={handlepicklistValueChange}>
+                                    </lightning-combobox>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.NS_SFDC_Integration_Status__c}>
+                                    {order.NS_Integration_Status__c}
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap" title={order.Remarks__c}>
+                                    <span>{order.Remarks__c}</span>
+                                    <span style="float: right;">
+                                       <lightning-icon name="Remarks" class="pointer" data-id={index} onclick={openEditRemarksModal}
+                                          size="xx-small" icon-name="utility:edit"  >
+                                       </lightning-icon>
+                                    </span>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap" title={order.Primary_Ticket_Number__c}>
+                                    {order.Primary_Ticket_Number__c}
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.TAT_QC_Check__c}>
+                                    {order.TAT_QC_Check__c}
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.TAT_Order_Approval__c}>
+                                    {order.TAT_Order_Approval__c}
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.TAT_Billing__c}>
+                                    {order.TAT_Billing__c}
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.Total_Remainder_Count__c}>
+                                    {order.Total_Remainder_Count__c}
+                                 </div>
+                              </td>
+                              <td>
+                                 <div class="slds-cell-wrap " title={order.Last_Remainder_TimeStamp__c}>
+                                    {order.Last_Remainder_TimeStamp__c}
+                                 </div>
+                              </td>
+                           </tr>
+                        </template>
+
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+            <div class="slds-grid slds-align_absolute-center">
+               <div style="margin-left: 150px;" class="slds-col slds-size_2-of-12">
+                  <div style="margin-top: 10px;font-weight: bold;">
+                     <lightning-combobox name="Show" label="Items per page" value={selectedPageOption}
+                        placeholder={selectedPageOption} dropdown-alignment="bottom-left" disabled={noRecords}
+                        options={pageOption} onchange={handlePageOptions}>
+                     </lightning-combobox>
+                  </div>
+               </div>
+               <div class="slds-col slds-size_1-of-12" style="margin-left: 30px; font-size: large;margin-top: 38px;">
+                  {recordStart} - {recordEnd} of {totalRecords}
+               </div>
+               <div class="slds-col slds-size_2-of-12" style="margin-top:38px ; margin-left:2px;">
+                  <template if:false={showPrevButton}>
+                     <lightning-icon class="pointer" icon-name="utility:jump_to_left" size="x-large" alternative-text="Back"
+                        title="Back" onclick={handlePreviouspage}></lightning-icon>
+                  </template>
+                  <template if:false={showNextButton}>
+                     <lightning-icon class="pointer" style="margin-left: 20px;" icon-name="utility:jump_to_right"
+                        size="x-large" alternative-text="Next" title="Next" onclick={handleNextpage}></lightning-icon>
+                  </template>
+               </div>
+            </div>
+            <br>
+         </div>
+      </template>
+
+      <template if:true={noRecords}>
+         <div style="text-align: center;font-size: 15px;margin: 1rem 0;">
+            <lightning-icon size="medium" icon-name="custom:custom23" style="margin-right: 10px;background-color: #C23934;">
+            </lightning-icon>
+            {MessageWhenNoRecords}
+         </div>
+      </template>
+
+   </template>
+   <template if:false={isShowParentOrderTrackerComponent}>
+      <c-mail-chain-screen order-tracker-id={orderTrackerId} tracker-type={isEmailTracker}
+         is-show-parent-email-tracker-component={isShowParentOrderTrackerComponent}
+         onshowparentcomponent={handleMailChainEvent}></c-mail-chain-screen>
+   </template>
+   <c-custom-toast-component auto-close-time="5000"></c-custom-toast-component>
+</template>

@@ -1,0 +1,16 @@
+<apex:component access="global" controller="NFRSupportCaseController">
+    <apex:attribute name="PRId" description="This field is used to get ZIA PR ID" 
+                     type="String" assignTo="{!PRrecId}" />
+    <apex:attribute name="ZPAPRId" description="This field is used to get ZPA PR ID" 
+                     type="String" assignTo="{!ZPAPRrecId}" />
+    <apex:attribute name="ZDXPRId" description="This field is used to get ZDX PR ID" 
+                     type="String" assignTo="{!ZDXPRrecId}" />
+    <apex:attribute name="NFRId" description="This field is used to get ZDX PR ID" 
+                     type="String" assignTo="{!NFRrecId}" />
+    
+    <b>Support Case #:</b>&nbsp;&nbsp;
+    <apex:repeat value="{!caseRec}" var="a">
+    <apex:outputLink value="{!url+'/'+a.id}">{!a.CaseNumber}</apex:outputLink>&nbsp;
+    </apex:repeat>
+    <br/>
+</apex:component>

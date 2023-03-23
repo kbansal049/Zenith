@@ -1,0 +1,9 @@
+:host {
+    --slds-c-button-sizing-width: small;
+}
+.slds-modal__container {
+    word-wrap: break-word;
+    max-width: 950px !important;
+    min-width: 480px !important;
+    width: 70% !important;
+}

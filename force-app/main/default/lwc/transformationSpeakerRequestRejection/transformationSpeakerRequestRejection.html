@@ -1,0 +1,97 @@
+<template>
+    <lightning-record-edit-form
+    object-api-name="Transformation_Team_Speaker_Request__c"
+    record-id={recordId}
+    onsuccess={handleSuccess}
+    onsubmit={handleSubmit}
+    onerror={handleError}
+    onload={handleOnLoad}
+    >
+        <lightning-card>
+            <lightning-layout multiple-rows=true>
+                <lightning-layout-item padding="around-medium" size="6">
+                    <!-- <lightning-input-field field-name="Name"></lightning-input-field> -->
+                    <lightning-input-field field-name="Already_had_word_with_Transform_Team__c" onchange={handleOtherTransformTeam} required></lightning-input-field>
+                    <div if:true={otherTransformTeam}>
+                        <lightning-input-field field-name="Other_Transform_Team__c" required ></lightning-input-field>
+                    </div>
+                    <!-- <div if:false={otherTransformTeam}>
+                        <lightning-input-field field-name="Other_Transform_Team__c" ></lightning-input-field>
+                    </div> -->
+                    <lightning-input-field field-name="Event_DateTime__c" required></lightning-input-field>
+                    <lightning-input-field field-name="Event_Time__c"></lightning-input-field>
+                    <lightning-input-field field-name="Event_Type__c" onchange={handleOtherEventType} required></lightning-input-field>
+                    <div if:true={otherEventType}>
+                        <lightning-input-field field-name="Other_Event_Type__c" required ></lightning-input-field>
+                    </div>
+                    <!-- <div if:false={otherEventType}>
+                        <lightning-input-field field-name="Other_Event_Type__c" ></lightning-input-field>
+                    </div> -->
+                    <lightning-input-field field-name="Geo__c" required></lightning-input-field>
+                    <lightning-input-field field-name="Region__c"></lightning-input-field>
+                    <lightning-input-field field-name="Hosted_By__c" onchange={handleOtherHostedBy} required></lightning-input-field>
+                    <div if:true={otherHostedBy}>
+                        <lightning-input-field field-name="Other_Hosted_By__c" required ></lightning-input-field>
+                    </div>
+                    <!-- <div if:false={otherHostedBy}>
+                        <lightning-input-field field-name="Other_Hosted_By__c" ></lightning-input-field>
+                    </div> -->
+                    <lightning-input-field field-name="Audience__c" required></lightning-input-field>
+                    <lightning-input-field field-name="Want_discuss_with_Transformation_Team__c" aria-placeholder="" onchange={handleDiscussion}></lightning-input-field>
+                    <template if:false={isDiscussion}>
+                        <lightning-input-field field-name="Preferred_Speaker__c" aria-placeholder="would like to discuss with Transformation Team"></lightning-input-field>
+                    </template>
+                    <template if:true={isDiscussion}>
+                        <lightning-input-field field-name="Preferred_Speaker__c" required aria-placeholder="would like to discuss with Transformation Team"></lightning-input-field>
+                    </template>
+                    <lightning-input-field field-name="Preferred_Co_Speaker__c"></lightning-input-field>
+                    <lightning-input-field field-name="Alternate_Speaker__c"></lightning-input-field>
+                    
+                    <template if:true={showpillsUser}>
+                        <lightning-input-field field-name="Which_AVP_s_does_this_engagement_s_audi__c" data-name="avps" onchange={handleUsers}></lightning-input-field>
+                    </template>
+                    <template if:false={showpillsUser}>
+                        <lightning-input-field field-name="Which_AVP_s_does_this_engagement_s_audi__c" data-name="avps" onchange={handleUsers} required></lightning-input-field>
+                    </template>
+                    <template if:true={showpillsUser}>
+                        <template for:each={userLinkList} for:item="uss" for:index="index">
+                            <lightning-pill key={uss} label={uss} onremove={handleRemoveUser} 
+                                name={index}></lightning-pill>   
+                        </template>
+                    </template>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-medium" size="6">
+                    <lightning-input-field field-name="Lead_Responsibles__c" required></lightning-input-field>
+                    <lightning-input-field field-name="Alternate_Event_Date_or_Date_Range__c"></lightning-input-field>
+                    <lightning-input-field field-name="Venue__c"></lightning-input-field>
+                    <lightning-input-field field-name="Location__c" required></lightning-input-field>
+                    <lightning-input-field field-name="Estimated_number_of_attendees__c" required></lightning-input-field>
+                    <lightning-input-field field-name="Session_Topic_and_or_Event_Theme__c" required></lightning-input-field>
+                    <lightning-input-field field-name="Supporting_Data__c" required></lightning-input-field>
+                    <lightning-input-field field-name="Associated_Accounts__c" data-name="accounts" onchange={handleAccounts}></lightning-input-field>
+                    <template if:true={showpillAcc}>
+                        <template for:each={accLinkList} for:item="acc" for:index="index">
+                            <lightning-pill key={acc} label={acc} onremove={handleRemoveAcc} 
+                                name={index}></lightning-pill>    
+                        </template>
+                    </template>
+                    <lightning-input-field field-name="Associated_Opportunity__c" data-name="opportunities" onchange={handleOpportunities}></lightning-input-field>
+                    <template if:true={showpillOpp}>
+                        <template for:each={oppLinkList} for:item="opp" for:index="index">
+                            <lightning-pill key={opp} label={opp} onremove={handleRemoveOpp} 
+                                name={index}></lightning-pill>       
+                        </template>
+                    </template>
+                    <lightning-input-field field-name="Other_planned_internal_external_events__c" required></lightning-input-field>
+                    <lightning-input-field field-name="Additional_Info__c"></lightning-input-field>
+                    <template for:each={accLinkList.data} for:item="acc">
+                        <div key={acc}>Account = {acc}</div>
+                    </template>
+                </lightning-layout-item>
+            </lightning-layout>
+            <div class="slds-align_absolute-center slds-p-around_medium">
+                <lightning-button class="slds-p-around_medium" variant="brand" type="submit" name="approve" label="Save" onclick={handleApprove} data-id="approve"></lightning-button>
+            </div>
+        </lightning-card>
+    </lightning-record-edit-form>
+</template>

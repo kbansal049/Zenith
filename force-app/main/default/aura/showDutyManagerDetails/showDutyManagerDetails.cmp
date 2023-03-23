@@ -1,0 +1,38 @@
+<aura:component controller="ShowDutyManagerDetailsController" implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:appHostable" access="global" >   
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="dutyManagerDetails" type="object"/>
+    <aura:attribute name="checkEscalation" type="Boolean"/>
+    <aura:if isTrue="{!or(not(empty(v.dutyManagerDetails)),v.checkEscalation)}">                           
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered" aria-label="Duty Manager Details">
+            <thead>
+            <tr class="slds-line-height_reset">  
+            <aura:if isTrue="{!v.checkEscalation}">
+                <th class="" scope="col">
+                    <div class="slds-truncate" title="Escalation Status">Escalation Status</div>
+                 </th>
+            </aura:if>   
+            <aura:if isTrue="{!not(empty(v.dutyManagerDetails))}">                           
+            <th class="" scope="col">
+            <div class="slds-truncate" title="Duty Manager">Duty Manager</div>
+            </th>
+            <th class="" scope="col">
+            <div class="slds-truncate" title="Backup Duty Manager">Backup Duty Manager</div>
+            </th>
+            </aura:if>   
+            </tr>
+            </thead>
+            <tbody>
+            <tr>   
+                <aura:if isTrue="{!v.checkEscalation}">
+                    <td class="slds-truncate" style="background-color:red;" data-label="Escalation Status"><b>This is an escalated case </b></td>
+                </aura:if> 
+                <aura:iteration items="{!v.dutyManagerDetails}" var="duty">      
+                    <td class="slds-truncate" style="background-color: yellow;" data-label="Duty Manager">{!duty.dutyManager} </td>
+                    <td class="slds-truncate" style="background-color:yellow;" data-label="Backup Duty Manager">{!duty.backupDutyManager}</td>                         
+                </aura:iteration>  
+            </tr>
+            </tbody>
+        </table>
+    </aura:if>   
+</aura:component>

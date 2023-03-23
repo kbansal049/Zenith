@@ -1,0 +1,14 @@
+.my-icon {
+        --sds-c-icon-color-foreground-default: blue;
+    }
+    
+    .my-pill {
+        
+        --sds-c-pill-text-color:blue;
+    }
+      
+.pointer {cursor: pointer; --sds-c-icon-color-foreground-default:white;}
+
+.richtextarea{
+    --sds-c-textarea-sizing-min-height:500px
+}

@@ -1,0 +1,560 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 09-21-2022
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<template>
+   <lightning-card>
+      <div class="slds-p-horizontal_small">
+         <div class="progressIndicator slds-p-vertical_medium" style="height: 50px;margin-top: 20px;">
+            <lightning-progress-indicator current-step={currentStep} type="path" variant="base">
+               <lightning-progress-step value="1" label="Request Tenant"></lightning-progress-step>
+               <lightning-progress-step value="2" label="Product Selection"></lightning-progress-step>
+               <lightning-progress-step value="3" label="Contact Selection"></lightning-progress-step>
+               <lightning-progress-step value="4" label="Review"></lightning-progress-step>
+            </lightning-progress-indicator>
+         </div>
+
+         <!--Step 1 : PG Details-->
+         <template if:true={showFirstStep}>
+            <div class="stepOne">
+               <div class="slds-p-around_medium">
+                  <div class="slds-form">
+                     <h3 class="slds-section-title--divider slds-m-bottom--small" style="background-color: #D0E0EB;color: black;">
+                        <b>Tenant Details</b>
+                     </h3>
+                     <template if:true={primaryQuoteExist}>
+                       <template if:false={markPrimaryQuoteUncheckReadOnly}>
+                           <lightning-input type="checkbox" name="default" onchange={openPrimaryQuoteCheckModal} disabled={crossPlatformInPrimaryQuote}  label="Use SKUs from Primary Quote" variant="label-inline" class="slds-text-title_bold"></lightning-input>
+                        </template>
+                        <template if:true={markPrimaryQuoteUncheckReadOnly}>
+                           <lightning-input type="checkbox" disabled name="default" label="Use SKUs from Primary Quote" variant="label-inline" class="slds-text-title_bold"></lightning-input>
+                        </template>
+                     </template>
+                 
+                     <!--<template if:true={primaryQuoteExist}>
+                        <template if:true={primaryQuoteSKU}>
+                           <lightning-input type="checkbox" name="default" onchange={openPrimaryQuoteCheckModal} label="Use SKUs from Primary Quote" variant="label-inline" class="slds-text-title_bold"></lightning-input>
+                        </template>
+                        <template if:false={primaryQuoteSKU}>
+                           <template if:true={markPrimaryQuoteUncheckReadOnly}>
+                           </template>
+                           <template if:false={markPrimaryQuoteUncheckReadOnly}>
+                              <lightning-input type="checkbox" name="default" label="Use SKUs from Primary Quote" variant="label-inline" class="slds-text-title_bold"></lightning-input>
+                           </template>
+                        </template>
+                     </template>-->
+
+                     <template if:false={withPrimaryQuoteProducts}>
+                        <!--PR created For, Dont Show if we have primary quote-->
+                        <lightning-dual-listbox name="prcreationfor"
+                           label="Product Line for Tenant"
+                           source-label="Available"
+                           selected-label="Selected"
+                           field-level-help="Select product line"
+                           options={productlineOptions}
+                           value={selectedProdLine} 
+                           variant="label-inline"
+                           required =true
+                           min=1
+                           size="4"
+                           onchange={handlePlChange}>
+                        </lightning-dual-listbox>
+                     </template>
+
+                     <!--ZIA Cloud-->
+                     <template if:true={isZIA}>
+                        <lightning-combobox
+                           name="ziaCloud"
+                           value={preferredZIA}
+                           placeholder="Select preferred ZIA cloud"
+                           options={ziaCloudOptions}
+                           onchange={handleZiaCloudChange} required="true" label="Preferred ZIA Cloud" variant="label-inline">
+                        </lightning-combobox>
+
+                        <!--Preferred Cloud Change Reason-->
+                        <template if:true={showReason}>
+                           <lightning-input type="text" required="true" variant="label-inline" name="name" label="Preferred Cloud Change Reason" placeholder="Enter preferred cloud change reason..." value={preferedZIAReason} onchange={handleZIAreason}></lightning-input>
+                        </template>
+
+                        <!--Cluster Selection-->
+                        <template if:true={hasUserProvisioningPermission}>
+                           <!--Nanolog Cluster Selection-->
+                           <template for:each={NCCredentialList} for:item="cred" for:index="Index">
+                              <div class="slds-grid slds-gutters" key={cred.Index}>
+                                 <div class="slds-col slds-size_1-of-3" >
+                                    <lightning-formatted-text  style="margin-left: 13px" value="Nanolog Cluster" ></lightning-formatted-text>
+                                 </div>
+                                 <div class="slds-col slds-size_2-of-3" style="margin-left:-13px;margin-top:-15px;width:67%;padding-bottom:10px">
+                                    <template if:false={cred.IsUser}>
+                                       <c-generic-search-component
+                                          obj-name="Nanolog_Cluster__c"
+                                          icon-name="standard:pricebook"
+                                          label-name=""
+                                          placeholder="Select nanolog cluster" 
+                                          fields={clusterFields}
+                                          display-fields={clusterDisplayFields}
+                                          onlookup={handleNCLookup}
+                                          title="Nanolog Cluster"
+                                          variant="label-inline"
+                                          value-id={NanologCluster}
+                                          filter={cred.filterClause}>
+                                       </c-generic-search-component>  
+                                    </template>  
+                                 </div>
+                              </div>
+                           </template>
+
+                           <!--Sandbox Cluster Selection-->
+                           <template for:each={NCCredentialList} for:item="cred" for:index="Index">
+                              <div class="slds-grid slds-gutters" key={cred.Index}>
+                                 <div class="slds-col slds-size_1-of-3">
+                                    <lightning-formatted-text style="margin-left: 13px" value="Sandbox Cluster" ></lightning-formatted-text>
+                                 </div>
+                                 <div class="slds-col slds-size_2-of-3" style="margin-left: -13px;margin-top: -15px;width: 67%;padding-bottom:10px;">
+                                    <template if:false={cred.IsUser}>
+                                       <c-generic-search-component
+                                          obj-name="sandbox_Cluster__c"
+                                          icon-name="standard:pricebook"
+                                          label-name=""
+                                          placeholder="Select sandbox cluster" 
+                                          fields={clusterFields}
+                                          display-fields={clusterDisplayFields}
+                                          onlookup={handleSCLookup}
+                                          title="Sandbox Cluster"
+                                          variant="label-inline"
+                                          value-id={SandboxCluster}
+                                          filter={cred.filterClause}>
+                                       </c-generic-search-component>  
+                                    </template>  
+                                 </div>
+                              </div>
+                           </template>
+
+                           <!--SMCDSS DLP Cluster Selection-->
+                           <template for:each={NCCredentialList} for:item="cred" for:index="Index">
+                              <div class="slds-grid slds-gutters" key={cred.Index}>
+                                 <div class="slds-col slds-size_1-of-3">
+                                    <lightning-formatted-text style="margin-left: 13px" value="SMCDSS DLP Cluster" ></lightning-formatted-text>
+                                 </div>
+                                 <div class="slds-col slds-size_2-of-3" style="margin-left:-13px;margin-top:-15px;width:67%;padding-bottom:10px;">
+                                    <template if:false={cred.IsUser}>
+                                       <c-generic-search-component
+                                          obj-name="sMCDSS_DLP_Cluster__c"
+                                          icon-name="standard:pricebook"
+                                          label-name=""
+                                          placeholder="Select smcdss dlp cluster" 
+                                          fields={clusterFields}
+                                          display-fields={clusterDisplayFields}
+                                          onlookup={handleSMLookup}
+                                          title="DLP Cluster"
+                                          variant="label-inline"
+                                          value-id={SMCCluster}
+                                          filter={cred.filterClause}>
+                                       </c-generic-search-component>  
+                                    </template>  
+                                 </div>
+                              </div>
+                           </template>
+                        </template>
+                     </template>
+
+                     <!--ZPA Cloud-->
+                     <template if:true={isZPA}>
+                        <lightning-combobox
+                           name="zpaCloud" 
+                           label="Preferred ZPA Cloud" 
+                           placeholder="Select preferred ZPA cloud" 
+                           value={preferredZPA} 
+                           options={zpaCloudOptions} 
+                           onchange={handleZpaCloudChange} 
+                           required="true" 
+                           variant="label-inline">
+                        </lightning-combobox>
+                     </template>
+
+                     <!--Associated ZIA Cloud-->
+                     <template if:true={showAssociatedCloud}>
+                        <lightning-combobox
+                           name="ziaCloudForZPA" 
+                           label="Associated ZIA Cloud" 
+                           placeholder="Associated ZIA Cloud" 
+                           value={associatedZiaCloudValue} 
+                           options={associatedZiaCloudsOptions} 
+                           onchange={handleAssociatedZIACloudChange} 
+                           required="true" 
+                           variant="label-inline">
+                        </lightning-combobox>
+
+                        <!--Spinner-->
+                        <lightning-spinner alternative-text="Loading" size="small" if:true={showSpinner}></lightning-spinner>
+                     </template>
+
+                     <!--Domain-->
+                    <template if:false={disableDomain}>
+                        <lightning-input label="Domain" type="text" id="domain" value={domain} onchange={handleDomain} required="true" variant="label-inline"></lightning-input>
+                     </template>
+                     <template if:true={disableDomain}>
+                        <lightning-input label="Domain" type="text" id="domaindisable" value={domain} onchange={handleDomain} required="true" disabled="true" variant="label-inline"></lightning-input>
+                     </template>
+                     <lightning-input type="checkbox" name="default" onchange={saveexceptiontocluster} label="Assign EU Cluster" variant="label-inline" value={checkexceptiontocluster} checked={checkexceptiontocluster}></lightning-input>
+
+                     <!--Additional Domain-->
+                     <lightning-input type="text" onchange={handleAddDomain} label="Additional Domain" variant="label-inline" value={additionalDomain}></lightning-input>
+
+                     <!--Cross Platform Products-->
+                     <template if:true={crossPlatformSelected}>
+                        <lightning-combobox
+                           name="crossPlatformProducts" 
+                           label="Select Cross Platform Products" 
+                           placeholder="Select cross platform products" 
+                           value={selectedCrossPlatformProduct} 
+                           options={productOptionsForCrossPlatform} 
+                           onchange={handleCrossPlatformProduct} 
+                           required="true" 
+                           variant="label-inline">
+                        </lightning-combobox>
+                        <template if:true={oldPriceListSelected}>
+                           <td style="color: red;">
+                              <p>Cross Platforms can be selected only for FY23 Price List</p><br/>
+                           </td>
+                        </template>
+                     </template>
+
+                     <!--Posture Control Products-->
+                     <template if:true={postureControlSelected}>
+                        <lightning-combobox
+                           name="postureControlProducts" 
+                           label="Select Posture Control Products" 
+                           placeholder="Select posture control products" 
+                           value={selectedPostureControlProducts} 
+                           options={productOptionsForPostureControl} 
+                           onchange={handlePostureControlProduct} 
+                           required="true" 
+                           variant="label-inline">
+                        </lightning-combobox>
+                     </template>
+
+                     <!--Add-ons for Posture Control Products-->
+                     <template if:true={postureControlOptionsNeeded}>
+                        <lightning-dual-listbox 
+                           name="postureControlOptions" 
+                           label="Select Add-ons for Posture Control Products" 
+                           source-label="Available Add-ons" 
+                           selected-label="Selected Add-ons" 
+                           field-level-help="add-ons for above selected posture control product" 
+                           value={selectedPostureControlProdAddOn} 
+                           options={addOnsForPostureControl} 
+                           onchange={handlePostureControlAddOn} 
+                           variant="label-inline" 
+                           min=0 
+                           size="2">
+                        </lightning-dual-listbox>
+                     </template>
+
+                     <!--No. of Workloads for Posture Control Products-->
+                     <template if:true={showNumberOfLoads}>
+                        <lightning-input type="text" onchange={handleAddNoOfLoads} label="No. of Workloads for Posture Control" value ={numberOfWorkloads} variant="label-inline"></lightning-input>
+                     </template>
+                  </div>
+               </div>
+               <div class="slds-var-m-left_x-small slds-clearfix" style="text-align: center;">
+                  <template if:true={withPrimaryQuoteProducts}>
+                     <lightning-button label="Select Contacts" title="SelectContacts" variant="brand" onclick={handleProvistioningContactsWithPrimaryQuote} class="slds-m-left_x-small"></lightning-button>
+                  </template>
+                  <template if:true={onlyPostureControlSelected}>
+                     <lightning-button label="Select Contacts" title="SelectContacts" variant="brand" onclick={handleProvistioningContactsWithPostureControl} class="slds-m-left_x-small"></lightning-button>
+                  </template>
+                  <template if:false={withPrimaryQuoteProducts}>
+                     <template if:false={onlyPostureControlSelected}>
+                        <lightning-button label="Add Products" title="AddProducts" variant="brand" onclick={handleDisplayProducts}  disabled ={disableAddProducts} class="slds-m-left_x-small"></lightning-button>
+                     </template>
+                  </template>
+                  <lightning-button label="Cancel" title="Cancel" onclick={handleCancelNavigate} class="slds-m-left_x-small"></lightning-button>
+                  <!--<lightning-button label="Save as Draft and Exit" title="saveDraft" onclick={validateSaveDraft} class="slds-m-left_x-small slds-float_right"></lightning-button>-->
+               </div>
+               <lightning-spinner alternative-text="Loading" size="small" if:true={isSaveDraftinProcess}></lightning-spinner>
+            </div>
+         </template>
+
+         <!--Step 2 : Select Product-->
+		   <template if:true={showSecondStep}>
+            <div class="stepTwo" style="position: relative;">
+               <div class="slds-p-around_medium slds-text-align_center slds-text-heading_small slds-text-color_error">
+                  <b>Select Products.</b>
+               </div>
+               <template if:false={crossPlatformSelected}>
+                  <template if:true={selectedProdLineMinusPostureControl}>
+                     <lightning-accordion allow-multiple-sections-open active-section-name={activeLineTypeSections}>
+                        <template for:each={selectedProdLineMinusPostureControl} for:item="prLine" >
+                           <!--<template if:true={prLine.flag}> -->
+                           <lightning-accordion-section name={prLine} label={prLine} style="background-color: lightgrey; font-weight: bold;margin-top: 10px;" key={prLine}>
+                              <c-p-g-product-selection-component 
+                                 product-line={prLine} 
+                                 pgproduct={pgProduct} 
+                                 onskuvaluechange={handleskuchange} 
+                                 onproductvaluechange={handleproductvaluechange}
+                                 price-list={priceList}>
+                  
+                              </c-p-g-product-selection-component>
+                           </lightning-accordion-section>
+                        <!--</template> -->
+                        </template>
+                     </lightning-accordion>
+                  </template>
+               </template>
+               <template if:true={crossPlatformSelected}>
+                  <template if:true={selectedProdLineForCrossPlatform}>
+                     <lightning-accordion allow-multiple-sections-open active-section-name={activeLineTypeSections}>
+                        <template for:each={selectedProdLineForCrossPlatform} for:item="prLine">
+                           <lightning-accordion-section name={prLine} label={prLine} style="background-color: lightgrey; font-weight: bold;margin-top: 10px;" key={prLine}>
+                              <c-cross-platform-component 
+                                 pre-selected-products ={preSelectedProductsForCrossPlatform}
+                                 cross-platform ={crossPlatform}
+                                 product-line={prLine}
+                                 onskuvaluechange={handleskuchange} 
+                                 pgproduct={pgProduct}
+                                 onproductvaluechange={handleproductvaluechange}
+                                 price-list={priceList}>
+                              </c-cross-platform-component>
+                           </lightning-accordion-section>
+                        </template>
+                     </lightning-accordion>
+                  </template>
+               </template>
+               <br/>
+               <div class="slds-m-vertical_small slds-clearfix" style="text-align: center;">
+                  <lightning-button label="Back" title="Back" onclick={handleBacktonewTenantButton} class="slds-m-left_x-small"></lightning-button>
+                  <lightning-button label="Select Contacts" title="Select Contacts" variant="brand" onclick={handleProvistioningContactsNavigate} class="slds-m-left_x-small"></lightning-button>
+                  <lightning-button label="Cancel" title="Cancel" onclick={handleCancelNavigate} class="slds-m-left_x-small"></lightning-button>
+                  <!--<lightning-button label="Save as Draft and Exit" title="saveDraft" onclick={validateSaveDraft} class="slds-m-left_x-small slds-float_right"></lightning-button>-->
+               </div>
+               <lightning-spinner alternative-text="Loading" size="small" if:true={isSaveDraftinProcess}></lightning-spinner>
+            </div>
+         </template>
+		 
+		   <!-- Step 3: Select Contact --> 
+         <template if:true={showThirdStep}>
+            <div class="stepThree">
+               <h3 class="slds-section-title--divider slds-m-bottom--small" style="background-color: #D0E0EB;color: black;">
+                  <b>Select Contacts (Partner, SE/PE, Account Manager)</b>
+               </h3>
+               <div class="slds-m-around_small">
+                  <div class="slds-float_left slds-p-bottom_small">
+                     <lightning-button label="Add New Contact" title="Primary action" onclick={addRow} class="slds-m-left_x-small slds-float_left"></lightning-button>
+                     <template if:true={showAssociateSEButton}>
+                        <lightning-button label="Auto populate SE for Required Contacts" title="copy" onclick={searchAndCreateContact} class="slds-m-left_x-small"></lightning-button>
+                     </template>
+                     <lightning-spinner alternative-text="Loading" size="small" if:true={iscopyinProgress}></lightning-spinner>
+                  </div>
+                  
+                  <div class="slds-p-vertical_small slds-text-color_error" if:false={isBusinessPrimaryAdded}>
+                     <span class="slds-card slds-m-horizontal_small slds-m-vertical_small">
+                        <lightning-icon icon-name="utility:info" alternative-text="info" title="info" size="xx-small" variant="error"></lightning-icon>
+                        <span style="padding-left:2px;">Add one Business (Primary) Contact.</span>
+                     </span>
+                  </div>
+                  
+                  <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped slds-border_top slds-border_bottom slds-border_right slds-border_left">
+                     <thead>
+                        <tr class="slds-text-title_caps">
+                           <th scope="col">
+                              <div class="slds-truncate" title="Type">Type</div>
+                           </th>
+                           <th scope="col">
+                              <div class="slds-truncate" title="Name">Name</div>
+                           </th>
+                           <th scope="col">
+                              <div class="slds-truncate" title="Action">Action</div>
+                           </th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <template for:each={credentialList} for:item="cred" for:index="Index">
+                           <tr key={cred.Index}>
+                              <td>
+                                 <div>
+                                    <lightning-combobox
+                                       name="Select Type"
+                                       label="Select Type"
+                                       value={cred.Type}
+                                       placeholder="Select Type"
+                                       options={cred.typeOptionList}
+                                       onchange={handleTypeChange}
+                                       required
+                                       data-id={cred.Index}>
+                                    </lightning-combobox>
+                                 </div>
+                              </td>
+                              <td>
+                                 <div>
+                                    <template if:true={cred.showSeleectContact}>
+                                       <template if:true={cred.IsUser}>
+                                          <c-generic-search-component
+                                             data-generic-index={cred.Index}
+                                             obj-name="user"
+                                             icon-name="standard:user"
+                                             label-name=""
+                                             placeholder="Select User" 
+                                             fields={fields}
+                                             display-fields={displayFields}
+                                             onlookup={handleLookup} 
+                                             source-id={cred.Index}
+                                             value-id={cred.RecID}
+                                             filter={cred.filterClause}>
+                                          </c-generic-search-component>
+                                          <template if:true={cred.unfinished}>
+                                             <div style="color: red;font-size: x-small;">Kindly specify the User</div>
+                                          </template>
+                                       </template>
+                                    </template>
+                                    <template if:true={cred.showSeleectContact}>
+                                       <template if:false={cred.IsUser}>
+                                          <c-generic-search-component
+                                             data-generic-index={cred.Index}
+                                             obj-name="contact"
+                                             icon-name="standard:contact"
+                                             label-name=""
+                                             placeholder="Select Contact" 
+                                             fields={fields}
+                                             display-fields={displayFields}
+                                             onlookup={handleLookup}
+                                             source-id={cred.Index}
+                                             value-id={cred.RecID}
+                                             filter={cred.filterClause}>
+                                          </c-generic-search-component>
+                                          <template if:true={cred.unfinished}>
+                                             <div style="color: red;font-size: x-small;">Kindly Specify the Contact</div>
+                                          </template>
+                                       </template>
+                                    </template>
+                                 </div>
+                              </td>
+                              <td style="vertical-align: bottom;padding-bottom: 1%;">
+                                    <a onclick={removeRow} data-id={cred.Index}>
+                                       <lightning-icon icon-name="utility:delete" size="small"></lightning-icon>
+                                       <span class="slds-assistive-text">Delete</span>
+                                    </a>
+                              </td>
+                           </tr>
+                        </template>
+                     </tbody>
+                  </table>
+                  <template if:true={credentialList}>
+                     <div class="slds-m-vertical_medium slds-grid slds-wrap">
+                        <template for:each={credentialList} for:item="cred" for:index="Index">
+                           <div class="slds-col slds-size_1-of-3" key={cred.Index} if:true={cred.Label}>
+                              <template if:true={cred.record}>
+                                 <article class="slds-card" style="border: 2px solid lavender;border-radius: 5px; margin-left: 1%;margin-top:1%; background-color:ghostwhite">
+                                    <div class="slds-card__header slds-grid">
+                                       <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                          <div class="slds-media__figure">
+                                             <lightning-icon icon-name="action:add_contact" alternative-text="add_contact" title="add_contact" size="x-small"></lightning-icon>
+                                          </div>
+                                          <div class="slds-media__body">
+                                             <h2 class="slds-card__header-title" style="font-family: sans-serif;font-size: medium;">
+                                                {cred.Label}
+                                             </h2>
+                                          </div>
+                                       </header>
+                                    </div>
+                                    <div class="slds-card__body slds-card__body_inner">
+                                       <div if:true={cred.record} >
+                                          <p class="slds-p-vertical_small">
+                                             <span>Name:</span> <span style="margin-left:5px;"><b>{cred.record.Name}</b></span>
+                                          </p>
+                                          <p class="slds-p-vertical_xx-small">
+                                             <span>Email:</span><span style="margin-left:5px;"><b>{cred.record.Email}</b></span>
+                                          </p>
+                                       </div>
+                                    </div>
+                                 </article>
+                              </template>
+                           </div>
+                        </template>
+                     </div>
+                  </template>
+                  <h3 class="slds-section-title--divider slds-m-bottom--small" style="background-color: #D0E0EB;color: black;">
+                     <b>Send Default Credentials to (Partner, SE/PE, Account Manager)</b>
+                  </h3>
+                  <div>
+                     <lightning-combobox
+                        name="credsAssignedTo"
+                        value={assignedTo}
+                        placeholder="Credentials Assigned To"
+                        options={assignCredTo}
+                        onchange={handleAssignedToCredChange} required="true" label="Credentials Assigned To" variant="label-inline">
+                     </lightning-combobox>
+                  </div>
+               </div>
+              
+               <div class="slds-m-vertical_small slds-var-m-left_x-small slds-clearfix" style="text-align: center;">
+                  <lightning-button label="Back" title="Back" onclick={handleBackToProductScreen} class="slds-m-left_x-small"></lightning-button>
+                  <lightning-button label="Submit For Provisioning" title="submitForProvisioning" variant="brand" onclick={validateShowSubmitForProvisioningButton} class="slds-m-left_x-small"></lightning-button>
+                  <lightning-button label="Cancel" title="Cancel" onclick={handleCancelNavigate} class="slds-m-left_x-small"></lightning-button>
+                  <!--<lightning-button label="Save As Draft and Exit" title="saveDraft" onclick={validateSaveDraft} class="slds-m-left_x-small slds-float_right"></lightning-button>-->
+               </div>
+               <lightning-spinner alternative-text="Loading" size="small" if:true={isSaveinProcess}></lightning-spinner>
+               <lightning-spinner alternative-text="Loading" size="small" if:true={isSaveDraftinProcess}></lightning-spinner>
+            </div>
+         </template>
+         
+         <!--Step 4 : Success-->
+         <template if:true={showForthStep}>
+            <div class="stepFour">
+               <div class="slds-m-top_small slds-clearfix" style="text-align: center;">
+                  <p class="slds-text-color_success">
+                     Your request has been submitted successfully, you will receive a confirmation email with details.
+                  </p>
+               </div>
+               <br/>
+               <div class="slds-form">
+                  <lightning-datatable 
+                     data-id="createdPG4"
+                     key-field="Id"
+                     data={provisioningGroup} 
+                     columns={createdProvisioningGroup} 
+                     hide-checkbox-column="true">
+                  </lightning-datatable>
+               </div>
+               <br/>
+               <div class="slds-m-top_small slds-clearfix" style="text-align: center;">
+                  <lightning-button label="Back to Opportunity" title="Opportunity" onclick={handleBacktoOppButton} class="slds-m-left_x-small"></lightning-button>
+                  <lightning-button label="Back to Manage Provisioning" title="ManageProvisioning" onclick={handlegoToManageProv} class="slds-m-left_x-small"></lightning-button>
+               </div>
+            </div>
+         </template>
+      </div>
+   </lightning-card>
+
+   <!-- Primary Quote Check Modal Starts here -->
+   <template if:true={primaryQuoteTenantCheck}>
+      <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-02" aria-modal="true"
+        class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container">
+            <!-- Modal/Popup Box LWC header here -->
+            <header class="slds-modal__header">
+               <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                  title="Close" onclick={closePrimaryQuoteCheckModal}>
+                  <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                  size="small"></lightning-icon>
+                  <span class="slds-assistive-text">Close</span>
+               </button>
+               <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Confirmation</h2>
+            </header>
+            <div class="slds-modal__content slds-p-around_medium slds-is-relative " id="modal-content-id-2">
+               Checking this will lead to auto selection of Product Lines forr Tenant creation and this action cannot be reverted unless this transaction is cancelled.
+            </div>
+            <footer class="slds-modal__footer">
+               <lightning-button variant="brand" onclick={submitPrimaryQuoteUnCheck} name="submit" label="Submit" class="slds-m-horizontal_small"></lightning-button> 
+               <button class="slds-button slds-button_neutral" onclick={cancelPrimaryQuoteUnCheck} title="Cancel">Cancel</button>
+            </footer>
+         </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+   <c-custom-toast-component auto-close-time="3000"></c-custom-toast-component>
+</template>

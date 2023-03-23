@@ -1,0 +1,9 @@
+header.flexipageHeader.slds-page-header.uiBlock.oneAnchorHeader { 
+    display: none;
+}
+.service-360-header .slds-card{
+	background: #efefef;
+}
+.service-360-header .slds-spinner_container, .service-360-header .slds-spinner_container{
+    background-color: rgba(255, 255, 255, 0);
+}

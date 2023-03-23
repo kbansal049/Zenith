@@ -1,0 +1,4 @@
+<apex:page standardController="Deal_Reg__c"  extensions="OpportunityLinkControllerExt" lightningStylesheets="true">  
+    <apex:slds />
+    <b>Associated Opportunity</b>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/{!oppId}" target="_blank">{!oppName}</a>  
+</apex:page>

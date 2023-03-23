@@ -1,0 +1,239 @@
+<template>
+    <!--Product Selection Popup Starts-->
+    <template if:true={showProductPopup}>
+        <template if:true ={showSpinnerProductModal}>
+            <lightning-spinner style="z-index:9999;" alternative-text="loading"></lightning-spinner>
+            <div style="z-index:9998;" class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container" >
+                <div class="slds-modal__header">
+                    <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Select Product for TAM Engagement</h1>
+                </div>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1" style="height: 300px;">
+                    <!-- IBA - 3334 By Hitesh Sachdeva Starts-->
+                    <lightning-button-icon icon-name="utility:help_doc_ext" variant="border-filled" style="float: right;" alternative-text="Help" class="slds-m-left_xx-small" title="Help" slot="actions" onclick={helpTab} target="_blank"></lightning-button-icon>
+                    <!-- IBA - 3334 By Hitesh Sachdeva End-->
+                    <div if:true={displayProductErrorMessage}>
+                        <br/>
+                        <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                            <span class="slds-assistive-text">warning</span>
+                            <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Description of icon when needed">
+                                <lightning-icon icon-name="utility:warning" alternative-text="Warning" size="small" title="small size"></lightning-icon>
+                            </span>&nbsp;
+                            <h2>{productErrorMessage}</h2>    
+                        </div>
+                    </div>
+                    <div if:true={displayRecordErrorMessage}>
+                        <br/>
+                        <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                            <span class="slds-assistive-text">warning</span>
+                            <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Description of icon when needed">
+                                <lightning-icon icon-name="utility:warning" alternative-text="Warning" size="small" title="small size"></lightning-icon>
+                            </span>&nbsp;
+                            <h2>{recordsErrorMessage}</h2>    
+                        </div>
+                    </div>
+                    <lightning-record-edit-form class="recEditForm_product" object-api-name="TAM_Engagement__c"  onsubmit={handleProductSubmit}>
+                        <div class="slds-m-around_medium">
+                            <lightning-input-field field-name="Product__c" required="true"></lightning-input-field>
+                        </div>
+                        <input type="submit" class="hidden-row-product" />
+                    </lightning-record-edit-form>
+                </div>
+                <div class="slds-modal__footer">
+                    <lightning-button label="Cancel" variant="neutral" onclick={handleCancel}></lightning-button>&nbsp;
+                    <lightning-button label="Next" variant="brand" onclick={handleProductSave} disabled={productSaveNotAvailable}></lightning-button>
+                </div>
+            </div>
+          </section>
+          <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
+    <!--Product Selection Popup Ends-->
+
+    <template if:false={showProductPopup}>
+        <lightning-card class="slds-p-around_x-small">
+            <template if:true ={showSpinner}>
+                <lightning-spinner style="z-index:9999;" alternative-text="loading"></lightning-spinner>
+                <div style="z-index:9998;" class="slds-backdrop slds-backdrop_open"></div>
+            </template>
+
+            <!-- Path Section Starts-->
+            <div class="readonly-path">
+                <lightning-progress-indicator current-step={currentStage} type="path" variant="base">
+                    <template for:each={stageSteps} for:item="step">
+                        <lightning-progress-step label={step.label} value={step.value} key={step.label}></lightning-progress-step>
+                    </template>
+                </lightning-progress-indicator>
+            </div>
+            <!-- Path Section Ends-->
+
+            <!--Error Section Starts-->
+            <div if:true={displayErrorMessage}>
+                <br/>
+                <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                    <span class="slds-assistive-text">warning</span>
+                    <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Description of icon when needed">
+                        <lightning-icon icon-name="utility:warning" alternative-text="Warning" size="small" title="small size"></lightning-icon>
+                    </span>&nbsp;
+                    <h2>{errorMessage}</h2>    
+                </div>
+            </div>
+            <!--Error Section Ends-->
+
+            <template if:true={isSubmittedForApproval}>
+                <div class="slds-p-top_medium">
+                    <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                        <span class="slds-assistive-text">warning</span>
+                        <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Description of icon when needed">
+                            <lightning-icon icon-name="utility:warning" alternative-text="Warning" size="small" title="small size"></lightning-icon>
+                        </span>&nbsp;
+                        <h2>This TAM Engagement is Pending for Approval.</h2>    
+                    </div>
+                </div>
+            </template>
+
+            <template if:true={displayCloseDisclaimer}>
+                <div class="slds-p-top_medium">
+                    <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                        <span class="slds-assistive-text">warning</span>
+                        <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Description of icon when needed">
+                            <lightning-icon icon-name="utility:warning" alternative-text="Warning" size="small" title="small size"></lightning-icon>
+                        </span>&nbsp;
+                        <h2>{closeDisclaimer}</h2>    
+                    </div>
+                </div>
+            </template>
+            
+            <!--Checklist Section Starts-->
+            <template if:true={showChecklistSection}>
+                <c-tam-engagement-checklist-cmp record-id={recordId} parent-id={parentId} tam-engagement-stage={currentStage} onchildchecklist={callFromChecklist}></c-tam-engagement-checklist-cmp>
+            </template>
+            <!--Checklist Section Ends-->
+
+            <!--Layout Field Section Starts-->
+            <template if:true={showLayoutSection}>
+                <lightning-record-edit-form class="recEditForm"
+                                            object-api-name="TAM_Engagement__c"
+                                            record-id={recordId}
+                                            onsubmit={handleSubmit}
+                                            onsuccess={handleSuccess}
+                                            density="comfy"
+                                            onerror={handleError}>
+                    <lightning-messages></lightning-messages>
+            
+                    <div class="slds-section slds-is-open" >
+                        <template for:each={pageLayoutSectionFld.lstSections} for:item="section" for:index="sectionIndex">
+                            <div key={section}>
+                                <template if:true={section.label} >
+                                    <template if:true={section.lstFields}>
+                                        <div class="slds-p-top_medium">
+                                            <h3 class="slds-section__title slds-p-left_small header slds-theme_shade" style="font-weight: bold;">
+                                                {section.label}
+                                            </h3>
+                                        </div>
+                                    </template>
+                                </template>
+                                <lightning-layout multiple-rows>
+                                    <template  for:each={section.lstFields} for:item="field" for:index="fieldIndex">
+                                        <template if:true={field.fieldName}>
+                                            <lightning-layout-item  key={field} size="6" flexibility="auto" padding="around-small">
+                                                <template if:false={field.hasCustomLabel}>
+                                                    <lightning-input-field class="picklist-container" field-name={field.fieldName} value={field.fieldValue} required={field.isRequired} disabled={field.isReadOnly}></lightning-input-field>
+                                                </template>
+                                                <template if:true={field.hasCustomLabel}>
+                                                    <label class="slds-form-element__label" for="ownerId">TAM Engagement Owner</label>
+                                                    <lightning-input-field data-id="ownerId" class="picklist-container" field-name={field.fieldName} value={field.fieldValue} required={field.isRequired} disabled={field.isReadOnly} variant="label-hidden"></lightning-input-field>
+                                                </template>
+                                            </lightning-layout-item>
+                                        </template>
+                                    </template>
+                                </lightning-layout>
+                            </div>
+                        </template>
+                    </div>
+                    <input type="submit" class="hidden-row" />
+                </lightning-record-edit-form>
+            </template>
+            <!--Layout Field Section Ends--> 
+            
+            <!--Operational Contacts Section Starts-->
+            <template if:true={showOperationalContactsSection}>
+                <c-operational-contacts-table-l-w-c record-id={parentId} onchildoprcontact={callFromOperationalContacts}></c-operational-contacts-table-l-w-c>
+            </template>
+            <!--Operational Contacts Section Ends-->
+
+            <!-- IBA - 2844 By Hitesh Sachdeva Starts-->
+            <!--TAM Task Opp Section Starts-->
+            <template if:true={showTamTaskOppSection}>
+                <c-tam-task-opportunity-cmp record-id={parentId} invoked-from-parent=true></c-tam-task-opportunity-cmp>
+            </template>
+            <!--TAM Task Opp Section Ends-->
+            <!-- IBA - 2844 By Hitesh Sachdeva Ends-->
+
+            <!--Document Wizard Section Starts-->
+            <template if:true={showDocumentsSection}>
+                <c-tam-document-upload-cmp record-id={parentId} file-type={selectedProduct} invoked-from-parent=true onchilddocwizard={callFromDocWizard}></c-tam-document-upload-cmp>
+            </template>
+            <!--Document Wizard Section Ends-->
+            <!--CAP Requests Section Starts-->
+            <template if:true={isSubmittedForApproval}>
+                <c-tam-c-a-p-request-cmp record-id={parentId} invoked-from-parent=true></c-tam-c-a-p-request-cmp>
+            </template>
+            <!--CAP Requests Section Ends-->
+            
+            <!-- IBA - 3334 By Hitesh Sachdeva Starts-->
+            <lightning-button-icon icon-name="utility:help_doc_ext" variant="border-filled" style="float: right;" alternative-text="Help" class="slds-m-left_xx-small" title="Help" slot="actions" onclick={helpTab} target="_blank"></lightning-button-icon>
+            <!-- IBA - 3334 By Hitesh Sachdeva End-->
+            <div slot="footer" style="margin-bottom: 20px;">
+                <template if:true={isSubmittedForApproval}>
+                    <lightning-button label="Cancel" variant="neutral" onclick={handleCancel}></lightning-button>&nbsp;
+                    <lightning-button variant="destructive"  name="Reject" label="Reject" onclick={rejectClicked}></lightning-button>&nbsp; 
+                    <lightning-button variant="brand"  name="Approve" label="Approve" onclick={approvalClicked}></lightning-button>
+                </template>
+                <template if:false={isSubmittedForApproval}>
+                    <template if:true={showPrevButton}>
+                        <lightning-button label="Prev without Saving" variant="brand" onclick={handlePrevWithoutSaveClick} disabled={isPrevDisabled}></lightning-button>&nbsp;
+                        <lightning-button label="Prev" variant="brand" onclick={handlePrevClick} disabled={isPrevDisabled}></lightning-button>&nbsp;
+                    </template>
+                    <lightning-button label={cancelLabel} variant="neutral" onclick={handleCancel}></lightning-button>&nbsp;
+                    <template if:true={showSaveButton}>
+                        <lightning-button label="Save" variant="brand" onclick={handleSaveClick}></lightning-button>&nbsp;
+                    </template>
+                    <template if:true={showNextButton}>
+                        <lightning-button label="Next" variant="brand" onclick={handleNextClick} disabled={isNextDisabled}></lightning-button>
+                    </template>
+                </template>
+                <br/>
+            </div>
+            <br/>
+        </lightning-card>
+    </template>
+    
+    <!--Confirmation Modal Section Starts-->
+    <template if:true={showConfirmationModal}>
+        <template if:true ={showSpinnerConfirmationModal}>
+            <lightning-spinner style="z-index:9999;" alternative-text="loading"></lightning-spinner>
+            <div style="z-index:9998;" class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container" >
+                <div class="slds-modal__header">
+                    <h1 id="modal-heading-02" class="slds-modal__title slds-hyphenate">{confirmationModalTitle}</h1>
+                </div>
+                <div class="slds-modal__content" id="modal-content-id-4" style="border: 1px solid lightgrey;max-height:400px;padding:15px;">
+                    <div class="slds-text-align_center">{confirmationModalMessage}</div>
+                    <div if:true={displayConfirmationComments}>
+                        <lightning-textarea label="Comments" required={handleCommentsRequired} onchange={handleCommentsChange} max-length="255"> </lightning-textarea>
+                    </div>
+                </div>
+                <div class="slds-modal__footer">
+                    <lightning-button label="No" variant="neutral" onclick={noConfirmationClicked}></lightning-button>&nbsp;
+                    <lightning-button label="Yes" variant="brand" onclick={yesConfirmationClicked}></lightning-button>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
+    <!--Confirmation Modal Section Ends-->
+</template>

@@ -1,0 +1,21 @@
+<template>
+   
+    <!-- Book Meeting Modal Start-->
+    <template if:true={displayModal}>
+        <lightning-modal-header label="Book Meeting">
+        
+        </lightning-modal-header>
+        <lightning-modal-body>
+
+            <!-- Invoke a Screen flow in LWC -->
+            <lightning-flow
+                if:true={fetchedDetails}
+                flow-api-name={flowApiName}
+                flow-input-variables={flowInputVariables}
+                onstatuschange={handleFlowStatusChange}>
+            </lightning-flow>
+        </lightning-modal-body>
+    </template>
+    <!-- Book Meeting Modal End-->
+
+</template>

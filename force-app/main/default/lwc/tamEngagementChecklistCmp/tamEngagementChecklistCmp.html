@@ -1,0 +1,116 @@
+<template>
+    <lightning-card title="TAM Engagement Checklist" variant="narrow">
+        <lightning-button-icon icon-name="utility:refresh"  alternative-text="Refresh" class="slds-m-left_xx-small" title="Refresh" slot="actions" onclick={refreshCall}></lightning-button-icon>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <!-- IBA - 3334 By Hitesh Sachdeva Starts -->
+        <lightning-button-icon icon-name="utility:help_doc_ext"  alternative-text="Help" class="slds-m-left_xx-small" title="Help" slot="actions" onclick={helpTab} target="_blank"></lightning-button-icon>
+        <!-- IBA - 3334 By Hitesh Sachdeva End -->
+
+        <template if:true ={showSpinner}>
+            <lightning-spinner style="z-index:9999;" alternative-text="loading"></lightning-spinner>
+            <div style="z-index:9998;" class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col">
+                <div class="slds-align_absolute-center slds-p-around_x-small">
+                    <p style="color: green;font-weight:bold;">DONE</p>
+                </div>
+                <template if:true={hasResolved}>
+                    <template for:each={getResolvedItems} for:item="resolvedItem">
+                        <li key={resolvedItem} style="list-style:none;">
+                            <div class="slds-align_absolute-center">
+                                <lightning-icon icon-name="standard:task2" alternative-text="Resolved" title="Resolved" size="x-small"></lightning-icon>&nbsp;<p style="color: green;font-weight:bold;">{resolvedItem}</p>
+                            </div>
+                        </li>
+                    </template>
+                </template>
+                <template if:false={hasResolved}>
+                    <div class="slds-align_absolute-center">
+                        <lightning-icon icon-name="utility:info" alternative-text="Warning!" title="Warning" size="small"></lightning-icon>&nbsp;Nothing to see here!
+                    </div>
+                </template>
+                
+            </div>
+            <div class="slds-col">
+                <div class="slds-align_absolute-center slds-p-around_x-small">
+                    <p style="color: red;font-weight:bold;">PENDING</p>
+                </div>
+                <template if:true={hasUnresolved}>
+                    <template for:each={getUnresolvedItems} for:item="unresolvedItem">
+                        <li key={unresolvedItem} style="list-style:none;">
+                            <div class="slds-align_absolute-center">
+                                <lightning-icon icon-name="standard:first_non_empty" alternative-text="Unresolved" title="Unresolved" size="x-small"></lightning-icon>&nbsp;<p style="color: red; font-weight:bold;">{unresolvedItem}</p>
+                            </div>
+                        </li>
+                    </template>
+                </template>
+                <template if:false={hasUnresolved}>
+                    <div class="slds-align_absolute-center">
+                        <lightning-icon icon-name="utility:info" alternative-text="Warning!" title="Warning" size="small"></lightning-icon>&nbsp;Nothing to see here!
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!--Additional Info Section starts-->
+        <template if:true={displayCaseReductionSection}>
+            <div class="slds-section slds-is-open" >
+                <div class="slds-p-top_medium">
+                    <h3 class="slds-section__title slds-p-left_small header slds-theme_shade" style="font-weight: bold;">
+                        Reduction in Cases Logged by Customer
+                    </h3>
+                </div>           
+            </div>
+            <ul class="slds-m-around_medium">
+                <template for:each={caseReductionItems} for:item="caseReductionItem">
+                    <li key={caseReductionItem.label} style="list-style:none;">
+                        <p class="slds-align_absolute-center slds-text-heading_small"><strong>{caseReductionItem.label}: </strong>&nbsp;{caseReductionItem.value}</p>
+                    </li>
+                </template>
+            </ul>
+        </template>
+        <template if:true={displayAdoptionRates}>
+            <div class="slds-section slds-is-open" >
+                <div class="slds-p-top_medium">
+                    <h3 class="slds-section__title slds-p-left_small header slds-theme_shade" style="font-weight: bold;">
+                        Product's Adoption Rates
+                    </h3>
+                </div>           
+            </div>
+            <ul class="slds-m-around_medium">
+                <template for:each={adoptionRates} for:item="adoptionRate">
+                    <li key={adoptionRate.label} style="list-style:none;">
+                        <p class="slds-align_absolute-center slds-text-heading_small"><strong>{adoptionRate.label}: </strong>&nbsp;<lightning-formatted-number value={adoptionRate.value} format-style="percent"></lightning-formatted-number></p>
+                    </li>
+                </template>
+            </ul>
+        </template>
+        <template if:true={displayCustomerSentiment}>
+            <div class="slds-section slds-is-open" >
+                <div class="slds-p-top_medium">
+                    <h3 class="slds-section__title slds-p-left_small header slds-theme_shade" style="font-weight: bold;">
+                        Customer Sentiment
+                    </h3>
+                </div>           
+            </div>
+            <div class="slds-p-top_medium" style={getSentimentStyle}>
+                <p class="slds-align_absolute-center slds-text-heading_small"><strong>{customerSentiment}</strong> &nbsp;
+                    <lightning-icon class="slds-current-color" icon-name={getSentimentIcon}></lightning-icon>
+                </p>        
+            </div>
+        </template>
+        <template if:true={displayTAMMeeting}>
+            <div class="slds-section slds-is-open" >
+                <div class="slds-p-top_medium">
+                    <h3 class="slds-section__title slds-p-left_small header slds-theme_shade" style="font-weight: bold;">
+                        Last Completed TAM Meeting
+                    </h3>
+                </div>           
+            </div>
+            <div class="slds-p-top_medium">
+                <a class="slds-align_absolute-center slds-text-heading_small" href={tamMeetingLink} target="_blank">{tamMeetingName}</a>       
+            </div>
+        </template>
+        <!--Additional Info Section ends-->
+    </lightning-card>
+</template>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata" fqn="lwcForFlow">
+    <apiVersion>51.0</apiVersion>
+    <isExposed>true</isExposed>
+
+    <targets>
+        <target>lightning__FlowScreen</target>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+    </targets>
+
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="existingPartners" type="@salesforce/schema/Opportunity_Partner__c[]" label="Partners" description="list of existing partners" />
+            <property name="selectedPartner" type="String" label="Selected Partner" description="Selected Partner Id" />
+            <property name="selectedOppPartnerID" type="String" label="Selected Opp Partner Id" description="Selected Opp Partner Id" />
+            <property name="selectedPartnerProgram" type="String" label="Selected Partner Program" description="Selected Partner Program" />
+            <property name="selectedPartnerName" type="String" label="Selected Partner Name" description="Selected Partner Name" />
+            <property name="selectedPartnerIncentive" type="String" label="Selected Partner Incentive" description="Selected Partner Incentive" />
+            <property name="selectedDistributor" type="String" label="Selected Distributor" description="Selected Distributor" />
+            <property name="selectedDistributorName" type="String" label="Selected Distributor Name" description="Selected Distributor Name"/>
+            <property name="selectedPartnerIsSummitDistributor" type="Boolean" label="Selected Distributor is summit distributor" description="Selected Distributor is summit distributor"/>
+            <property name="selectedProgramType" type="String" label="Selected Program Type" description="Selected program type" />
+            <property name="AccountPaymentTerms" type="String" label="Selected Payment Terms" description="Selected Payment Terms" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -1,0 +1,107 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 06-11-2022
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<template>
+   <lightning-card>
+      <div class="slds-p-around_medium slds-text-align_center slds-text-heading_small slds-text-color_error" if:true={checkIfProductSelcetionMessageNeededtobeShown}></div>
+      <div class="slds-p-around_medium">
+         <div class="slds-form">
+            <h3 class="slds-section-title--divider slds-m-bottom--small" style="background-color: #D0E0EB;color: black;">
+               <b>Select SKU Platforms</b>&nbsp;
+               <lightning-badge label={productLine}></lightning-badge>
+            </h3>
+            {selectedSKU}
+            <div style="slds-col slds-size_2-of-8">
+               <lightning-datatable 
+                  data-id="datarow"
+                  key-field="Id"
+                  data ={skulist}
+                  onrowselection={handlerowSelection}
+                  columns={pocProductsColumns}
+                  selected-rows={selectedsku}
+                  max-row-selection= 1
+                  >
+               </lightning-datatable>
+            </div>
+         </div>
+      </div>
+   </lightning-card>
+   <template if:true={showPOVProdList}>
+      <lightning-card>
+         <div class="slds-p-around_medium">
+            <div class="slds-form">
+               <template if:true={showaddondata}>
+               <h3 class="slds-section-title--divider slds-m-bottom--small" style="background-color: #D0E0EB;color: black;">
+                  <b>Select Add on Products</b>
+               </h3>
+               <div class="slds-p-bottom_x-small">
+                  <lightning-input label="" type="search" placeholder="Search" variant="label-hidden" onchange={handleKeyChange}></lightning-input>
+               </div>
+              
+               <div class = "slds-border_top slds-border_bottom slds-border_right slds-border_left">
+                  <div style={pocProductDatatableHeight}>
+                     <lightning-datatable 
+                        data-id="addonProductData"
+                        key-field="Id"
+                        data={filteredRecords}
+                        columns={pocAddOnProductsColumns}
+                        onrowselection={handleSelectedPOCProducts}
+                        selected-rows={allSelectedProducts}
+                        >
+                     </lightning-datatable>
+                  </div>
+               </div></template>
+               <br/>
+               <h3 class="slds-section-title--divider slds-m-bottom--small" style="background-color: #D0E0EB;color: black;">
+                  <b>Selected Products</b>
+               </h3>
+               <div class="slds-p-vertical_small">
+                  <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                     <thead>
+                        <tr class="slds-line-height_reset">
+                           <th class="" scope="col" style="width: 50%;">
+                              <div class="slds-truncate" title="Item">Product</div>
+                           </th>
+                           <th class="" scope="col" style="width: 20%;">
+                              <div class="slds-truncate" title="Quantity">Product Line</div>
+                           </th>
+                           <th class="" scope="col" style="width: 20%;">
+                              <div class="slds-truncate" title="Quantity">SKU</div>
+                           </th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <template for:each={showSelectedItems} for:item="eachItem">
+                           <tr key={eachItem.RecordId}>
+                              <th scope="col">
+                                 <p>
+                                    <lightning-formatted-text value={eachItem.Name} ></lightning-formatted-text>
+                                 </p>
+                              </th>
+                              <th scope="col">
+                                 <p>
+                                    <lightning-formatted-text value={eachItem.Product_Line__c} ></lightning-formatted-text>
+                                 </p>
+                              </th>
+                              <th scope="col">
+                                 <p>
+                                    <lightning-formatted-text value={eachItem.ProductCode} ></lightning-formatted-text>
+                                 </p>
+                              </th>
+                           </tr>
+                        </template>
+                     </tbody>
+                  </table>
+                  <div class="slds-m-top_small slds-clearfix" style="text-align: center;">
+                     <lightning-button variant="destructive" label="Delete All" title="Delete All" onclick={removeAllItemsFromSelectedList} class="slds-m-left_x-small"></lightning-button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </lightning-card>
+   </template>
+</template>

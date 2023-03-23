@@ -1,0 +1,9 @@
+.modal-body{ 
+  height : 50% !important; 
+  max-height: 50% !important; 
+} 
+
+.slds-modal__content {
+  overflow-y: visible;
+  height: 26rem !important;
+}

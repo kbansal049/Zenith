@@ -1,0 +1,131 @@
+<template>
+    <lightning-card>
+      <template if:true={isSpinnerLoading}>
+        <lightning-spinner alternative-text="Loading" variant="brand" size="large">
+        </lightning-spinner>
+      </template>
+  
+  
+      <!--Responed To Rep,Yet to be Cleared/Approved-->
+      <div style="margin-right: 20px;">
+        <div style="margin:6px" class="slds-grid">
+          <div class="slds-col slds-size_1-of-1">
+            <p style="color: black;
+                        padding-left: 8px;
+                        padding-top: 10px;
+                        font-size: 18px;
+                        font-weight: bold;
+                        text-decoration: underline">PO pending Re-QR</p>
+          </div>
+        </div>
+      </div>
+      <br>
+      <br>
+      
+      <!-- Responed To Rep,Yet to be Cleared/Approved Datatable -->
+      <template if:true={isShowTable}>
+        <div style="margin-left: 90%;margin-bottom: 10px;margin-right: 10px;" class="slds-grid">
+          <a icon-name="utility:download" target="_self" class="slds-button slds-button_brand slds-col slds-size_12-of-12" download="POPendingReQr.csv" href={hrefdata} onclick={exportToCSV}  
+          style="margin-left: 0%;margin-right: 5px;">Export</a></div>
+      <div
+        style="margin-left: 10px;margin-right: 10px;border-left:solid 1px;border-left-color: lightgrey;border-right:solid 1px;border-top:solid 1px;border-bottom:solid 1px;border-right-color: lightgrey;border-bottom-color: lightgrey;border-top-color: lightgrey;background-color:white">
+        
+  
+          <lightning-datatable
+              class="wrapped-header-datatable"
+              key-field= "Id"
+              columns={columns}
+              data={finalDataTable}
+              hide-checkbox-column
+              default-sort-direction={defaultSortDirection}
+              sorted-direction={sortDirection}
+              sorted-by={sortedBy}
+              onsort={onHandleSort}
+              onsave={handleSave}
+              onrowaction={onRowActionClick}
+              draft-values={saveDraftValues}>
+      </lightning-datatable>
+     <!-- <c-custom-dashboard-data-table
+      key-field="id"
+      columns={columns}
+      data={finalDataTable}
+      hide-checkbox-column
+      default-sort-direction={defaultSortDirection}
+      sorted-direction={sortDirection}
+      sorted-by={sortedBy}
+      onsort={onHandleSort}
+      onrowaction={onRowActionClick}
+      oncustomlinkaction={onCustomLinkActionClick}>
+        </c-custom-dashboard-data-table> -->
+      <div class="slds-grid slds-align_absolute-center">
+        <div style="margin-left: 150px;" class="slds-col slds-size_2-of-14">
+          <div style="margin-top: 20px;font-weight: bold;">
+          <lightning-combobox name="Show" label="Items per page" value={selectedPageOption} placeholder={selectedPageOption}
+          disabled={noRecords} options={pageOption} onchange={handlePageOptions}>
+        </lightning-combobox>
+         </div> 
+        </div>
+        <div class="slds-col slds-size_1-of-12" style="margin-left: 30px;font-size: large; margin-top: 38px;">
+          {start} - {end} of {totalRecords}
+        </div>
+        <div class="slds-col slds-size_2-of-12" style="margin-top:38px ; margin-left:2px;">
+          <template if:true={showPrevButton}>
+          <lightning-icon icon-name="utility:jump_to_left" size="x-large" style="cursor: pointer;" alternative-text="Back" title="Back"
+            onclick={handlePreviouspage}></lightning-icon></template>
+            <template if:true={showNextButton}>
+          <lightning-icon style="margin-left: 20px;cursor: pointer;" icon-name="utility:jump_to_right" size="x-large"
+            alternative-text="Next" title="Next" onclick={handleNextpage}></lightning-icon></template>
+        </div>
+      </div>
+      <br>
+          </div> 
+          <br>
+      <br>
+        </template>
+      
+      <template if:false={isShowTable}>
+        <div style="text-align: center;font-size: 15px;margin: 1rem 0; padding-top: 10px;padding-bottom: 10px;">
+          <lightning-icon size="medium" icon-name="custom:custom23"
+            style="margin-right: 10px;background-color: #C23934;"></lightning-icon>
+          No 'PO pending Re-QR' Data!!!
+        </div>
+      </template>
+      <!--PO Pending with Sales End-->
+      
+      <br>
+  
+      <template if:true={isModalOpen}>
+        <!-- Modal/Popup Box LWC starts here -->
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box LWC header here -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close"
+                            alternative-text="close"
+                            variant="inverse"
+                            size="small" ></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{modalRecord.End_User__c}</h2>
+                </header>
+                <!-- Modal/Popup Box LWC body starts here -->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                  <lightning-input-rich-text
+                  value={modalRecord.relationData}
+                  onchange={handleReasonChange}>
+              </lightning-input-rich-text>
+                </div>
+                <!-- Modal/Popup Box LWC footer starts here -->
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Cancel</button>
+                    <button class="slds-button slds-button_brand" onclick={submitDetails} title="OK">OK</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+  
+    </lightning-card>
+  
+  </template>

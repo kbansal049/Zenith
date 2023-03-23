@@ -1,0 +1,34 @@
+.redItem{
+	border-color: rgb(221 219 218);
+    /*background: rgb(234 0 30);*/
+    color: rgb(234 0 30);
+}
+.greenItem{
+	border-color: rgb(221 219 218);
+	/*background: rgb(234 0 30);*/
+    color: rgb(69 198 90);
+}
+.yellowItem{
+	border-color: rgb(221 219 218);
+	/*background: rgb(234 0 30);*/
+    color: rgb(198, 176, 69);
+}
+.hrLine{
+	margin: 0px 10px 10px 10px;
+	border: 0.5px solid #dddbda;
+	background: #dddbda;
+}
+.app-icon {
+    --sds-c-icon-color-foreground-default: #45c65a;
+
+}
+.rej-icon {
+    --sds-c-icon-color-foreground-default: rgb(244 119 135);
+}
+.inprogress-icon {
+    --sds-c-icon-color-foreground-default: rgba(244, 213, 119, 0.868);
+}
+.slds-modal__container {
+    max-width: 65rem !important;
+    width: 65% !important;
+}

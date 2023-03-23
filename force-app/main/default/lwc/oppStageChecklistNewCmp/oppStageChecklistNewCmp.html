@@ -1,0 +1,170 @@
+<template>
+   <lightning-card>
+     <div class="slds-page-header">
+        <!-- LAYOUT GRID -->
+        <div class="slds-grid">
+          <!-- GRID COL -->
+          <div class="slds-col slds-has-flexi-truncate">
+            <!-- HEADING AREA 
+            <h1 class="slds-page-header__title slds-m-right_small slds-align-middle slds-text-align_center slds-truncate"  title="Solution Selling">Solution Selling</h1>-->
+            <!-- / HEADING AREA --> 
+          </div>
+          <!-- ACTION BUTTONS -->
+          <!-- / ACTION BUTTONS -->
+        </div>
+        <!-- / LAYOUT GRID -->
+        <!-- PAGE HEADER DETAIL ROW -->
+        <!-- / PAGE HEADER DETAIL ROW -->
+      </div>
+      
+   <!--
+       <template for:each={requiredFieldsCustom} for:item="fieldProp">
+           <ul class="slds-has-dividers_around-space slds-p-around_x-small" key={fieldProp.randomId}>
+              <template if:true={fieldProp.booleanValue}>
+                 <li class="slds-item greenItem slds-p-around_x-medium">
+                    <span style="position:relative; top:-3px;padding-right: 3px;">
+                       <lightning-icon class="app-icon" size="xx-small" icon-name="utility:check"
+                          alternative-text="Approved" title="Approved"></lightning-icon>
+                    </span>
+                    <span style="position:relative; padding-right: 3px;">
+                       {fieldProp.fieldLabel}
+                       <template if:true={fieldProp.hoverText}>
+                          <lightning-helptext icon-name="utility:info" content={fieldProp.hoverText}></lightning-helptext>
+                       </template>
+                       <template if:true={fieldProp.displayFieldValue}>
+                          <template if:true={fieldProp.isNumberType}>
+                             <span style="padding-left: 0.5rem;" class="fieldValue">
+                                <lightning-formatted-number value={fieldProp.fieldValue} maximum-fraction-digits="2"></lightning-formatted-number>
+                             </span>
+                          </template>
+                          <template if:false={fieldProp.isNumberType}>
+                             <template if:true={fieldProp.picklistLabel}>
+                                <span style="padding-left: 0.5rem;" class="fieldValue">
+                                   {fieldProp.picklistLabel}
+                                </span>
+                             </template>
+                             <template if:false={fieldProp.picklistLabel}>
+                                <span style="padding-left: 0.5rem;" class="fieldValue">
+                                   {fieldProp.fieldValue}
+                                </span>
+                             </template>
+                          </template>
+                       </template>
+                       <template if:true={fieldProp.attrs}>
+                          <template for:each={fieldProp.attrs} for:item="att">
+                             <a style="padding-left: 5px;" class="lineHeader" href="#" key={att.recId} data-id={att.recId} data-name={att.objectName} onclick={redirectToRecord}>{att.recValue}</a>
+                          </template>
+                       </template>
+                       <template if:true={fieldProp.fileInfo}>
+                          <template if:false={fieldProp.displayFieldValue}>
+                             <span style="padding: 2px;" key={fieldProp.fileInfo.fileId}>
+                             <a style="padding-left: 5px;" class="lineHeader"   data-id={fieldProp.fileInfo.fileId} onclick={previewFile}>{fieldProp.fileInfo.Title}</a>
+                             </span>
+                          </template>
+                       </template>
+                       <template if:true={isAccess}>
+                          <template if:true={fieldProp.allowInput}>
+                             <span style="padding-left: 0.4rem;">
+                                <template if:true={fieldProp.fileInfo}>
+                                   <lightning-button-icon icon-name="utility:edit" variant="bare"  alternative-text="Edit Field Value" class="slds-m-left_small lineHeader" title="Edit"
+                                   onclick={openModal} data-id={fieldProp.fieldLabel} data-value={fieldProp.fieldValue} data-file-name={fieldProp.fileInfo.Title} data-file-id={fieldProp.fileInfo.fileId}  
+                                      data-dependent-fields={fieldProp.dependentFieldNames} data-err-msg={fieldProp.errMsg} data-allowed-values={fieldProp.allowedValues} data-name={fieldProp.fieldName} data-label={fieldProp.fieldType} >
+                                   </lightning-button-icon>
+                                </template>
+                                <template if:false={fieldProp.fileInfo}>
+                                   <lightning-button-icon icon-name="utility:edit" variant="bare"   alternative-text="Edit Field Value" class="slds-m-left_small lineHeader" title="Edit" onclick={openModal} data-id={fieldProp.fieldLabel}
+                                      data-dependent-fields={fieldProp.dependentFieldNames}   data-value={fieldProp.fieldValue} data-name={fieldProp.fieldName} data-label={fieldProp.fieldType} data-err-msg={fieldProp.errMsg} data-allowed-values={fieldProp.allowedValues} >
+                                   </lightning-button-icon>
+                                </template>
+                             </span>
+                          </template>
+                       </template>
+                    </span>
+                 </li>
+              </template>
+              <template if:false={fieldProp.booleanValue}>
+                 <li class="slds-item redItem slds-p-around_x-medium" >
+                    <span style="position:relative; top:-3px;padding-right: 3px;">
+                       <lightning-icon class="rej-icon" size="xx-small" icon-name="utility:close" alternative-text="Reject" title="Reject"></lightning-icon>
+                    </span>
+                    <span class="redItem">
+                       {fieldProp.fieldLabel}
+                       <template if:true={fieldProp.hoverText}>
+                          <lightning-helptext icon-name="utility:info" content={fieldProp.hoverText}></lightning-helptext>
+                       </template>
+                       <template if:true={isAccess}>
+                          <template if:true={fieldProp.allowInput}>
+                             <span style="padding-left: 0.4rem;">
+                                <lightning-button-icon icon-name="utility:add"   alternative-text="Add Field Value" class="slds-m-left_small lineHeader" title="Add"
+                                onclick={openModal} data-id={fieldProp.fieldLabel} data-value={fieldProp.fieldValue} 
+                                   data-dependent-fields={fieldProp.dependentFieldNames} data-err-msg={fieldProp.errMsg} data-allowed-values={fieldProp.allowedValues} data-name={fieldProp.fieldName} data-label={fieldProp.fieldType} >
+                                </lightning-button-icon>
+                             </span>
+                          </template>
+                       </template>
+                       <template if:true={fieldProp.actionName}>
+                          <span style="padding-left: 0.4rem;">
+                          <button  class="slds-button" onclick={redirectToRecord} data-name={fieldProp.actionObjectName}>
+                          <span style="padding-left: 0.2rem;" class="lineHeader">{fieldProp.actionName}</span>
+                          </button >
+                          </span>
+                       </template>
+                    </span>
+                 </li>
+              </template>
+           </ul>
+        </template>-->
+      <!--Group Of lightning Tab Set-->
+      <template if:true={modalWindow}>
+         <!--   <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">-->
+         <c-opp-stage-checklist-child-cmp record-id={recordId} record-type-id={recordTypeId} field-name={fieldName} field-label={fieldLabel}  field-val ={fieldVal} file-name={fileName} file-id={fileId} field-type={fieldType}
+            allowed-values={allowedValues} err-msg={errMsg} oncallpasstoparent={handleChildMessage} onchildclose={handleChildClose}></c-opp-stage-checklist-child-cmp>
+         <!--</div>
+            </section>-->
+       <!--<section role="dialog" tabindex="-1" aria-labelledby="modal-heading-02" aria-modal="true" class="slds-modal slds-fade-in-open slds-modal_medium" style="z-index:9999;">
+              <div class="slds-modal__container slds-is-relative">
+            <lightning-record-edit-form record-id={recordId} object-api-name="Opportunity"
+                 onsuccess={handleSuccess} onsubmit ={handleSubmit}>
+                 <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                       title="Close" onclick={closeModal}>
+                       <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                          size="small"></lightning-icon>
+                       <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">{fieldLabel}</h2>
+                 </header>
+                 <div class="slds-modal__content slds-is-relative slds-p-around_medium modalBody" id="modal-content-id-2">
+                    <lightning-messages>
+                    </lightning-messages>
+                    <lightning-input-field field-name="Solution__c">
+                    </lightning-input-field>
+                    <lightning-input-field field-name="Buyer_Initiative__c">
+                    </lightning-input-field>
+                    <lightning-button class="slds-m-top_small" variant="brand" type="submit" name="update" label="Update">
+                    </lightning-button>
+                 </div>
+             
+         </lightning-record-edit-form>
+         </div></section> -->
+         <div class="slds-backdrop slds-backdrop_open"></div>
+      </template>
+      <template if:false={isLoading}>
+        <div class="slds-p-around_x-medium slds-align_absolute-center slds-p-top_medium">
+           <div class="slds-float_right">
+              <button class="slds-m-horizontal_small slds-align_absolute-center slds-button slds-button_destructive" data-id="Stage" data-value={stageVal}   
+                 data-name="StageName" data-dependent-fields="Sub_Stage__c" data-label="PICKLIST" onclick={openModal} if:true={ShowClosedLostButton} disabled={disableClosed}>Closed Lost</button> 
+           </div>
+        </div>
+        
+      </template>
+      <template if:true={isLoading}>
+         <div class="slds-p-around_x-large">
+            <lightning-spinner alternative-text="Loading" size="large" variant="brand"></lightning-spinner>
+         </div>
+         
+      </template>
+   </lightning-card>
+</template>

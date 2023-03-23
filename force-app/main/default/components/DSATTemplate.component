@@ -1,0 +1,39 @@
+<apex:component controller="DSAT" access="global">
+    <apex:attribute type="String" name="CaseId" assignTo="{!CaseId1}" description="Case Id"/>
+    <apex:attribute type="String" name="Project" assignTo="{!ProjectAccName}" description="Project Id"/>
+    <apex:attribute type="String" name="Project1" assignTo="{!ProjectAccountName}" description="ProjectContact Id"/>
+    <p>Dear {!ER.Case_Owner__c}</p>
+    <p>{!ProjectAccountName} from {!ProjectAccName} provided a DSAT score for {!ER.Project__r.Name}</p>
+    <p>
+        We have created a DSAT Case to actively track the efforts associated with<br/>
+        responding to the customer due to negative feedback on a survey. Please<br/>
+        actively work to resolve this. Please find more details about the Survey and<br/>
+        the Project below: <br/>
+        <br/>
+        Project Name :<a href="{!LEFT($Api.Partner_Server_URL_280, FIND(".com/",$Api.Partner_Server_URL_280)+3)}/{!ER.Project__c}">{!ER.Project__r.Name}</a><br/>
+        <br/>
+        DSAT Case#  : <a href="{!LEFT($Api.Partner_Server_URL_280, FIND(".com/",$Api.Partner_Server_URL_280)+3)}/{!CaseId1}"> {!ER.CaseNumber}</a><br/>
+        <br/>
+        Survey Response from Customer : <a href="{!LEFT($Api.Partner_Server_URL_280, FIND(".com/",$Api.Partner_Server_URL_280)+3)}/{!ER.Survey__r.ID}"> {!ER.Survey__r.Name}</a><br/>
+        <br/>
+        <b>Survey Response Summary:</b><br/>
+        <br/>
+        1. Will you recommend ZScaler?{!ER.Will_you_recommend_Zscaler__c}<br/>
+        <br/>
+        2. How can we make you happier? {!ER.How_can_we_make_you_happier__c}<br/>
+        <br/>
+        3. Easy to handle issue? {!ER.Easy_to_handle_issue__c}<br/>
+        <br/>
+        4. One thing we could do to make it easy? {!ER.One_thing_we_could_do_to_make_it_easy__c}<br/>
+        <br/>
+        5. Rate your ZScaler resource experience? {!ER.Rate_your_experience__c}<br/>
+        <br/>
+        6. Did we meet your project timeline? {!ER.Did_we_meet_your_project_timeline__c}<br/>
+        <br/>
+        7. Other comments/concerns? {!ER.Your_Comments__c}<br/>
+         <br/>
+         <br/>
+        Thanks<br/>
+        Professional Services Management Team
+    </p>
+</apex:component>

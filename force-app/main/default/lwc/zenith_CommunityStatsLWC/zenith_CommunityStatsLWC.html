@@ -1,0 +1,26 @@
+<template>
+    <div class="container">
+        <div class="slds-grid slds-wrap contentContainer">
+            <div class="slds-col slds-size_3-of-12 slds-text-align_center slds-m-top_medium divBorders">
+                <!-- <lightning-icon icon-name="utility:groups"></lightning-icon> -->
+                <span class="imgSpan"><img src={membersIcon} alt="members icon" class="pngIcon"></span>
+                <p><lightning-formatted-number value={communityMembersCount}></lightning-formatted-number> members</p>
+            </div>
+            <div class="slds-col slds-size_3-of-12 slds-text-align_center slds-m-top_medium divBorders">
+                <!-- <lightning-icon icon-name="utility:edit_form"></lightning-icon> -->
+                <span class="imgSpan"><img src={postIcon} alt="post icon" class="postIcon"></span>
+                <p><lightning-formatted-number value={feedPostCount}></lightning-formatted-number> posts</p>
+            </div>
+            <div class="slds-col slds-size_3-of-12 slds-text-align_center slds-m-top_medium divBorders">
+                <!-- <lightning-icon icon-name="utility:light_bulb"></lightning-icon> -->
+                <span class="imgSpan"><img src={solutionsIcon} alt="solutions icon" class="pngIcon"></span>
+                <p><lightning-formatted-number value={bestAnswerCount}></lightning-formatted-number> solutions</p>
+            </div>
+            <div class="slds-col slds-size_3-of-12 slds-text-align_center slds-m-top_medium">
+                <!-- <lightning-icon icon-name="utility:like" alternative-text="likes" title="likes"></lightning-icon> -->
+                <span class="imgSpan"><img src={likesIcon} alt="likes icon" class="pngIcon"></lightning-icon></span>
+                <p><lightning-formatted-number value={likesCounter}></lightning-formatted-number> likes</p>
+            </div>
+        </div>
+    </div>
+</template>

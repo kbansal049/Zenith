@@ -1,0 +1,15 @@
+<aura:component >
+    <aura:attribute name="search" type="aura.component[]"></aura:attribute>
+	<div class="searchContainer" style="" aura:id="columnDiv">
+            <div class="slds-col slds-size_1-of-1 slds-text-align_center brandingHeader">
+                <span>Zenith Community</span>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-text-align_center brandingText">
+            	<span>Find answers, tips &amp; tricks, and best practices</span>
+            </div>
+            <div class="searchBar">
+                {!v.search}
+            </div>
+            
+    </div>
+</aura:component>

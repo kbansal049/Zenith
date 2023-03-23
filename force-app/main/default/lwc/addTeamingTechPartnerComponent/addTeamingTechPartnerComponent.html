@@ -1,0 +1,227 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 04-29-2021
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+  Modifications Log 
+  Ver   Date         Author                               Modification
+  1.0   04-29-2021   ChangeMeIn@UserSettingsUnder.SFDoc   Initial Version
+-->
+<template>
+
+
+    
+
+
+
+
+    <!--<button onclick={openModal}>Add New</button>  -->
+    <a onclick={openModal} style="color: black;"><b>Add New</b></a>
+
+	<!--Use template if:true to display/hide popup based on isModalOpen value--> 
+    <template if:true={isModalOpen}>
+
+        <!-- Modal/Popup Box LWC starts here -->
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container" style="text-transform:capitalize;">
+                <!-- Modal/Popup Box LWC header here -->
+                
+                
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close"
+                            alternative-text="close"
+                            variant="inverse"
+                            size="small" ></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    
+
+                    <h2 class="slds-section-title--divider" style="background-color: white;text-transform:capitalize;">
+                        <b>{modalHeader}</b>
+                        <!--<div class="slds-float_right" style="font-weight: unset !important;font-size: initial;">
+                            
+                            <lightning-button 
+                                onclick={addNewRow} 
+                                variant="brand"
+                                value="Add Row"
+                                label="Add Row"
+                            ></lightning-button>
+                            
+                        </div>-->
+                    </h2>
+
+
+                </header>
+            
+
+                <!-- Modal/Popup Box LWC body starts here -->
+                
+                
+                
+                
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1" style="overflow-y: scroll;">
+
+                    <template if:true={loading}>
+                        <div class="slds-spinner_container">
+                            <lightning-spinner variant="brand" alternative-text="Loading..." size="medium"></lightning-spinner>
+                        </div>
+                    </template>
+                    
+                    <template if:true={error}> 
+                        <template if:true={error.body}>
+                            <template if:true={error.body.message}>
+                                <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error"
+                                    style="text-transform: none;"
+                                    role="alert">
+                                    <span class="slds-assistive-text">Error</span>
+                                    <h2>{error.body.message}</h2>
+                                </div>
+                            </template>
+                        </template>
+
+                    </template>
+
+                    <template if:true={customError}>
+                        <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error"
+                            style="text-transform: none;"
+                            role="alert">
+                            <span class="slds-assistive-text">Error</span>
+                            <h2>{customError}</h2>
+                        </div>
+                    </template>
+
+                    
+
+
+                    
+
+
+
+                    <template for:each={teamingTechPartnerList} for:item="eachTechPartner">
+
+                        <div class="slds-grid slds-wrap" key={eachTechPartner} >
+                            <div class="slds-size_10-of-12">
+                                        <lightning-combobox
+                                            name="progress"
+                                            label="Type of Partner"
+                                            value={value}
+                                            placeholder="Select Partner Type"
+                                            options={options}
+                                            onchange={handleChangepicklist} 
+                                            required >
+                                        </lightning-combobox>
+                            </div>
+                            <div class="slds-size_2-of-12" ></div>  
+                        </div>
+
+                        <div class="slds-grid slds-wrap" key={eachTechPartner} >
+
+                           
+                            <div class="slds-size_10-of-12">
+                               <label class="slds-form-element__label" style="margin-bottom:-5px;margin-left:10px;"><span style="padding-right:5px;" class="slds-required">*</span>Partner Account</label>
+                                <c-custom-typeahead 
+                                    icon-name="standard:account" 
+                                    object-name="Account" 
+                                    search-field="Name"
+                                    valuefield={picklistvalue}
+                                    partner-type="Influence"
+                                    onselectedrec={handleSelectedRec}
+                                    data-id={eachTechPartner.id}
+                                ></c-custom-typeahead>
+
+                            </div>
+
+                            
+                            <div class="slds-size_2-of-12" >
+
+                                <!--<div class="slds-grid slds-wrap" >
+                                    <div class="slds-size_5-of-12" ></div>
+                                    <div class="slds-size_2-of-12" >
+
+                                        <a >
+                                            <div style="margin-top:25px;">
+                                                <lightning-icon 
+                                                    variant="error" 
+                                                    icon-name="utility:delete"
+                                                    class="slds-icon slds-icon_small" 
+                                                    size="small" 
+                                                    alternative-text="icon" 
+                                                    data-id={eachTechPartner.id}
+                                                    onclick={handleRemoveRow}
+                                                ></lightning-icon>
+                                                <span class="slds-assistive-text">Delete Icon</span>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                    <div class="slds-size_5-of-12" ></div>
+                                </div>-->
+                                
+                                    
+                                
+
+                            </div>
+                        </div>
+                        
+
+                        <div class="slds-grid slds-wrap" key={eachTechPartner} >
+
+
+                            <div class="slds-size_10-of-12">
+
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-size_10-of-12" style="margin-left:10px;">
+                                        <lightning-dual-listbox 
+                                            name="Activity Type"
+                                            label="Activity Type"
+                                            selected-label="Selected Activity Type"
+                                            source-label="Available Activity Type"
+                                            options={picklistFieldEntries}
+                                            value={value}
+                                            onchange={handleChange}
+                                            size="3"
+                                            data-id={eachTechPartner.id}
+                                            required="true"
+                                            class="activitytype"
+                                        ></lightning-dual-listbox>
+                                        
+                                        
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="slds-size_2-of-12" ></div>
+
+                            
+                        </div>
+                        
+                               
+                        <div style="height:25px;" key={eachTechPartner}>
+
+                        </div>
+
+                    </template>
+
+                    <footer class="slds-modal__footer" style="margin-left: -15px;margin-right: -15px;margin-bottom: -15px;">
+                        <button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Cancel</button>
+                        <button class="slds-button slds-button_brand" onclick={submitDetails} title="Submit">Submit</button>
+                    </footer>
+
+                </div>
+
+                <!-- Modal/Popup Box LWC footer starts here -->
+                
+
+
+
+
+            </div>
+        </section>
+
+
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+</template>

@@ -1,0 +1,35 @@
+<apex:component controller="emailToSECompController" access="global" >
+    <apex:attribute name="caseId" type="Id" description="Id of the Case" assignTo="{!caseIdRec}"/>       
+    
+    <html>
+        <body>
+            
+            
+            Hello {!Caserecord.Provisioning_Group__r.Opportunity__r.SE_Name__r.Name}, <br/> 
+            
+            <p>
+                The following provisioning request submitted for auto-provisioning has failed to auto-provision. It is sent for manual Provisioning.  Details of the Provisioning Group are below :
+                
+            </p> 
+            
+            
+            SFDC Link : {!PRGLink} <br/> 
+            
+            Provisioning Request Group Name: {!Caserecord.Provisioning_Group__r.name}<br/>
+            
+            Start Date: {!Caserecord.Provisioning_Group__r.Start_Date__c}<br/>
+            
+            End Date: {!Caserecord.Provisioning_Group__r.End_Date__c}<br/>
+            
+            Account Name : {!Caserecord.Provisioning_Group__r.Account__r.Name} <br/>
+            
+            Opportunity Link :  {!optyLink}  <!-- <apex:outputLink value="{!optyLink}" id="theLink">Click here</apex:outputLink>  
+--><br/> 
+            Case Link: {!caseLink} <br/> <br/>
+            
+            Regards,<br/>
+            Zscaler Sales Ops
+        </body>
+    </html> 
+    
+</apex:component>

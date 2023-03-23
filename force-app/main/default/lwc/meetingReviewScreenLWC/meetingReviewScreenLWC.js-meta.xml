@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>56.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightning__FlowScreen</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="resourceId" label="Host Id" description="Please provide host if for the meeting" type="String"/>
+            <property name="caseId" label="Case Id" description="Please Provide Case Id for Meeting" type="String"/>
+            <property name="contactId" label="Contact Id" description="Please Provide Contact Id for Meeting" type="String"/>
+            <property name="startTime" label="Start Time" description="Please provide Start Time of Meeting" type="DateTime"/>
+            <property name="endTime" label="End Time" description="Please provide End Time of Meeting" type="DateTime"/>
+            <property name="listOfAttendeesEmails" label="Attendees Emails" type="String[]"/>
+            <property name="meetingDescription" label="Meeting Description" type="String"/>
+            <property name="customerMeetingURL" label="Customer Provided Meeting URL" type="String"/>
+            <property name="agendaForMeeting" label="Agenda for Meeting" type="String"/>
+            <property name="currentUserType" label="Current User Type" description="The user type who is booking this meeting (ex: TAC/TAM/Duty Manager)" type="String"/>
+            <property name="backClicked" type="Boolean" label="Is Custom Back Btn Clicked?" description="Is Custom Back Button Clicked or Not"/>
+            <property name="showButtons" type="Boolean" label="Show Custom LWC Navigation Buttons?" description="Show Custom LWC Navigation Buttons or Not"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

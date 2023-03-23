@@ -1,0 +1,32 @@
+.mainDiv{
+	background-color : white;
+	overflow: hidden;
+}
+
+.inline-content {
+    display: flex;
+    align-items: center;
+}
+.modalButton{
+	margin-top: 7px;
+	margin-bottom: 7px;
+}
+
+.exampleHolder{
+    width: 100%;
+	height: 50px;
+}
+
+.greenClass{
+	color: greenyellow;
+	font-size: 30 px;
+}
+
+.orangeClass{
+	color: goldenrod;
+	font-size: 17 px;
+}
+
+.modalBody {
+    position: relative;
+}

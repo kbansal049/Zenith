@@ -1,0 +1,197 @@
+<template>
+    <template if:true={hasError}>
+        <div class="slds-align_absolute-center slds-text-color_error">{errMsg}
+          <a onclick={showDetailErrorMessage}>&nbsp; More Information</a>
+        </div>
+        <template if:true={showDetailError}>
+          <div class="slds-align_absolute-center slds-text-color_error">
+            {errDetail}
+          </div>
+        </template>
+     </template>
+     
+
+    <lightning-record-edit-form density={componentDensity} object-api-name={objectApiName}
+            record-id={recordId} record-type-id={recordTypeId} onload={handleOnLoadForm} onsuccess={handleFormSubmitSuccess} onsubmit={handleFormSubmit} onerror={handleFormSubmitError}>
+            <lightning-messages></lightning-messages>
+            <div class="slds-grid slds-wrap" style="margin-left: 6%; margin-right: 6%;">
+                <template for:each={fldSetWithDetails} for:item="fld">
+                   
+                    <div key={fld.fieldAPIName} class={componentColumns}>
+                        <div class="slds-form-element">
+                            <template if:true={fld.isFormula}>
+                            <lightning-output-field field-name={fld.fieldAPIName}>
+                            </lightning-output-field>
+                            </template>
+                            <template if:false={fld.isFormula}>
+                            <template if:true={fld.isAccessible}>
+                                <template if:true={fld.isEditable}>
+                                <lightning-input-field required={fld.isRequired} field-name={fld.fieldAPIName} value={fld.fieldValue}>
+                                </lightning-input-field>
+                                </template>
+                            </template>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            <template if:true={showTopSites}>
+                <template if:true={showSecond}>
+                    <br/>
+                    <div class="slds-grid slds-wrap slds-border_top" style="margin-left: 6%; margin-right: 6%;">
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small">
+                            <div class="slds-form-element">
+                                <lightning-input-field field-name="Location_Name_2__c">
+                                </lightning-input-field>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small">
+                            <div class="slds-form-element">
+                                <lightning-input-field field-name="Location_City_State_Country_2__c">
+                                </lightning-input-field>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small">
+                            <div class="slds-form-element">
+                                <lightning-input-field field-name="Approx_Peak_Bandwidth_Seen_2__c">
+                                </lightning-input-field>
+                            </div>
+                        </div>   
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small">
+                            <div class="slds-form-element">
+                                <lightning-input-field field-name="Traffic_Routing_2__c">
+                                </lightning-input-field>
+                            </div>
+                        </div>   
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small">
+                            <div class="slds-form-element">
+                                <lightning-input-field field-name="Available_Infrastructure_2__c">
+                                </lightning-input-field>
+                            </div>
+                        </div>  
+                    </div>
+                </template>
+                <template if:true={showThird}>
+                    <br/>
+                    <div class="slds-grid slds-wrap slds-border_top" style="margin-left: 6%; margin-right: 6%;">
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small">
+                            <div class="slds-form-element">
+                                <lightning-input-field field-name="Location_Name_3__c">
+                                </lightning-input-field>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small">
+                            <div class="slds-form-element">
+                                <lightning-input-field field-name="Location_City_State_Country_3__c">
+                                </lightning-input-field>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small">
+                            <div class="slds-form-element">
+                                <lightning-input-field field-name="Approx_Peak_Bandwidth_Seen_3__c">
+                                </lightning-input-field>
+                            </div>
+                        </div>   
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small">
+                            <div class="slds-form-element">
+                                <lightning-input-field field-name="Traffic_Routing_3__c">
+                                </lightning-input-field>
+                            </div>
+                        </div>   
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small">
+                            <div class="slds-form-element">
+                                <lightning-input-field field-name="Available_Infrastructure_3__c">
+                                </lightning-input-field>
+                            </div>
+                        </div>  
+                    </div>
+                </template>
+                <template if:true={showFourth}>
+                    <br/>
+                    <div class="slds-grid slds-wrap slds-border_top" style="margin-left: 6%; margin-right: 6%;">
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small">
+                            <div class="slds-form-element">
+                                <lightning-input-field field-name="Location_Name_4__c">
+                                </lightning-input-field>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small">
+                            <div class="slds-form-element">
+                                <lightning-input-field field-name="Location_City_State_Country_4__c">
+                                </lightning-input-field>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small">
+                            <div class="slds-form-element">
+                                <lightning-input-field field-name="Approx_Peak_Bandwidth_Seen_4__c">
+                                </lightning-input-field>
+                            </div>
+                        </div>   
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small">
+                            <div class="slds-form-element">
+                                <lightning-input-field field-name="Traffic_Routing_4__c">
+                                </lightning-input-field>
+                            </div>
+                        </div>   
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small">
+                            <div class="slds-form-element">
+                                <lightning-input-field field-name="Available_Infrastructure_4__c">
+                                </lightning-input-field>
+                            </div>
+                        </div>  
+                    </div>
+                </template>
+                <template if:true={showFifth}>
+                    <br/>
+                    <div class="slds-grid slds-wrap slds-border_top" style="margin-left: 6%; margin-right: 6%;">
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small">
+                            <div class="slds-form-element">
+                                <lightning-input-field field-name="Location_Name_5__c">
+                                </lightning-input-field>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small">
+                            <div class="slds-form-element">
+                                <lightning-input-field field-name="Location_City_State_Country_5__c">
+                                </lightning-input-field>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small">
+                            <div class="slds-form-element">
+                                <lightning-input-field field-name="Approx_Peak_Bandwidth_Seen_5__c">
+                                </lightning-input-field>
+                            </div>
+                        </div>   
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small">
+                            <div class="slds-form-element">
+                                <lightning-input-field field-name="Traffic_Routing_5__c">
+                                </lightning-input-field>
+                            </div>
+                        </div>   
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small">
+                            <div class="slds-form-element">
+                                <lightning-input-field field-name="Available_Infrastructure_5__c">
+                                </lightning-input-field>
+                            </div>
+                        </div>  
+                    </div>
+                </template>
+                <template if:true={showAddAnotherButton}>
+                    <div style="margin-left: 6%;">
+                        <lightning-button class="slds-m-around_small" label="+ Add Another" onclick={handleMoreAddSite}>
+                        </lightning-button>
+                    </div>
+                </template>
+                
+                
+            </template>
+            <div class="slds-align_absolute-center">
+                <br/><br/>
+                <lightning-button class="slds-m-around_small" label="Cancel" onclick={handleCancel}>
+                </lightning-button>
+                <lightning-button class="slds-m-around_small" variant="brand" type="submit" name="update"
+                    label="Save and Next"></lightning-button>
+            </div>
+    </lightning-record-edit-form>
+
+</template>

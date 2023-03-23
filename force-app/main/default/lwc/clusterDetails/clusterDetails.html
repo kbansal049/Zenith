@@ -1,0 +1,80 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 09-21-2022
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<template>
+    <lightning-card>
+       <div class="slds-p-horizontal_small">
+             <div class="stepOne">
+                <div class="slds-p-around_medium">
+                   <div class="slds-form">
+                      <h3 class="slds-section-title--divider slds-m-bottom--small" style="background-color: #D0E0EB;color: black;">
+                         <b>Cluster Details</b>
+                      </h3>
+ 
+                      
+                         <!--PR created For, Dont Show if we have primary quote
+                         <lightning-dual-listbox name="clusterType"
+                            label="Cluster Type"
+                            source-label="Available"
+                            selected-label="Selected"
+                            field-level-help="Select cluster type"
+                            options={clusterOptions}
+                            value={selectedClusterOptions} 
+                            variant="label-inline"
+                            required =true
+                            min=1
+                            size="3"
+                            onchange={handleClusterTypeChange}>
+                         </lightning-dual-listbox>
+-->
+                         <lightning-combobox
+                           name="clusterType" 
+                           label="Cluster Type" 
+                           placeholder="Cluster Type" 
+                           value={selectedClusterOptions} 
+                           options={clusterOptions} 
+                           onchange={handleClusterTypeChange} 
+                           required="true" 
+                           variant="label-inline">
+                        </lightning-combobox>
+
+                         <lightning-combobox
+                           name="cloudType" 
+                           label="Cloud Type" 
+                           placeholder="Cloud Type" 
+                           value={selectedCloudOptions} 
+                           options={cloudOptions} 
+                           onchange={handleCloudTypeChange} 
+                           required="true" 
+                           variant="label-inline">
+                        </lightning-combobox>
+
+                        <div class="slds-form">
+                            <h3 class="slds-section-title--divider slds-m-bottom--small" style="background-color: #D0E0EB;color: black;">
+                               <b>Cluster Records</b>&nbsp;
+                            </h3>
+                            
+                            <div style="slds-col slds-size_2-of-8">
+                               <lightning-datatable 
+                                  data-id="datarow"
+                                  key-field="Id"
+                                  data ={finalClusterList}
+                                  columns={clusterColumns}
+                                  >
+                               </lightning-datatable>
+                            </div>
+                         </div>
+                     
+ 
+                     </div>
+                     </div>
+                     </div>
+                     </div>
+                     </lightning-card>
+ 
+    <c-custom-toast-component auto-close-time="3000"></c-custom-toast-component>
+ </template>

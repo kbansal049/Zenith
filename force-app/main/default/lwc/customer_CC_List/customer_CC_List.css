@@ -1,0 +1,21 @@
+body{
+    font-family: Salesforce Sans,Arial,sans-serif !important;
+}
+label{
+    font-family: Salesforce Sans,Arial,sans-serif !important;
+    font-size: .75rem;
+    font-weight: 700;
+}
+.contact-email-label{
+    margin-top: 5px !important;
+    padding-left: 0px !important;
+}
+.zs-collab-icon-class{
+    padding-right: 0px !important;
+    margin-right: 5%;
+}
+.zs-collab-email-class{
+    font-family: Salesforce Sans,Arial,sans-serif !important;
+    font-size: .8rem;
+    font-weight: 600;
+}

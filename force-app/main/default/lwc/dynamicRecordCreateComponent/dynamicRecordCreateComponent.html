@@ -1,0 +1,88 @@
+<template>
+    <template if:true={showWithoutModal}>
+        <template if:false={loading}>
+            <template if:false={checkTheFieldSetName}>
+                <template if:true={rtId}>
+                    <lightning-record-form record-type-id={rtId} object-api-name={objectApiName} layout-type="Full"
+                        columns="2" mode="edit" onsubmit={handleSubmit} onsuccess={handleSuccess}
+                        oncancel={handleCancel}>
+                    </lightning-record-form>
+                </template>
+                <template if:false={rtId}>
+                    <lightning-record-form object-api-name={objectApiName} layout-type="Full" columns="2" mode="edit"
+                        onsubmit={handleSubmit} onsuccess={handleSuccess} oncancel={handleCancel}>
+                    </lightning-record-form>
+                </template>
+            </template>
+            <template if:true={checkTheFieldSetName}>
+                <c-generic-record-component object-api-name={objectApiName} fld-set-a-p-i-name={fieldSetName}
+                    section-expand={sectionExpand} rt-id={rtId} defaultvals={defaultvals}
+                    onstandardcreatesaveevt={handleCreateSave} onstandardcreatecancelevt={handleCancel}
+                    rel-value={relValue} rel-api-name={relApiName}>
+                </c-generic-record-component>
+            </template>
+        </template>
+    </template>
+    <template if:true={loading}>
+        <div class="slds-spinner_container">
+            <lightning-spinner variant="brand" size="small"></lightning-spinner>
+        </div>
+    </template>
+    <template if:true={showModal}>
+        <div class="demo-only" style="height: 640px;">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open slds-modal_medium">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close" onclick={handleCancel}>
+                            <lightning-icon icon-name="utility:close" size="medium">
+                            </lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading_medium slds-hyphenate">
+                            <b>Create Record</b>
+                        </h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <template if:true={errmsg}>
+                            <div class="slds-box slds-theme_error" style="margin-bottom:5px;">
+                                {errmsg}
+                            </div>
+                        </template>
+                        <div>
+                            <template if:true={loading}>
+                                <div class="slds-spinner_container">
+                                    <lightning-spinner variant="brand" size="small"></lightning-spinner>
+                                </div>
+                            </template>
+                            <template if:false={checkTheFieldSetName}>
+                                <template if:true={rtId}>
+                                    <lightning-record-form record-type-id={rtId} object-api-name={objectApiName}
+                                        layout-type="Full" columns="2" mode="edit" onsubmit={handleSubmit}
+                                        onsuccess={handleSuccess} onerror={handleError} oncancel={handleCancel}>
+                                    </lightning-record-form>
+                                </template>
+                                <template if:false={rtId}>
+                                    <lightning-record-form object-api-name={objectApiName} layout-type="Full"
+                                        columns="2" mode="edit" onsubmit={handleSubmit} onerror={handleError}
+                                        onsuccess={handleSuccess} oncancel={handleCancel}>
+                                    </lightning-record-form>
+                                </template>
+                            </template>
+                            <template if:true={checkTheFieldSetName}>
+                                <c-generic-record-component object-api-name={objectApiName}
+                                    fld-set-a-p-i-name={fieldSetName} section-expand={sectionExpand} rt-id={rtId}
+                                    defaultvals={defaultvals} onstandardcreatesaveevt={handleSuccess}
+                                    onstandardcreatecancelevt={handleCancel} rel-value={relValue}
+                                    rel-api-name={relApiName}>
+                                </c-generic-record-component>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </template>
+</template>

@@ -1,0 +1,126 @@
+<template>
+    <template if:true={oppLoaded}>
+        <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+            <span class="slds-assistive-text">error</span>
+            <span class="slds-icon_container slds-icon-utility-error slds-m-right_x-small"
+                title="Description of icon when needed">
+            </span>
+            <h2>Disclaimer: Numbers presented below are auto-calculated by the system. Please verify and override (if
+                necessary) before
+                order creation.
+            </h2>
+        </div>
+
+        <lightning-accordion allow-multiple-sections-open active-section-name={activeSections}>
+            <lightning-accordion-section name="A" label="Header Information">
+                <lightning-record-view-form object-api-name="Opportunity" record-id={oppRecordId}
+                    onload={handleOpportunityLoad}>
+
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            <lightning-output-field field-name='Primary_Partner_Program__c'>
+                            </lightning-output-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            <lightning-output-field field-name='Netsuite_Primary_Partner_ID__c'>
+                            </lightning-output-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            <lightning-output-field field-name='Netsuite_Primary_Partner_ID_Override__c'>
+                            </lightning-output-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            <lightning-output-field field-name='StageName'>
+                            </lightning-output-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            <lightning-output-field field-name='X10b_Reason__c'>
+                            </lightning-output-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            <lightning-output-field field-name='Finance_Comments__c'>
+                            </lightning-output-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            <lightning-output-field field-name='SO_Creation_Date__c'>
+                            </lightning-output-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            <lightning-output-field field-name='Partner_PO_Number__c'>
+                            </lightning-output-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            <lightning-output-field field-name='First_PO_Date__c'>
+                            </lightning-output-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            <lightning-output-field field-name='Netsuite_Promo_Code__c'>
+                            </lightning-output-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            <lightning-input label="Do not Override ACV calculations" type="checkbox"
+                                onchange={handleDoNotOverRideACVChange} value={doNotOverRideACV} checked={doNotOverRideACV}>
+                            </lightning-input>
+                        </div>
+                    </div>
+                </lightning-record-view-form>
+            </lightning-accordion-section>
+
+
+
+            <lightning-accordion-section name="B" label="Lines Information">
+                <template if:true={productLines}>
+                    <lightning-datatable key-field="recId" data={productLines} columns={getLineColumns}
+                        onsave={handleSave} draft-values={draftValues} hide-checkbox-column show-row-number-column>
+                    </lightning-datatable>
+                </template>
+                <template if:false={productLines}>
+                    No Products available, Please add Products to the Proposal.
+                </template>
+            </lightning-accordion-section>
+
+            <lightning-accordion-section name="C" label="Internal Lines">
+                <template if:true={hasInternalLines}>
+                    <lightning-datatable key-field="recId" data={productInternalLines} columns={getLineColumns}
+                        onsave={handleSave} draft-values={draftValues} hide-checkbox-column show-row-number-column>
+                    </lightning-datatable>
+                </template>
+                <template if:false={hasInternalLines}>
+                    No Internal lines available.
+                </template>
+            </lightning-accordion-section>
+
+        </lightning-accordion>
+
+        <div class="slds-text-align_center">
+            <lightning-button
+                class="slds-m-around_small slds-text-align_right slds-p-vertical_medium slds-p-right_large"
+                type="cancel" label="Cancel" onclick={handleOpportunityCancel}>
+            </lightning-button>
+            <lightning-button
+                class="slds-m-around_small slds-text-align_right slds-p-vertical_medium slds-p-right_large"
+                label="<< Previous" onclick={handlePreviousStep}>
+            </lightning-button>
+
+            <lightning-button
+                class="slds-m-around_small slds-text-align_right slds-p-vertical_medium slds-p-right_large"
+                label="Submit" type="submit" variant="brand" onclick={handleSubmitRequest}>
+            </lightning-button>
+
+            <template if:true={shownewacv}>
+                <!--<lightning-button
+                    class="slds-m-around_small slds-text-align_right slds-p-vertical_medium slds-p-right_large"
+                    label="Calculate ACV" type="submit" variant="brand" onclick={handleCalculateACV}>
+                </lightning-button>-->
+            </template>
+        </div>
+
+    </template>
+
+    <template if:false={isLoaded}>
+        <div class="slds-spinner_container">
+            <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+        </div>
+    </template>
+
+</template>

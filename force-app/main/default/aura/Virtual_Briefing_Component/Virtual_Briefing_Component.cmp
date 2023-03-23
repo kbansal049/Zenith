@@ -1,0 +1,620 @@
+<aura:component controller="Executive_Briefing_Request_Controller"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction,lightning:isUrlAddressable"
+                access="global">
+    <aura:attribute name="recordTypeId" type="String"/>
+    <aura:attribute name="haveEditAccess" type="boolean" default="false"/>
+    <aura:attribute name="stepname" type="String" default="1" />
+    <aura:attribute name="errorMsg" type="String" />
+    <aura:attribute name="ResubmitError" type="String" />
+    <aura:attribute name="isEdit" type="boolean" />
+    <aura:attribute name="showSpinner" type="boolean" default="true" />
+    <aura:attribute name="proceedload" type="boolean" default="false" />
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="oppId" type="Id" />
+    <aura:attribute name="accId" type="Id" />
+    <aura:attribute name="type" type="String" />
+    <aura:attribute name="oppRec" type="Opportunity" />
+    <aura:attribute name="AccountRec" type="Account" />
+    <aura:attribute name="accRec" type="Account" />
+    <aura:attribute Name="selItem" type="object" access="public" />
+    <aura:attribute name="userList" type="Object[]" />
+    <aura:attribute name="userfieldlist" type="String" default="Email, Title" />
+    <aura:attribute name="headofitlst" type="Object[]" />
+    <aura:attribute name="headofsecuritylst" type="Object[]" />
+    <aura:attribute name="headofnetworkinglst" type="Object[]" />
+    <aura:attribute name="othercontactlst" type="Object[]" />
+    <aura:attribute Name="contactselecteditem" type="object" access="public" />
+    
+    <!-- Added -->
+    <aura:attribute name="IsMeetingConfirmed" type="boolean" default="false" />
+    <aura:attribute name="StartTime" type="time" />
+    <aura:attribute name="EndTime" type="time" />
+    
+    
+    <!-- Added --> 
+    <aura:attribute Name="minTime" type="String" default="00:15:00.000Z"/>
+    <aura:attribute Name="maxTime" type="String" default="23:45:00.000Z"/>
+    
+    <!-- validation Error -->
+    <aura:attribute name="domValidationError" type="boolean" default="false" />
+    <aura:attribute name="threeWhysError" type="boolean" default="false" />
+    <aura:attribute name="startTimeError" type="boolean" default="false" />
+    <aura:attribute name="endTimeError" type="boolean" default="false" />
+    <aura:attribute name="timeDiffValidationError" type="boolean" default="false" />
+    <!-- Added -->
+    <aura:attribute Name="contactfiltercriteria" type="String" access="public"
+                    default="Active__c = false and AccountId != null" />
+    <aura:attribute name="contactfieldlst" type="String"
+                    default="Email, Title, Head_of_IT__c, Head_of_Security__c, Head_of_Networking__c" />
+    
+    
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler name="change" value="{!v.selItem}" action="{!c.userchanged}" />
+    <aura:handler name="change" value="{!v.contactselecteditem}" action="{!c.contactchanged}" />
+    
+    
+    <lightning:progressIndicator currentStep="{!v.stepname}" type="path" variant="base">
+        <lightning:progressStep label="ZTXC Details" value="1" onstepfocus="{!c.pathstepchange}" />
+        <lightning:progressStep label="Internal Attendees" value="2" onstepfocus="{!c.pathstepchange}" />
+        <lightning:progressStep label="External Attendees" value="3" onstepfocus="{!c.pathstepchange}" />
+    </lightning:progressIndicator>
+    
+    
+    <aura:if isTrue="{!v.showSpinner}">
+        <lightning:spinner variant="brand" size="small" />
+    </aura:if>
+    
+    <aura:if isTrue="{!not(empty(v.ResubmitError))}">
+        <div style="margin:auto;height:2rem"
+             class="slds-notify slds-notify_alert slds-theme_error" role="alert">
+            <h2 style="color: black;font-weight: 600;">{!v.ResubmitError}</h2>
+        </div>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.stepname == '1'}">
+        <aura:if isTrue="{!v.proceedload}">
+            <aura:if isTrue="{!!v.isEdit}">
+                <lightning:recordEditForm aura:id="execform" objectApiName="Executive_Briefing_Request__c"
+                                          onload="{!c.handleLoad}" onsubmit="{!c.handleSubmit}" onsuccess="{!c.handleSuccess}">
+                    <lightning:messages />
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-align_absolute-center" style="height:5rem">
+                            <lightning:button class="slds-m-top_small" variant="brand" type="submit" name="save"
+                                              label="Save and Proceed" />
+                            <lightning:button class="slds-m-top_small" name="cancel" label="Cancel"
+                                              onclick="{!c.cancel}" />
+                        </div>
+                    </div>
+                    <div class="slds-m-around_medium">
+                       
+                    </div>
+                    
+                    
+                    
+                        <div class="slds-m-around_medium">
+                            <div class="slds-theme_info slds-p-around_small"
+                                 role="alert">
+                                <h2 style="color: black;font-weight: 600;">ZTXC Detail Section</h2>
+                            </div>
+                            <div class="slds-m-around_medium slds-custom-pad5">
+                                <lightning:layout pullToBoundary="small" multipleRows="true">
+                                    
+                                    <lightning:layoutItem size="6" padding="around-xsmall">
+                                        <div class="slds-p-right_small">
+                                            <lightning:inputField fieldName="RecordTypeId" class="slds-hide" />
+                                            <lightning:inputField disabled="false" aura:id="accountval" fieldName="Customer__c"
+                                                                  onchange="{!c.accountChanged}" />
+                                        </div>
+                                    </lightning:layoutItem>
+                                    
+                                    <lightning:layoutItem size="6" padding="around-xsmall">
+                                        <lightning:inputField disabled="false" aura:id="oppIdval" fieldName="Opportunity__c" onchange="{!c.oppChanged}" required="true"/>
+                                    </lightning:layoutItem>
+                                    <!--Added by Ayush Kangar as part of CR#4982 - Start -->
+                                    <lightning:layoutItem size="6" padding="around-xsmall">
+                                        <div class="slds-p-right_small">
+                                            <lightning:inputField disabled="false" aura:id="typeIdval" fieldName="Engagement_type__c"  required="true"/>
+                                        </div>
+                                    </lightning:layoutItem>
+                                    <!--Added by Ayush Kangar as part of CR#4982 - End -->
+                                    <aura:if isTrue="{! !empty(v.accId)}">
+                                        <lightning:layoutItem size="6" padding="around-xsmall">
+                                            <div class="slds-form-element slds-form-element_horizontal">
+                                                <span class="slds-form-element__label">Account Type</span>
+                                                <div class="slds-form-element__control">
+                                                    <span class="slds-form-element__static">{!v.AccountRec.Type}</span>
+                                                </div>
+                                            </div>
+                                        </lightning:layoutItem>
+                                    </aura:if>
+                                    <aura:if isTrue="{! !empty(v.oppId)}">
+                                        <lightning:layoutItem size="6" padding="around-xsmall">
+                                            <div class="slds-form-element slds-form-element_horizontal">
+                                                <span class="slds-form-element__label">Opportunity Type</span>
+                                                <div class="slds-form-element__control">
+                                                    <span class="slds-form-element__static">{!v.oppRec.Type}</span>
+                                                </div>
+                                            </div>
+                                        </lightning:layoutItem>
+                                    </aura:if>
+                                    <aura:if isTrue="{! !empty(v.accId)}">
+                                        <lightning:layoutItem size="6" padding="around-xsmall">
+                                            <div class="slds-form-element slds-form-element_horizontal">
+                                                <span class="slds-form-element__label">No. Of Employees</span>
+                                                <div class="slds-form-element__control">
+                                                    <span class="slds-form-element__static">{!v.AccountRec.No_of_Employees_Users__c}</span>
+                                                </div>
+                                            </div>
+                                        </lightning:layoutItem>
+                                    </aura:if>
+                                    <aura:if isTrue="{! !empty(v.oppId)}">
+                                        <lightning:layoutItem size="6" padding="around-xsmall">
+                                            <div class="slds-form-element slds-form-element_horizontal">
+                                                <span class="slds-form-element__label">Number Of Users</span>
+                                                <div class="slds-form-element__control">
+                                                    <span class="slds-form-element__static">{!v.oppRec.Proposed_Number_of_Users__c}</span>
+                                                </div>
+                                            </div>
+                                        </lightning:layoutItem>
+                                    </aura:if>
+                                    
+                                </lightning:layout>
+                            </div>
+                        </div>
+                   
+                    
+                    <div class="slds-m-around_medium">
+                        <div class="slds-theme_info slds-p-around_small"
+                             role="alert">
+                            <h2 style="color: black;font-weight: 600;">ZTXC Meeting Details</h2>
+                        </div>
+                        <div class="slds-m-around_medium slds-custom-pad5">
+                            
+                            <lightning:layout pullToBoundary="small" multipleRows="true">
+                                
+                                <lightning:layoutItem size="6" padding="around-xsmall">
+                                </lightning:layoutItem>
+                                
+                                <lightning:layoutItem size="6" padding="around-xsmall">
+                                </lightning:layoutItem>
+                                
+                                <lightning:layoutItem size="6" padding="around-xsmall">
+                                </lightning:layoutItem>
+                                
+                                <lightning:layoutItem size="6" padding="around-xsmall">
+                                </lightning:layoutItem>
+                               
+                                
+                               <!-- Date of Meeting -->
+                                <lightning:layoutItem size="6" padding="around-xsmall">
+                                    <div class="slds-p-right_small">
+                                        	<lightning:inputField disabled="false" aura:id="DateOfMeeting" fieldName="Date_of_Meeting__c" required="true"/>
+                                                
+                                           <aura:if isTrue="{!v.domValidationError}">
+                                                <p><lightning:formattedText aura:id="domDateId" style="margin-top: -10px;width: 67%;float: right;margin-bottom: 10px;" class="slds-text-color_error" value="Date of meeting can be no sooner than 2 weeks" /></p>
+                                           </aura:if>
+                                    </div>
+                                </lightning:layoutItem>
+                                
+                                
+                                <!-- Time Zone -->
+                                <lightning:layoutItem size="6" padding="around-xsmall">
+                                    <div>
+                                        <lightning:inputField aura:id="TimeZone" fieldName="Time_Zone__c" required="true"/>
+                                    </div>
+                                </lightning:layoutItem>
+                                
+                                
+                                <!-- Start time -->
+                                <lightning:layoutItem size="6" padding="around-xsmall">
+                                    <div class="slds-p-right_medium slds-clearfix" style="padding-right: 0.725rem;">
+                                        <lightning:input onchange="{!c.setMinEndTime}" required="true" max="{!v.maxTime}" type="Time" name="input1" label="Start time" variant="label-inline" value="{!v.StartTime}" />
+                                        <aura:if isTrue="{!v.startTimeError}">
+                                            <p><lightning:formattedText aura:id="startTmError" style="margin-top: -10px;width: 67%;float: right;margin-bottom: 10px;" class="slds-text-color_error" value="Please enter Start time" /></p>
+                                        </aura:if>
+                                    </div>
+                                </lightning:layoutItem>
+                                
+                                
+                                <lightning:layoutItem size="6" padding="around-xsmall">
+                                    <div>
+                                    	<lightning:inputField aura:id="VBCGoals" fieldName="VBC_Goals__c" required="true"/> 
+                                    </div>
+                                 </lightning:layoutItem>
+                                
+                                <!-- End time -->
+                                <lightning:layoutItem size="6" padding="around-xsmall">
+									<div class="slds-p-right_small">
+										<div class="slds-clearfix">
+											<lightning:input onchange="{!c.setMaxStartTime}" required="true"  min="{!v.minTime}" type="Time" name="input2" label="End time" variant="label-inline" value="{!v.EndTime}" />
+											<aura:if isTrue="{!v.endTimeError}">
+												<p><lightning:formattedText aura:id="endTmError" style="margin-top: -10px;width: 67%;float: right;margin-bottom: 10px;" class="slds-text-color_error" value="Please enter End time" /></p>
+											</aura:if>
+                                            <aura:if isTrue="{!v.timeDiffValidationError}">
+												<p><lightning:formattedText aura:id="endTmError" style="margin-top: -10px;width: 67%;float: right;margin-bottom: 10px;" class="slds-text-color_error" value="The minimum amount of time is 2 hrs" /></p>
+											</aura:if>
+										</div>
+									</div>
+                                </lightning:layoutItem>
+                                
+                                 
+                                
+                                <lightning:layoutItem size="6" padding="around-xsmall">
+                                    <lightning:inputField aura:id="CustomerBackgroundInformation" fieldName="Customer_Background_Information__c" required="false"/>
+                               	</lightning:layoutItem>
+                                
+                                
+                                <lightning:layoutItem size="6" padding="around-xsmall">
+                                    <lightning:inputField aura:id="AreaofInterest" fieldName="Area_of_Interest__c" required="false"/>
+                                </lightning:layoutItem>
+                                
+                                <lightning:layoutItem size="6" padding="around-xsmall">
+                                   
+                                </lightning:layoutItem>
+                                
+                                <lightning:layoutItem size="6" padding="around-xsmall">
+                                    <lightning:inputField aura:id="Any Additional Information for the VBC" fieldName="Any_Additional_Information_for_the_VBC__c" required="false"/>
+                                </lightning:layoutItem>
+                                
+                                <lightning:layoutItem size="6" padding="around-xsmall">
+                                    <lightning:inputField aura:id="EngagementwithAccountthusfar" fieldName="Engagement_with_Account_thus_far__c" required="false"/>
+                                </lightning:layoutItem>
+                                
+                                <lightning:layoutItem size="6" padding="around-xsmall">
+                                    <lightning:inputField aura:id="AnyExistingCompetitionInTheAccount" fieldName="Any_existing_competition_in_the_Account__c" required="false"/>
+                                </lightning:layoutItem>
+                                
+                                <lightning:layoutItem size="6" padding="around-xsmall">
+                                    <lightning:inputField aura:id="PriotitizeTop3Initiatives" fieldName="Priotitize_Top_3_Initiatives__c" required="false"/>
+                                </lightning:layoutItem>
+                                
+                                <lightning:layoutItem size="6" padding="around-xsmall">
+                                    <lightning:inputField aura:id="HowDoesItTtranslates" fieldName="How_does_it_translates_into_this_project__c" required="false"/>
+                                </lightning:layoutItem>
+                                
+                                <aura:if isTrue="{! !empty(v.oppId)}">
+                                        <lightning:layoutItem size="6" padding="around-xsmall">
+                                            <div class="slds-form-element slds-form-element_horizontal">
+                                                <span class="slds-form-element__label">Link to the 3 Why's Document</span>
+                                                <div class="slds-form-element__control">
+                                                    <span class="slds-form-element__static"><a href="{!v.oppRec.X3_Why__c}" target="_target">{!v.oppRec.X3_Why__c}</a></span>
+                                                </div>
+                                            </div>
+                                            <!--Commenting as per CR#1074-->
+                                            <!--<aura:if isTrue="{!v.threeWhysError}">
+                                                <p><lightning:formattedText aura:id="threeWhys" style="margin-top: -10px;width: 67%;float: right;margin-bottom: 10px;" class="slds-text-color_error" value="Please add link to 3 Why's Document in Opportunity" /></p>
+                                            </aura:if>-->
+                                        </lightning:layoutItem>
+                                 </aura:if>
+                            </lightning:layout>
+                        </div>
+                    </div>
+                   
+                    
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-align_absolute-center" style="height:5rem">
+                            <lightning:button class="slds-m-top_small" variant="brand" type="submit" name="save"
+                                              label="Save and Proceed" />
+                            <lightning:button class="slds-m-top_small" name="cancel" label="Cancel"
+                                              onclick="{!c.cancel}" />
+                        </div>
+                    </div>
+                </lightning:recordEditForm>
+                
+                
+                <!-- Else -->
+                <aura:set attribute="else">
+                    <lightning:recordEditForm aura:id="execform" recordId="{!v.recordId}" objectApiName="Executive_Briefing_Request__c"
+                                              onload="{!c.handleLoad}" onsubmit="{!c.handleSubmit}" onsuccess="{!c.handleSuccess}">
+                        <lightning:messages />
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-align_absolute-center" style="height:5rem">
+                                <lightning:button class="slds-m-top_small" variant="brand" type="submit" name="save"
+                                                  label="Save and Proceed" />
+                                <lightning:button class="slds-m-top_small" name="cancel" label="Cancel"
+                                                  onclick="{!c.cancel}" />
+                            </div>
+                        </div>
+                        
+                        
+                       
+                            <div class="slds-m-around_medium">
+                                <div class="slds-theme_info slds-p-around_small"
+                                     role="alert">
+                                    <h2 style="color: black;font-weight: 600;">VBC Detail Section</h2>
+                                </div>
+                                <div class="slds-m-around_medium slds-custom-pad5">
+                                    <lightning:layout pullToBoundary="small" multipleRows="true">
+                                        
+                                        <lightning:layoutItem size="6" padding="around-xsmall">
+                                        <div class="slds-p-right_small">
+                                            <lightning:inputField fieldName="RecordTypeId" class="slds-hide" />
+                                            <lightning:inputField disabled="false" aura:id="accountval" fieldName="Customer__c"
+                                                                  onchange="{!c.accountChanged}" />
+                                        </div>
+                                    </lightning:layoutItem>
+                                    
+                                    <lightning:layoutItem size="6" padding="around-xsmall">
+                                       
+                                        <lightning:inputField disabled="false" aura:id="oppIdval" fieldName="Opportunity__c" onchange="{!c.oppChanged}"/>
+                                    </lightning:layoutItem>
+                                    
+                                    
+                                    <lightning:layoutItem size="6" padding="around-xsmall">
+                                        <div class="slds-form-element slds-form-element_horizontal">
+                                            <span class="slds-form-element__label">Account Type</span>
+                                            <div class="slds-form-element__control">
+                                                <span class="slds-form-element__static">{!v.AccountRec.Type}</span>
+                                            </div>
+                                        </div>
+                                    </lightning:layoutItem>
+                                    
+                                    <lightning:layoutItem size="6" padding="around-xsmall">
+                                        <div class="slds-form-element slds-form-element_horizontal">
+                                            <span class="slds-form-element__label">Opportunity Type</span>
+                                            <div class="slds-form-element__control">
+                                                <span class="slds-form-element__static">{!v.oppRec.Type}</span>
+                                            </div>
+                                        </div>
+                                    </lightning:layoutItem>
+                                    
+                                    <lightning:layoutItem size="6" padding="around-xsmall">
+                                        <div class="slds-form-element slds-form-element_horizontal">
+                                            <span class="slds-form-element__label">No. Of Employees</span>
+                                            <div class="slds-form-element__control">
+                                                <span class="slds-form-element__static">{!v.AccountRec.No_of_Employees_Users__c}</span>
+                                            </div>
+                                        </div>
+                                    </lightning:layoutItem>
+                                        
+                                        <lightning:layoutItem size="6" padding="around-xsmall">
+                                            <div class="slds-form-element slds-form-element_horizontal">
+                                                <span class="slds-form-element__label">Number Of Users</span>
+                                                <div class="slds-form-element__control">
+                                                    <span class="slds-form-element__static">{!v.oppRec.Proposed_Number_of_Users__c}</span>
+                                                </div>
+                                            </div>
+                                                
+                                        </lightning:layoutItem>
+                                            
+                                        <lightning:layoutItem size="6" padding="around-xsmall">
+                                            <aura:if isTrue="{!v.haveEditAccess}">
+                                                <div>
+                                                    <lightning:inputField aura:id="statusOfVBC" fieldName="Approval_Status__c" required="false"/>
+                                                </div>
+                                            </aura:if>
+                                        </lightning:layoutItem>
+                                    </lightning:layout>
+                                </div>
+                            </div>
+                        
+                        
+                        <div class="slds-m-around_medium">
+                            <div class="slds-theme_info slds-p-around_small"
+                                 role="alert">
+                                <h2 style="color: black;font-weight: 600;">VBC Meeting Details</h2>
+                            </div>
+							
+							
+                            <div class="slds-m-around_medium slds-custom-pad5">
+                                <lightning:layout pullToBoundary="small" multipleRows="true">
+								
+                                    <lightning:layoutItem size="6" padding="around-xsmall">
+                                    </lightning:layoutItem>
+                                    
+                                    <lightning:layoutItem size="6" padding="around-xsmall">
+                                    </lightning:layoutItem>
+                                    
+                                    <lightning:layoutItem size="6" padding="around-xsmall">
+                                    </lightning:layoutItem>
+                                    
+                                    <lightning:layoutItem size="6" padding="around-xsmall">
+                                    </lightning:layoutItem>
+                                    
+                                    
+                                   <!-- Date of Meeting -->
+                                    <lightning:layoutItem size="6" padding="around-xsmall">
+                                        <div class="slds-p-right_small">
+                                            <lightning:inputField disabled="false" aura:id="DateOfMeeting" fieldName="Date_of_Meeting__c" required="true"/>
+                                            
+                                            <aura:if isTrue="{!v.domValidationError}">
+                                                <p><lightning:formattedText aura:id="domDateId" style="margin-top: -10px;width: 67%;float: right;margin-bottom: 10px;" class="slds-text-color_error" value="Date of meeting can be no sooner than 2 weeks" /></p>
+                                            </aura:if>
+                                        </div>
+                                    </lightning:layoutItem>
+                                    
+                                    
+                                    <!-- Time Zone -->
+                                    <lightning:layoutItem size="6" padding="around-xsmall">
+                                        <div>
+                                            <lightning:inputField aura:id="TimeZone" fieldName="Time_Zone__c" required="true"/>
+                                        </div>
+                                    </lightning:layoutItem>
+                                    
+                                    
+                                    <!-- Start time -->
+                                    <lightning:layoutItem size="6" padding="around-xsmall">
+                                        <div class="slds-p-right_medium slds-clearfix" style="padding-right: 0.725rem;">
+                                            <lightning:input onchange="{!c.setMinEndTime}" required="true" max="{!v.maxTime}"   type="Time" name="input1" label="Start time" variant="label-inline" value="{!v.StartTime}" />
+                                            
+                                            <aura:if isTrue="{!startTimeError}">
+                                                <p><lightning:formattedText aura:id="startTmError" style="margin-top: -10px;width: 67%;float: right;margin-bottom: 10px;" class="slds-text-color_error" value="Please enter Start time" /></p>
+                                            </aura:if>
+                                        </div>
+                                    </lightning:layoutItem>
+                                    
+                                    
+                                    <lightning:layoutItem size="6" padding="around-xsmall">
+                                        <div>
+                                            <lightning:inputField aura:id="VBCGoals" fieldName="VBC_Goals__c" required="true"/> 
+                                        </div>
+                                     </lightning:layoutItem>
+                                    
+                                    <!-- End time -->
+                                    <lightning:layoutItem size="6" padding="around-xsmall">
+                                        <div class="slds-p-right_small">
+                                            <div class="slds-clearfix">
+                                                <lightning:input onchange="{!c.setMaxStartTime}" required="true"  min="{!v.minTime}" type="Time" name="input2" label="End time" variant="label-inline" value="{!v.EndTime}" />
+                                                <aura:if isTrue="{!v.endTimeError}">
+                                                    <p><lightning:formattedText aura:id="endTmError" style="margin-top: -10px;width: 67%;float: right;margin-bottom: 10px;" class="slds-text-color_error" value="Please enter End time" /></p>
+                                                </aura:if>
+                                                <aura:if isTrue="{!v.timeDiffValidationError}">
+                                                    <p><lightning:formattedText aura:id="endTmError" style="margin-top: -10px;width: 67%;float: right;margin-bottom: 10px;" class="slds-text-color_error" value="The minimum amount of time is 2 hrs" /></p>
+                                                </aura:if>
+                                            </div>
+                                        </div>
+                                    </lightning:layoutItem>
+                                    
+                                     
+                                    
+                                    <lightning:layoutItem size="6" padding="around-xsmall">
+                                        <lightning:inputField aura:id="CustomerBackgroundInformation" fieldName="Customer_Background_Information__c" required="false"/>
+                                    </lightning:layoutItem>
+                                    
+                                    
+                                    <lightning:layoutItem size="6" padding="around-xsmall">
+                                        <lightning:inputField aura:id="AreaofInterest" fieldName="Area_of_Interest__c" required="false"/>
+                                    </lightning:layoutItem>
+                                    
+                                    <lightning:layoutItem size="6" padding="around-xsmall">
+                                       
+                                    </lightning:layoutItem>
+                                    
+                                    <lightning:layoutItem size="6" padding="around-xsmall">
+                                        <lightning:inputField aura:id="Any Additional Information for the VBC" fieldName="Any_Additional_Information_for_the_VBC__c" required="false"/>
+                                    </lightning:layoutItem>
+                                    
+                                    <lightning:layoutItem size="6" padding="around-xsmall">
+                                        <lightning:inputField aura:id="EngagementwithAccountthusfar" fieldName="Engagement_with_Account_thus_far__c" required="false"/>
+                                    </lightning:layoutItem>
+                                    
+                                    <lightning:layoutItem size="6" padding="around-xsmall">
+                                        <lightning:inputField aura:id="AnyExistingCompetitionInTheAccount" fieldName="Any_existing_competition_in_the_Account__c" required="false"/>
+                                    </lightning:layoutItem>
+                                    
+                                    <lightning:layoutItem size="6" padding="around-xsmall">
+                                        <lightning:inputField aura:id="PriotitizeTop3Initiatives" fieldName="Priotitize_Top_3_Initiatives__c" required="false"/>
+                                    </lightning:layoutItem>
+                                    
+                                    <lightning:layoutItem size="6" padding="around-xsmall">
+                                        <lightning:inputField aura:id="HowDoesItTtranslates" fieldName="How_does_it_translates_into_this_project__c" required="false"/>
+                                    </lightning:layoutItem>
+                                    
+                                    
+                                    <aura:if isTrue="{! !empty(v.oppId)}">
+                                        <lightning:layoutItem size="6" padding="around-xsmall">
+                                            <div class="slds-form-element slds-form-element_horizontal">
+                                                <span class="slds-form-element__label">Link to the 3 Why's Document</span>
+                                                <div class="slds-form-element__control">
+                                                    <span class="slds-form-element__static"><a href="{!v.oppRec.X3_Why__c}" target="_blank">{!v.oppRec.X3_Why__c}</a></span>
+                                                </div>
+                                            </div>
+                                            <!--Commenting as per CR#1074-->
+                                            <!--<aura:if isTrue="{!v.threeWhysError}">
+                                                <p><lightning:formattedText aura:id="threeWhys" style="margin-top: -10px;width: 67%;float: right;margin-bottom: 10px;" class="slds-text-color_error" value="Please add link to 3 Why's Document in Opportunity" /></p>
+                                            </aura:if>-->
+                                        </lightning:layoutItem>
+                                 </aura:if>
+                                    
+									
+									
+                                    
+                                </lightning:layout>
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-align_absolute-center" style="height:5rem">
+                                <lightning:button class="slds-m-top_small" variant="brand" type="submit" name="save"
+                                                  label="Save and Proceed" />
+                                <lightning:button class="slds-m-top_small" name="cancel" label="Cancel"
+                                                  onclick="{!c.cancel}" />
+                            </div>
+                        </div>
+                        
+                    </lightning:recordEditForm>
+                </aura:set>
+            </aura:if>
+        </aura:if>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.stepname == '2'}">
+        <aura:if isTrue="{!not(empty(v.errorMsg))}">
+            <div style="margin:auto;height:2rem"
+                 class="slds-notify slds-notify_alert slds-theme_error" role="alert">
+                <h2 style="color: black;font-weight: 600;">{!v.errorMsg}</h2>
+            </div>
+        </aura:if>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-align_absolute-center" style="margin:auto;height:5rem;width:30%">
+                <c:Lookup objectName="User" field_API_text="Name" field_API_val="Id" limit="4" field_API_search="Name"
+                          lookupIcon="standard:user" selItem="{!v.selItem}" placeholder="Search Users(3 char min)"
+                          filter="isActive = true" fieldlst="{!v.userfieldlist}" noBind="true" />
+            </div>
+        </div>
+        <c:ListCardAddRemoveComponent listofrecords="{!v.userList}" cardbodyfields="title,email"
+                                      header="Selected Internal Attendees" />
+        
+        <div class="slds-grid slds-wrap">
+            <div class="slds-align_absolute-center">
+                <p>
+                    Please add at least one Internal Attendee.
+                </p>
+            </div>
+        </div>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-align_absolute-center" style="height:5rem">
+                <lightning:button class="slds-m-top_small" variant="brand" onclick="{!c.previous}" label="Go Back" />
+                <lightning:button class="slds-m-top_small" variant="brand" onclick="{!c.saveinternalatt}"
+                                  label="Save and Proceed" />
+                <lightning:button class="slds-m-top_small" name="cancel" label="Cancel" onclick="{!c.cancel}" />
+            </div>
+        </div>
+        
+    </aura:if>
+    
+    <aura:if isTrue="{!v.stepname == '3'}">
+        <aura:if isTrue="{!not(empty(v.errorMsg))}">
+            <div style="margin:auto;height:2rem"
+                 class="slds-notify slds-notify_alert slds-theme_error" role="alert">
+                <h2 style="color: black;font-weight: 600;">{!v.errorMsg}</h2>
+            </div>
+        </aura:if>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-align_absolute-center" style="margin:auto;height:5rem;width:30%">
+                <c:Lookup objectName="Contact" field_API_text="Name" field_API_val="Id" limit="4"
+                          field_API_search="Name" lookupIcon="standard:contact" selItem="{!v.contactselecteditem}"
+                          placeholder="Search Contacts(3 char min)" filter="Active__c = false and AccountId != null"
+                          fieldlst="{!v.contactfieldlst}" noBind="true" />
+            </div>
+            
+        </div>
+        
+        <!--<c:ListCardAddRemoveComponent listofrecords="{!v.headofitlst}" cardbodyfields="title,email"
+                                      header="Head of IT" />
+        <c:ListCardAddRemoveComponent listofrecords="{!v.headofsecuritylst}" cardbodyfields="title,email"
+                                      header="Head of Security" />
+        <c:ListCardAddRemoveComponent listofrecords="{!v.headofnetworkinglst}" cardbodyfields="title,email"
+                                      header="Head of Networking" />-->
+        <c:ListCardAddRemoveComponent listofrecords="{!v.othercontactlst}" cardbodyfields="title,email"
+                                      header="Selected External Attendees" />
+        
+        <div class="slds-grid slds-wrap">
+            <div class="slds-align_absolute-center">
+                <p>
+                    Please add at least one C-Level External Attendee.
+                </p>
+            </div>
+        </div>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-align_absolute-center" style="height:5rem">
+                <lightning:button class="slds-m-top_small" variant="brand" onclick="{!c.previous}" label="Go Back" />
+                <lightning:button class="slds-m-top_small" variant="brand" onclick="{!c.saveexternalatt}"
+                                  label="Save and Proceed" />
+                <lightning:button class="slds-m-top_small" name="cancel" label="Cancel" onclick="{!c.cancel}" />
+            </div>
+        </div>
+    </aura:if>
+</aura:component>

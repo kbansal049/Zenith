@@ -1,0 +1,224 @@
+<apex:component controller="acctTemplt" access="global">
+    <apex:attribute name="CISORequestId" type="Id" description="Id of the account" assignTo="{!requestId}"/>
+    
+    <apex:repeat value="{!CISORequest}" var="o">
+    <table class="body" style="border-spacing:0; border-collapse:collapse; vertical-align:top; text-align:left; height:100%; width:100%; color:#222222; font-family:'Helvetica', 'Arial', sans-serif; font-weight:normal; line-height:19px; font-size:14px; margin:0; padding:0; ">
+        <tbody>
+            <tr style="vertical-align:top; text-align:left; padding:0; " align="left">
+                <td class="center" align="center" valign="top" style="word-break:break-word; -webkit-hyphens:auto; -moz-hyphens:auto; hyphens:auto; border-collapse:collapse !important; vertical-align:top; text-align:center; color:#222222; font-family:'Helvetica', 'Arial', sans-serif; font-weight:normal; line-height:19px; font-size:14px; margin:0; padding:0; ">
+                    <center style="width:100%; min-width:900px; ">
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="hide-for-small">
+                            <tbody>
+                                <tr>
+                                    <td style="color:#555555; font-size:11px; line-height:11px; font-family:Arial, Helvetica, sans-serif; word-break:break-word; -webkit-hyphens:auto; -moz-hyphens:auto; hyphens:auto; border-collapse:collapse !important; vertical-align:top; text-align:center; font-weight:normal; margin:0; padding:0px;"
+                                        align="center" valign="top"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="container" style="border-spacing:0; border-collapse:collapse; vertical-align:top; text-align:inherit; width:900px; margin:0 auto; padding:0; border:1px solid #bcc0be; background-color:#FFFFFF; ">
+                            <tbody>
+                                <tr style="vertical-align:top; text-align:left; padding:0; " align="left">
+                                    <td style="word-break:break-word; -webkit-hyphens:auto; -moz-hyphens:auto; hyphens:auto; border-collapse:collapse !important; vertical-align:top; text-align:left; color:#222222; font-family:'Helvetica', 'Arial', sans-serif; font-weight:normal; line-height:19px; font-size:14px; margin:0; padding:0; "
+                                        align="left" valign="top">
+                                        <table class="row" style="border-spacing:0; border-collapse:collapse; vertical-align:top; text-align:left; width:100%; position:relative; display:block; padding:0px; ">
+                                            <tbody>
+                                                <tr style="vertical-align:top; text-align:left; padding:0; " align="left">
+                                                    <td class="wrapper last" style="word-break:break-word; -webkit-hyphens:auto; -moz-hyphens:auto; hyphens:auto; border-collapse:collapse !important; vertical-align:top; text-align:left; position:relative; color:#222222; font-family:'Helvetica', 'Arial', sans-serif; font-weight:normal; line-height:19px; font-size:14px; margin:0; padding:0px; "
+                                                        align="left" valign="top">
+                                                        <table class="twelve columns" style="border-spacing:0; border-collapse:collapse; vertical-align:top; text-align:left; width:600px; padding:0; ">
+                                                            <tbody>
+                                                                <tr style="vertical-align:top; text-align:left; padding:0; " align="left">
+                                                                    <td align="left" valign="top" style="padding-top:8px; padding-bottom:8px; ">
+                                                                        <div class="mktEditable" id="logo" style="margin:0 0 0 10px; ">
+                                                                            <table width="100%">
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <td align="left">
+                                                                                            <a style="vertical-align: baseline;" href="http://www.zscaler.com">
+                                                                                                <img style="margin-left: 12px;" src="http://info.zscaler.com/rs/zscaler/images/zlogo-pms306-200x44.png" border="0" alt="Zscaler"
+                                                                                                     height="36" />
+                                                                                            </a>
+                                                                                        </td>
+                                                                                        <td style="padding-right: 20px;" align="right"></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="expander" style="word-break:break-word; -webkit-hyphens:auto; -moz-hyphens:auto; hyphens:auto; border-collapse:collapse !important; vertical-align:bottom; text-align:right; width:0px; color:#009DD0; font-family:'Helvetica', 'Arial', sans-serif; font-weight:normal; line-height:19px; font-size:10px; margin:0; padding:0; "
+                                                                        align="right" valign="bottom">
+                                                                        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="hide-for-small">
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td class="expander" style="word-break:break-word; -webkit-hyphens:auto; -moz-hyphens:auto; hyphens:auto; border-collapse:collapse !important; vertical-align:bottom; text-align:right; width:0px; color:#009DD0; font-family:'Helvetica', 'Arial', sans-serif; font-weight:normal; line-height:19px; font-size:10px; margin:0; padding:0 12px 0 0; "
+                                                                                        align="right" valign="bottom">
+                                                                                        <div class="mktEditable" id="contact"></div>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr style="vertical-align:top; text-align:left; padding:0; " align="left">
+                                    <td style="word-break:break-word; -webkit-hyphens:auto; -moz-hyphens:auto; hyphens:auto; border-collapse:collapse !important; vertical-align:top; text-align:left; color:#222222; font-family:'Helvetica', 'Arial', sans-serif; font-weight:normal; line-height:19px; font-size:14px; margin:0; padding:0; "
+                                        align="left" valign="top">
+                                        <table class="row" style="display:table !important; border-spacing:0; border-collapse:collapse; vertical-align:top; text-align:left; width:100%; position:relative; padding:0px; ">
+                                            <tbody>
+                                                <tr style="vertical-align:top; text-align:left; padding:0; background:#00b3e3; " class="bg-white" align="left">
+                                                    <td class="wrapper" style="word-break:break-word; -webkit-hyphens:auto; -moz-hyphens:auto; hyphens:auto; border-collapse:collapse !important; vertical-align:top; text-align:left; position:relative; color:#222222; font-family:'Helvetica', 'Arial', sans-serif; font-weight:normal; line-height:19px; font-size:14px; margin:0; padding:0px; "
+                                                        align="left" valign="top">
+                                                        <table width="780" class="six columns" style="border-spacing:0; border-collapse:collapse; vertical-align:top; text-align:left; width:900px; padding:0; ">
+                                                            <tbody>
+                                                                <tr style="vertical-align:top; text-align:left; padding:0; " align="left">
+                                                                    <td width="330" align="left" valign="top" class="center-table" style="color:#fff; font-size:15px; font-family:Arial, Helvetica, sans-serif; line-height:22px; word-break:break-word; -webkit-hyphens:auto; -moz-hyphens:auto; hyphens:auto; border-collapse:collapse !important; vertical-align:top; text-align:left; font-weight:normal; margin:0; padding:0px 0px 0px 20px; ">
+                                                                        <div class="mktEditable" id="content-one">
+                                                                            <p style="color: #bed62f; font-family: Helvetica,Arial,sans-serif; font-weight: 500; text-align: left; word-break: normal; font-size: 16px; margin: 10px 0px 0px; margin-top: 10px; margin-bottom: 10px;"
+                                                                               align="left">
+                                                                                <span style="font-size: 27px; color: #fff; font-weight: 100; line-height: 49px;">
+                                                                                    <!--<apex:outputPanel rendered="{!requestId}">Commission Exception Approval Request : {!EB.Name}</apex:outputPanel>-->
+                                                                                    <label>CISO Request Rejected for: {!o.Name}</label>
+                                                                                </span>
+                                                                            </p>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr style="vertical-align:top; text-align:left; padding:0; " align="left">
+                                    <td style="word-break:break-word; -webkit-hyphens:auto; -moz-hyphens:auto; hyphens:auto; border-collapse:collapse !important; vertical-align:top; text-align:left; color:#222222; font-family:'Helvetica', 'Arial', sans-serif; font-weight:normal; line-height:19px; font-size:14px; margin:0; padding:0; "
+                                        align="left" valign="top">
+                                        <table class="row" style="border-spacing:0; border-collapse:collapse; vertical-align:top; text-align:left; width:100%; position:relative; display:block; padding:0px; ">
+                                            <tbody>
+                                                <tr style="vertical-align:top; text-align:left; padding:0; " align="left">
+                                                    
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr style="vertical-align:top; text-align:left; padding:0; background-color:#ededed; " align="left">
+                                    <td style="word-break:break-word; -webkit-hyphens:auto; -moz-hyphens:auto; hyphens:auto; border-collapse:collapse !important; vertical-align:top; text-align:left; color:#222222; font-family:'Helvetica', 'Arial', sans-serif; font-weight:normal; line-height:19px; font-size:14px; margin:0; padding:0; "
+                                        align="left" valign="top">
+                                        <table class="row" style="border-spacing:0; border-collapse:collapse; vertical-align:top; text-align:left; width:100%; position:relative; display:block; padding:0px; ">
+                                            <tbody>
+                                                <tr style="vertical-align:top; text-align:left; padding:0; " align="left">
+                                                    
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr style="vertical-align:top; text-align:left; padding:0; " align="left">
+                                    <td style="word-break:break-word; -webkit-hyphens:auto; -moz-hyphens:auto; hyphens:auto; border-collapse:collapse !important; vertical-align:top; text-align:left; color:#222222; font-family:'Helvetica', 'Arial', sans-serif; font-weight:normal; line-height:19px; font-size:14px; margin:0; padding:0; "
+                                        align="left" valign="top">
+                                        <table class="row" style="border-spacing:0; border-collapse:collapse; vertical-align:top; text-align:left; width:100%; position:relative; display:block; padding:0px; ">
+                                            <tbody>
+                                                <tr style="vertical-align:top; text-align:left; padding:0; " align="left">
+                                                    <td class="wrapper" style="word-break:break-word; -webkit-hyphens:auto; -moz-hyphens:auto; hyphens:auto; border-collapse:collapse !important; vertical-align:top; text-align:left; position:relative; color:#222222; font-family:'Helvetica', 'Arial', sans-serif; font-weight:normal; line-height:19px; font-size:14px; margin:0; padding:0px;"
+                                                        align="left" valign="top">
+                                                        <div style="padding:6px;">&nbsp;</div>
+                                                    </td>
+                                                    <td class="wrapper last" style="word-break:break-word; -webkit-hyphens:auto; -moz-hyphens:auto; hyphens:auto; border-collapse:collapse !important; vertical-align:top; text-align:left; position:relative; color:#222222; font-family:'Helvetica', 'Arial', sans-serif; font-weight:normal; line-height:19px; font-size:14px; margin:0; padding:0px; "
+                                                        align="left" valign="top">
+                                                        <table class="twelve columns" style="border-spacing:0; border-collapse:collapse; vertical-align:top; text-align:left; width:880px; padding:0; ">
+                                                            <tbody>
+                                                                <tr style="vertical-align:top; text-align:left; padding:0; " align="left">
+                                                                    <td style="color:#555555; font-size:14px; line-height:18px; font-family:Arial, Helvetica, sans-serif; word-break:break-word; -webkit-hyphens:auto; -moz-hyphens:auto; hyphens:auto; border-collapse:collapse !important; vertical-align:top; text-align:left; font-weight:normal; margin:0; padding:0px 15px 10px; "
+                                                                        align="left" valign="top">
+                                                                        <div class="mktEditable" id="content-under-gray">
+                                                                            
+                                                                            <br />
+                                                                            
+                                                                            <p style="color: #555555; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: normal; line-height: 18px;">
+                                                                                Hello {!o.Owner.Name}!
+                                                                                <!--Ravi
+                                                                                <apex:outputPanel rendered="{!typeofTemplate == 'ApprovalRequired'}">
+                                                                                    {!approverName},
+                                                                                </apex:outputPanel>-->
+                                                                            </p>
+
+                                                                            <!-- Approval Request -->
+                                                                            <!--<apex:outputPanel rendered="{!typeofTemplate == 'ApprovalRequired'}">-->
+                                                                                <div style="padding-bottom:5px;">
+                                                                                    <p style="color: #555555; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: normal; line-height: 18px;">
+                                                                                        The following CISO Request has been Rejected for: {!o.Name}
+                                                                                    </p>
+                                                                                    <p style="color: #555555; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: normal; line-height: 18px;">
+                                                                                            <b>CISO Request Information</b>
+                                                                                        </p>
+                                                                                    <p style="color: #555555; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: normal; line-height: 18px;"><b>     CISO Request Name:</b> &nbsp; <apex:outputLink value="{! baseUrl + o.id}" target="_blank">{!o.Name}</apex:outputLink></p>
+                                                                                    <p style="color: #555555; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: normal; line-height: 18px;"><b>     Account Name:</b> &nbsp; {!o.Account_Name__r.Name}</p>
+                                                                                    <p style="color: #555555; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: normal; line-height: 18px;"><b>     Opportunity Name:</b> &nbsp; {!o.Opportunity__r.Name}</p>
+                                                                                    <p style="color: #555555; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: normal; line-height: 18px;"><b>     CISO Request Type:</b>&nbsp; {!o.CISO_Request_Type__c}</p>
+                                                                                    <p style="color: #555555; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: normal; line-height: 18px;"><b>     Topic and Proposed Agenda:</b>&nbsp; {!o.Topic_and_Proposed_Agenda__c}</p>
+                                                                                    <p style="color: #555555; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: normal; line-height: 18px;"><b>     Rejector’s  Comment:</b>&nbsp; {!lastComment}</p>
+                                                                                    <p style="color: #555555; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: normal; line-height: 18px;"><b>     Contact Attendees:</b> <apex:repeat value="{!ContactList}" var="contact">&nbsp;
+                                                                                                                                                                                                                                                                                                    <a href="{! baseUrl + contact.Id}" target="_blank">{!contact.Name}</a>
+                                                                                                                                                                                                                                                                                                     <apex:outputText rendered="{!commaValue}" >,</apex:outputText>
+                                                                                                                                                                                                                                                                                                    </apex:repeat></p>
+                                                                                    </div>
+           
+                                                                            
+                                                                        <!--</apex:outputPanel>-->
+                                                                            <br />
+                                                                        </div>
+                                                                        <div style="padding-bottom:5px;">
+                                    <p style="color: #555555; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: normal; line-height: 18px;">
+                                        If you have any queries, Please contact Sales for more info.
+                                    </p>
+                                    <p style="color: #555555; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: normal; line-height: 18px;">
+                                        Thanks,
+                                    </p>
+                                    <p style="color: #555555; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: normal; line-height: 18px;">
+                                        {!approverName}
+                                    </p>
+                                </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                
+                                <tr style="vertical-align:top; text-align:left; padding:0;" align="left">
+                                    <td style="word-break:break-word; -webkit-hyphens:auto; -moz-hyphens:auto; hyphens:auto; border-collapse:collapse !important; vertical-align:top; text-align:left; color:#222222; font-family:'Helvetica', 'Arial', sans-serif; font-weight:normal; line-height:19px; font-size:14px; background:#252d34; margin:0; padding:0;"
+                                        align="left" bgcolor="#252D34" valign="top">
+                                        <table class="twelve columns" style="border-spacing:0; border-collapse:collapse; vertical-align:top; text-align:center; width:900px; padding:0;">
+                                            <tbody>
+                                                <tr style="vertical-align:top; text-align:center; padding:0;" align="center">
+                                                    <td class="wrapper last" style="word-break:break-word; -webkit-hyphens:auto; -moz-hyphens:auto; hyphens:auto; border-collapse:collapse !important; vertical-align:top; text-align:center; position:relative; color:#999999; font-family:'Helvetica', 'Arial', sans-serif; font-weight:normal; line-height:19px; font-size:11px; margin:0; padding:10px 0px 0px;"
+                                                        align="center" valign="top">Copyright @{!yearVal} Zscaler, Inc.
+                                                        <br /> &nbsp;
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </center>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    </apex:repeat>
+</apex:component>

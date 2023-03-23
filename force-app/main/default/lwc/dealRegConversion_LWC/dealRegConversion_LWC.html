@@ -1,0 +1,123 @@
+<template>
+    <template if:true={loadData}>
+        <article>
+            <div class="slds-media">
+                <div class="slds-media__figure">
+                    <lightning-icon icon-name="standard:opportunity"></lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <p class="slds-page-header__title slds-truncate slds-align-middle">Convert deal reg - {dealReg.Name}
+                    </p>
+                    <h1 class="slds-text-body_small slds-line-height_reset" title="Add/Edit Opportunity Partners">
+                        <a href={dealRegLink} target="_parent">Back To Deal Reg</a></h1>
+                </div>
+            </div>
+
+        </article>
+    </template>
+    <div class="slds-m-bottom--small"></div>
+    <template if:true={loading}>
+        <div class="slds-spinner_container">
+            <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+        </div>
+    </template>
+    <template if:true={errmsg}>
+        <div class="slds-box slds-theme_error" style="margin-bottom:5px;">
+            <lightning-formatted-rich-text value={errmsg}></lightning-formatted-rich-text>
+        </div>
+    </template>
+    <template if:true={loadData}>
+        <h3 class="slds-section-title--divider slds-m-bottom--small"
+            style="background-color: rgba(0, 118, 190, 0.9);color: white;">
+            <b>Deal Reg</b>
+        </h3>
+        <div class="slds-p-horizontal_small">
+            <div class="slds-grid slds-gutters" style="margin-bottom: 5px;">
+                <div class="slds-col slds-size_6-of-12 field-label">
+                    Deal Reg Name
+                </div>
+                <div class="slds-col slds-size_6-of-12 field-label">
+                    End Customer
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters" style="margin-bottom: 25px;">
+                <div class="slds-col slds-size_6-of-12">
+                    {dealReg.Name}
+                </div>
+                <div class="slds-col slds-size_6-of-12">
+                    {dealReg.End_Customer_Name__c}
+                </div>
+            </div>
+
+            <div class="slds-grid slds-gutters" style="margin-bottom: 5px;">
+                <div class="slds-col slds-size_6-of-12 field-label">
+                    Partner
+                </div>
+                <div class="slds-col slds-size_6-of-12 field-label">
+
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters" style="margin-bottom: 25px;">
+                <div class="slds-col slds-size_6-of-12">
+                    {dealReg.Partner_Company_Name__c}
+                </div>
+                <div class="slds-col slds-size_6-of-12" style="margin-bottom: 5px;">
+
+                </div>
+            </div>
+        </div>
+
+        <h3 class="slds-section-title--divider slds-m-bottom--small"
+            style="background-color:rgba(0, 118, 190, 0.9);color: white;">
+            <b>Select the opportunity to convert the deal registration</b>
+        </h3>
+
+        <br /><br />
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <thead>
+                <tr class="slds-line-height_reset slds-text-title_caps">
+                    <th style="width:8%;text-align:center;" class="slds-truncate" scope="col">
+                        <div class="slds-truncate" title="Action">Action</div>
+                    </th>
+                    <th style="width:15%;text-align:center;" class="slds-truncate" scope="col">
+                        <div class="slds-truncate" title="Opportunity">Opportunity #</div>
+                    </th>
+                    <th style="width:15%;text-align:center;" class="slds-truncate" scope="col">
+                        <div class="slds-truncate" title="Account">Account Name</div>
+                    </th>
+                    <th style="width:15%;text-align:center;" class="slds-truncate" scope="col">
+                        <div class="slds-truncate" title="Type">Type</div>
+                    </th>
+                    <th style="width:15%;text-align:center;" class="slds-truncate" scope="col">
+                        <div class="slds-truncate" title="Stage">Stage</div>
+                    </th>
+                    <th style="width:8%;text-align:center;" class="slds-truncate" scope="col">
+                        <div class="slds-truncate" title="Amount">Amount</div>
+                    </th>
+                    <th style="width:8%;text-align:center;" class="slds-truncate" scope="col">
+                        <div class="slds-truncate" title="Closedate">Close Date</div>
+                    </th>
+                    <th style="width:8%;text-align:center;" class="slds-truncate" scope="col">
+                        <div class="slds-truncate" title="Sourced Deal Reg">Sourced Deal Reg #</div>
+                    </th>
+                    <th style="width:8%;text-align:center;" class="slds-truncate" scope="col">
+                        <div class="slds-truncate" title="Teaming Deal Reg (Reseller)">Teaming Deal Reg (Reseller) #
+                        </div>
+                    </th>
+                    <th style="width:8%;text-align:center;" class="slds-truncate" scope="col">
+                        <div class="slds-truncate" title="Teaming Deal Reg (Tech Partner)">Teaming Deal Reg (Tech
+                            Partner) #</div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <template for:each={opplst} for:item="opp">
+                    <c-deal-reg-conversion-record-display key={opp.Id} deal-regrecord={dealReg} record={opp}
+                        condition-set={conditionSet} onerroronsave={showerror}>
+                    </c-deal-reg-conversion-record-display>
+                </template>
+            </tbody>
+        </table>
+
+    </template>
+</template>

@@ -1,0 +1,32 @@
+.hiddenbtn {
+  display: none;
+}
+
+.errorString {
+  color: rgb(234, 0, 30);
+  margin-left: 33%;
+}
+
+.signInBtn {
+  background-color: #236bf5;
+  color: #fff;
+  display: inline-block;
+  font-size: large;
+  font-weight: 500;
+  letter-spacing: .03em;
+  margin: 12px 0;
+  padding: 12px 8px;
+  text-align: center;
+  transition: ease-in-out .25s;
+  z-index: 1;
+  width: fit-content;
+  cursor: pointer;
+  border: none;
+  border-radius: 18px;
+  padding: 6px 30px;
+}
+
+.no-bottom-padding-margin {
+margin-bottom: 0;
+padding-bottom: 0;
+}

@@ -1,0 +1,4 @@
+<aura:event type="COMPONENT" description="Clear the Lookup">
+    <aura:attribute name="instanceId" type="String" required="false" description="The id to identify the instance the component" />
+    <aura:attribute name="index" type="Integer" required="false" description="The index to identify the component when called in an iteration" />
+</aura:event>

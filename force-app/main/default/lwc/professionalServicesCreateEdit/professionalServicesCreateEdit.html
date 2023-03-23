@@ -1,0 +1,156 @@
+<template>
+    <!-- <lightning-card class="slds-m-around_small custom-size-class" title="Professional Services"> -->
+    <article class="slds-card custom-size-class">
+        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+            <div class="slds-media__body">
+                <h2 class="slds-card__header-title slds-m-around_small">
+                        <span>Professional Services</span>
+                </h2>
+            </div>
+        </header>
+        <div class="slds-card__body slds-card__body_inner">
+
+            <template if:true={showCreateEditForm}>
+                <lightning-record-edit-form record-id={professionalServicesRecordId}
+                    object-api-name={equipmentRequestObjectApiName} record-type-id={professionalServicesRecordTypeId}
+                    onload={handleOnLoadEvent} onsubmit={handleOnSubmitEvent} onsuccess={handleOnSuccessEvent}
+                    onerror={handleOnErrorEvent}>
+
+                    <lightning-messages> </lightning-messages>
+
+                    <div class="slds-grid slds-wrap">
+                        <template for:each={fieldAPINameList_RecordEditForm} for:item="fieldAPIName">
+                            <div key={fieldAPIName.fieldName}
+                                class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small">
+                                <template if:false={fieldAPIName.isEarlyEngagementSelected}>
+                                    <lightning-input-field data-id={fieldAPIName.fieldName}
+                                        field-name={fieldAPIName.fieldName} variant="label-inline" value = {fieldAPIName.value}
+                                        onchange={handleFieldChange} required={fieldAPIName.isRequired}>
+                                    </lightning-input-field>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="slds-align_absolute-center">
+                        <lightning-button class="slds-m-around_small" variant="neutral" name="Cancel" label="Cancel"
+                            onclick={handleCancelClick}>
+                        </lightning-button>
+                        <lightning-button class="slds-m-around_small" variant="brand" type="submit" name="Save"
+                            label="Save">
+                        </lightning-button>
+                    </div>
+
+                </lightning-record-edit-form>
+                <div class="showSpinner" if:true={isSpinnerVisible}>
+                    <lightning-spinner alternative-text="Loading" variant="brand"></lightning-spinner>
+                </div>
+            </template>
+
+            <template if:false={showCreateEditForm}>
+                <div class="slds-m-left_medium">
+                    <p class="slds-m-around_small">{gobackMessage}</p>
+                    <p>
+                        <lightning-button class="slds-m-around_small" variant="brand" name="Go Back" label="Go Back"
+                            onclick={handleGoBack}>
+                        </lightning-button>
+                    </p>
+                </div>
+            </template>
+        </div>
+    </article>
+    <!-- </lightning-card> -->
+
+    <template if:true={showModalPopUp}>
+
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_small"
+            aria-labelledby="modal-heading-01" aria-modal="true">
+            <div class="slds-modal__container">
+                <template if:true={isRejected}>
+                    <div class="slds-modal__header">
+                        <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Early Engagement request
+                            rejected.</h1>
+                    </div>
+                    <div class="slds-modal__content slds-p-around_medium slds-p-around_xxx-small"
+                        id="modal-content-id-1">
+                        <p>Dear Requestor,<br>
+                            <br>
+                            This opportunity, as currently structured, does not meet the minimum
+                            qualifications of a standard early engagement.<br>
+                            <br>
+                            <b>Reason : </b>{rejectionReason}<br>
+                            <br>
+                            Deal stage and size eligibility:<br>
+                            &nbsp;&nbsp;Opportunity = Stage 5: ACV > $350K<br>
+                            &nbsp;&nbsp;Opportunity = Stage 4: ACV > $750K<br>
+                            &nbsp;&nbsp;Services attached must >= 12.5% of ACV<br>
+                            &nbsp;&nbsp;Excludes the ZCES-DEP-ESS &amp; ZCES-DEP-ADV SKUs<br>
+                        </p>
+                    </div>
+                    <div class="slds-modal__footer">
+                        <div class="slds-align_absolute-center">
+                            <lightning-button data-id="rejectOkButton" variant="brand" name="Ok" label="Ok"
+                                onclick={handleRejectOkButton}>
+                            </lightning-button>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Warning Message -->
+                <template if:true={isWarned}>
+                    <div class="slds-modal__header">
+                        <h1 id="modal-heading-02" class="slds-modal__title slds-hyphenate">Early Engagement request
+                            Warning.</h1>
+                    </div>
+                    <div class="slds-modal__content slds-p-around_medium slds-p-around_xxx-small"
+                        id="modal-content-id-2">
+                        <p>Dear Requestor,<br>
+                            <br>
+                            This opportunity, as currently structured, does not meet the minimum qualifications of a
+                            standard early engagement.<br>
+                            <br>
+                            <b>Reason : </b> {warningReason}<br>
+                            <br>
+                            Deal stage and size eligibility:<br>
+                            &nbsp;&nbsp;Opportunity = Stage 5: ACV > $350K<br>
+                            &nbsp;&nbsp;Opportunity = Stage 4: ACV > $750K<br>
+                            &nbsp;&nbsp;Services attached must >= 12.5% of ACV<br>
+                            &nbsp;&nbsp;Excludes the ZCES-DEP-ESS &amp; ZCES-DEP-ADV SKUs
+                        </p>
+                        <br>
+                        <p>If this request addresses a unique situation that warrants an early engagement, please
+                            proceed with submitting this request. Otherwise, please allow the opportunity to reach Stage
+                            6 where the project is automatically created.</p><br>
+                        <br>
+                        <p>Do you want to continue :</p>
+                    </div>
+                    <div class="slds-modal__footer">
+                        <div class="slds-align_absolute-center">
+                            <lightning-button data-id="rejectOkButton" class="slds-m-right_small" variant="neutral"
+                                name="No" label="No" onclick={handleWarnNoButton}>
+                            </lightning-button>
+
+                            <lightning-button data-id="rejectOkButton" class="slds-m-left_small" variant="brand"
+                                name="Yes" label="Yes" onclick={handleWarnYesButton}>
+                            </lightning-button>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</template>

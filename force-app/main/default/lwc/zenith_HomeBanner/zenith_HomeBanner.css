@@ -1,0 +1,107 @@
+.announcement{
+    font-size: medium;
+    display: contents;
+    
+    }
+    .read-more{
+    text-align: end;
+    align-self: center;
+    padding: 10px;
+    text-transform: capitalize;
+    }
+    
+    .banner{
+    padding: 1% 0%;
+   
+    }
+    .icon{
+    place-self:center;
+    padding-right: 10px;
+    }
+    .bannerText{
+    align-self: center;
+    color: black;
+  
+    
+    }
+    .font_size{
+    font-size: 16px;
+    }
+    .align_center{
+    text-align: center;
+    }
+    .width_webkit{
+    width: 1920px;
+    margin: auto;
+    white-space: nowrap;
+    justify-content: center;
+    }
+    .display_inline{
+    display: inline-flex;
+   
+
+    }
+    .widthClass{
+        margin-left: 10%;
+        margin-right: 10%;
+    }
+    .max_width{
+    max-width: 77vw;
+    }
+    .min_Width{
+    min-width: fit-content;
+    }
+    .ellipses{
+   
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+    
+    }
+    .readmoreurl{
+        border: 1.4px solid #fff;
+        border-radius: 22px;
+        padding: 8px 30px;
+    }
+    .content{
+        padding-right: 6rem;
+    }
+    
+   
+
+    @media (min-width: 320px) and (max-width: 480px) {
+    
+    /* CSS */
+    .font_size{
+    font-size: 14px;
+    }
+    .widthClass{
+        margin-left: 5%;
+        margin-right: 5%;
+    }
+
+
+    }
+
+    @media screen and (max-width:767px){
+        .readmoreurl{
+           
+            padding: 7px 14px;
+            font-size:14px;
+        }
+    }
+
+    @media screen and (min-width:320px) and (max-width:640px){
+        .content{
+            padding-right: 3rem;
+        }
+    }
+
+    @media screen and (max-width:320px){
+        .content{
+            padding-right: .625rem;
+        }
+    }

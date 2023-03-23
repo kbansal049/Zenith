@@ -1,0 +1,162 @@
+<template>
+    <!-- Fetch all the SCI Types and ask users to select -->
+    <lightning-card class="custom-size-class">
+        <div class="slds-align_absolute-center">
+            <div class="slds-text-heading_large"><span><b>New Significant Customer Interaction</b></span></div><br/>
+        </div>
+        <div class="slds-align_absolute-center">
+            <div><h6>Select Significant Customer Interaction Type</h6></div>
+        </div>
+        <lightning-layout multiple-rows="true" horizontal-align="spread">
+            <lightning-layout-item size="3" padding="around-small">
+
+            </lightning-layout-item>
+            <lightning-layout-item size="6" padding="around-small">
+                <div class="slds-align_absolute-center">
+                    <lightning-combobox name="recordTypes" label="Select SCI Type"
+                        variant="label-inline" required value={selectedRecordTypeId}
+                        placeholder="--Select--" options={options} onchange={handleRecordTypeChange}>
+                    </lightning-combobox>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item size="3" padding="around-small">
+
+            </lightning-layout-item>
+        </lightning-layout><br />
+        <lightning-layout multiple-rows="true" horizontal-align="spread">
+            <lightning-layout-item size="3" padding="around-small">
+
+            </lightning-layout-item>
+            <lightning-layout-item size="6" padding="around-small">
+                <div class="slds-align_absolute-center">
+                    <lightning-input type="date" name="dateOfMeeting" label="Date Of Meeting" placeholder="MM/DD/YYYY" variant="label-inline"
+                        value={privateselectedDate} required onchange={handleDateChange}>
+                    </lightning-input>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item size="3" padding="around-small">
+
+            </lightning-layout-item>
+        </lightning-layout><br />
+        <template if:true={dataEntered}>
+            <div class="slds-align_absolute-center slds-m-around_medium">
+                Here are a few SCI's close to the chosen date. If you attended any of these meetings, just click 'Add Me', no need to create a new SCI. Otherwise, click Add New SCI.
+            </div>
+            <div class="slds-scrollable_y" style="height:15rem;">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="ACTION">ACTION</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="SCI Id">SCI Id</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Type">Type</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Date Of Meeting">Date Of Meeting</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Method Of Interaction">Method Of Interaction</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Organizer">Organizer</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Was I Added As Organizer / Attendee?
+                                ">Was I Added As Organizer / Attendee?</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody>
+                        <template if:true={significantCustomerList.length}>
+                            <template for:each={significantCustomerList} for:item="con">
+                                <tr key={con.Id}>
+                                    <th scope="col">
+                                        <div><lightning-button data-internalattendee={con.internal_attendee__c} data-selectedid={con.Id} data-location={con.Meeting_Location__c} data-record={con.RecordTypeId} data-notes={con.Meeting_Notes__c} data-date={con.Date__c} data-id={con.Id}  variant="base" label="Edit" title="Edit" onclick={handleEdit} class="slds-m-left_x-small"></lightning-button></div>
+                                    </th>
+                                    <th scope="col">
+                                        <div>{con.Name}</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div>{con.Record_Type__c}</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div data-id={con.Id}>{con.Date__c}</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div>{con.Method_of_Interaction__c}</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div>{con.Organizer__c}</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div>{con.orgAttendeeExist__c}</div>
+                                    </th>
+                                    <template if:false={con.orgAttendeeTrueFalse__c}>
+                                    <th scope="col">
+                                        <div><lightning-button data-notes={con.Meeting_Notes__c} data-internalattendee={con.internal_attendee__c} data-location={con.Meeting_Location__c} data-type={con.Record_Type__c} data-method={con.Method_of_Interaction__c} data-date={con.Date__c} data-id={con.Id} label="Add Me" title="Add" onclick={handleInsertSci} class="slds-m-left_x-small"></lightning-button></div>
+                                    </th>
+                                </template>
+                                    <!--<template if:false={con.orgAttendeeTrueFalse__c}>
+                                        <th scope="col">
+                                            <div><lightning-button data-type={con.Record_Type__c} data-method={con.Method_of_Interaction__c} data-date={con.Date__c} data-id={con.Id} label="Add" title="Add" onclick={handleInsertSci} class="slds-m-left_x-small"></lightning-button></div>
+                                        </th>
+                                    </template>
+                                    <template if:true={con.orgAttendeeTrueFalse__c}>
+                                        <th scope="col">
+                                            <div></div>
+                                        </th>
+                                    </template>-->
+                                    <!-- <th scope="col">
+                                        <div>
+                                            <lightning-combobox
+                                                name="progress"
+                                                data-id={con.Id}
+                                                label="Status"
+                                                variant="label-hidden"
+                                                value={con.attendeeType}
+                                                placeholder="Select Attendee"
+                                                onchange={handleAttendee}
+                                                options={optionsAttendee}></lightning-combobox>
+                                        </div>
+                                    </th> -->
+                                    
+                                </tr>
+                            </template>
+                        </template>
+                    </tbody>
+                </table>
+                
+            </div>
+        
+                
+        <template if:false={significantCustomerList.length}>
+            <div class="slds-m-around_medium slds-align_absolute-center">
+                <p>No data available for selected date. Create new SCI</p>
+            </div>
+        </template>
+        <div class="slds-align_absolute-center slds-m-around_medium">
+            Never mind, I would like a
+        <lightning-button
+                class="slds-m-around_small"
+                variant="brand"
+                label="New SCI"
+                onclick={handleNext}
+
+            ></lightning-button>
+        </div>
+    </template>
+    <template if:false={dataEntered}>
+        <div class="slds-align_absolute-center">
+            <lightning-datatable key-field="id" data={data} columns={columns} hide-checkbox-column
+                column-widths-mode="auto">
+            </lightning-datatable>
+        </div>
+    </template>
+        
+    </lightning-card>
+</template>

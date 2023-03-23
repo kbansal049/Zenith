@@ -1,0 +1,20 @@
+<aura:component controller="generateOneDocForAccountController" implements="force:lightningQuickActionWithoutHeader,force:hasRecordId,lightning:hasPageReference,lightning:isUrlAddressable">
+	
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="showSpinner" type="boolean" default="true"/>
+    
+    <aura:attribute name="url" type="String"/>
+    <aura:attribute name="fileID" type="ID"/>
+    <aura:attribute name="recordId" type="Id"/>
+    
+    <aura:attribute name="pageReference" type="Object"/>
+    <lightning:navigation aura:id="navService"/>
+    
+    <!-- Spinner -->
+    <aura:if isTrue="{!v.showSpinner}">
+        <div class="exampleHolder" style="position: relative;height: 100px;">
+            <lightning:spinner variant="brand" size="medium" />
+        </div>
+    </aura:if>
+    <div style="text-align:center">Please wait. This might take more than 20 seconds.</div>
+</aura:component>

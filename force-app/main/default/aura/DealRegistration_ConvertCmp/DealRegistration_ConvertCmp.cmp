@@ -1,0 +1,88 @@
+<!--**********************************************************************************************************************
+* @CompName 	: DealRegistration_ConvertCmp
+* @Author   	: Priyanka
+* @CR#			: 
+* @Date     	: 03/02/2021
+* @Description	: Lightning component that invokes from Quick action to convert deal reg
+************************************************************************************************************ -->
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader" access="global" >    
+    <!-- ATTRIBUTES START -->
+    <aura:attribute name="record" type="Deal_Reg__c" />
+    <aura:attribute name="recordId" type="String" />    
+    <aura:attribute name="isStatus" type="Boolean"/>
+    <aura:attribute name="isType" type="Boolean"/>
+    <aura:attribute name="isDate" type="Boolean"/>
+    <aura:attribute name="isFDA" type="Boolean"/> 
+    <aura:attribute name="spinner" type="boolean" default="false"/>
+    <aura:attribute name="CurrentUser" type="Object"/>
+    <!-- ATTRIBUTES END -->
+    <!-- LDS -->
+    <force:recordData recordId="{!$SObjectType.CurrentUser.Id}"
+                  fields="Profile.Name"
+                  targetFields="{!v.CurrentUser}"/>
+    <force:recordData aura:id="recordLoader"
+                      recordId="{!v.recordId}"
+                      fields="Status__c,Deal_Reg_Type__c,Discovery_Meeting_Date__c,Federal_Deal_Approved_OP__c"
+                      targetFields="{!v.record}"
+                      mode="EDIT"
+                      recordUpdated="{!c.recordUpdate}"
+                      />    
+    
+    <aura:if isTrue="{!v.spinner}">
+        <div class="slds-is-relative">
+            <lightning:spinner alternativeText="Loading" title="Processing.." size="small" 
+                               class="slds-show backgroundSpinner"/> 
+        </div>
+    </aura:if>
+    <div class="slds-m-around--small slds-p-left_x-small">
+        <aura:if isTrue="{!v.isStatus}">
+            <ui:message title="Error" severity="error">
+                <br />
+                {!$Label.c.DealReg_Status_Message}               
+            </ui:message>
+            <aura:set attribute="else">
+                
+                <aura:if isTrue="{!v.isType}">
+                    <ui:message title="Error" severity="error">
+                        <br />
+                        {!$Label.c.DealReg_Type_Message}                     
+                    </ui:message>
+                    <aura:set attribute="else">
+                        <aura:if isTrue="{!v.isDate}">
+                            <ui:message title="Warning" severity="error">
+                                <br />
+                                {!$Label.c.DealReg_Convert_Message}                  
+                            </ui:message>  
+                            <aura:set attribute="else">
+                                <aura:if isTrue="{!and(v.isFDA, and(v.CurrentUser.Profile.Name != 'System Administrator',
+                                                 v.CurrentUser.Profile.Name != 'Sales Ops Admin'))}">
+                                    <ui:message title="Warning" severity="error">
+                                        <br />
+                                        {!$Label.c.DealReg_Federal_Message}                 
+                                    </ui:message>  
+                                    <aura:set attribute="else">
+										<!--{!v.isFDA}-->
+                                        <ui:message title="Confirm" severity="confirm">
+                                            <br />
+                                            {!$Label.c.DealReg_Convert_Alert}                
+                                        </ui:message>                
+                                        <br />
+                                        <div class="slds-grid slds-gutters">
+                                            <div class="slds-col">
+                                                <lightning:button class="slds-align_absolute-center" variant="brand" label="Ok" title="Ok" onclick="{!c.invokeVFPage}"/>               
+                                                
+                                            </div>
+                                             <div class="slds-col">
+                                                <lightning:button class="slds-align_absolute-center" variant="brand" label="Cancel" title="Cancel" onclick="{!c.closeQA}"/>  
+                                            </div>
+                                        </div>
+                                    </aura:set>
+                                </aura:if>
+                            </aura:set>
+                        </aura:if>                        
+                    </aura:set>
+                </aura:if>
+            </aura:set>
+        </aura:if>
+    </div>
+</aura:component>

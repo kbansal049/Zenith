@@ -1,0 +1,17 @@
+.hidden {
+    display: none;
+}
+.hidden-row{
+    display: none;
+}
+.slds-spinner_container, .slds-scope .slds-spinner_container {
+    z-index: 9000; position: fixed; height: 100%; width: 100%;
+}
+
+.generic-margin {
+    margin-top: 10px !important; margin-bottom: 10px !important;
+}
+
+.readonly-path{
+    pointer-events: none;
+}

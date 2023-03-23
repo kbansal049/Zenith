@@ -1,0 +1,53 @@
+<apex:page standardController="Campaign" extensions="CoupaCampaignController" tabStyle="Campaign" showHeader="true" sidebar="true" action="{!initCopaProcess}" docType="html-5.0">
+    <apex:includeScript id="jQuery" value="https://code.jquery.com/jquery-3.1.1.min.js" />
+    <apex:stylesheet id="jQuery-ui" value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css" />
+    <apex:form >
+        <apex:actionFunction name="callCoupa" action="{!callCoupaIntegraion}" status="loadinggif" reRender="frmPanel" />
+        <apex:actionFunction name="cancel" action="{!doCancel}" immediate="true"/>
+        <apex:actionstatus id="loadinggif">
+            <apex:facet name="start">
+                <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb; height:100%;opacity:0.65;width:100%;">
+                    <div class="waitingHolder" style="top: 100px; width: 91px;">
+                        <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                        <span class="waitingDescription">Loading...</span>
+                    </div>
+                </div>
+            </apex:facet>
+        </apex:actionstatus>
+        
+        <apex:outputPanel id="frmPanel">
+            
+            <apex:outputPanel id="messagesPanel" rendered="{!showMessage}">
+                <div id="messagesContainer" style="border: 1px solid #faebcc; border-radius: 3px; background-color: #fcf8e3; color: #8a6d3b; clear: both; padding: 8px 6px; margin: 5px 20px;">
+                    Successfully submitted the Campaign creation request. You will be redirected back to the opportunity in 5 seconds...
+                </div>
+                <script>
+                var counter = 5;
+                var redirect = function(counter) {
+                    setTimeout(function() {
+                        $("#messagesContainer").html('Successfully submitted the Campaign creation request. You will be redirected back to the campaign in ' + counter + ' seconds...');
+                        counter--;
+                        if (counter > 0) {
+                            redirect(counter);
+                        } else {
+                            cancel();
+                        }
+                    }, 1000);
+                }
+                redirect(counter);
+                </script>
+            </apex:outputPanel>
+            
+            <apex:outputPanel id="errorsPanel" rendered="{!showError}">
+                <div id="messagesContainer" style="border: 1px solid #ebccd1; border-radius: 3px; background-color: #f2dede; color: #a94442; clear: both; padding: 8px 6px; margin: 5px 20px;">
+                    {!errors}
+                </div>
+            </apex:outputPanel>
+        </apex:outputPanel>
+    </apex:form>
+    <script>
+    if({!step} == 1) {
+        callCoupa();
+    }
+    </script>
+</apex:page>

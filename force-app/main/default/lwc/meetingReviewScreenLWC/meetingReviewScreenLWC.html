@@ -1,0 +1,66 @@
+<template>
+    <template if:true={loading}>
+        <div class="slds-spinner_container">
+          <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+        </div>
+      </template>
+    <lightning-record-edit-form layout-type="compact" onload={handleOnLoad} density="comfy" object-api-name="ServiceAppointment">
+        <div>
+            <lightning-layout pull-to-boundary="medium" multiple-rows="true">
+                <lightning-layout-item size="6" padding="around-medium">
+                    <label for="fieldid">Host</label>
+                    <lightning-input-field  id="fieldid" field-name="Host__c" value={resourceId} variant="label-hidden" disabled="true">
+                    </lightning-input-field>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" padding="around-medium">
+                    <label for="caseid">Case Number</label>
+                    <lightning-input-field  id="caseid" value={caseId} field-name="ParentRecordId" variant="label-hidden" disabled="true">
+                    </lightning-input-field>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" padding="around-medium">
+                    <label for="start">Scheduled Start ({usrTimezone})</label>
+                    <lightning-input-field id="start" class="scheduledStartCls" field-name="SchedStartTime" value={startTime} disabled="true" variant="label-hidden">
+                    </lightning-input-field>
+                    <template if:true={showTimeDiffValidationMsgForTAM}>
+                        <span style="color:red">{twoHourBeforeTAMtoTACMeetingBookingErrorMsg}</span>
+                    </template>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" padding="around-medium">
+                    <label for="end">Scheduled End ({usrTimezone})</label>
+                    <lightning-input-field field-name="SchedEndTime" value={endTime} disabled="true" variant="label-hidden">
+                    </lightning-input-field>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" padding="around-medium">
+                    <label for="mainGuest">Main Guest</label>
+                    <lightning-input-field  id="mainGuest" field-name="ContactId" value={contactId} variant="label-hidden" disabled="true">
+                    </lightning-input-field>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" padding="around-medium">
+                    <label for="desc">Meeting Description</label>
+                    <abbr title="required" class="slds-required">*</abbr>
+                    <lightning-input-field aria-required="true" class="meetingDescCls" id="desc" field-name="Comments" value={meetingDescription} onchange={handleChange} variant="label-hidden">
+                    </lightning-input-field>
+                    <template if:true={showMeetingDescValidationMsg}>
+                        <span style="color:red">{label.meetingDescriptionValidationMessage}</span>
+                    </template>
+                </lightning-layout-item>
+                <lightning-layout-item size="12" padding="around-medium">
+                    <label for="additionalGuest">Additional Participants</label>
+                    <lightning-input-field  id="additionalGuest" field-name="Additional_Participants__c" value={listOfAttendeesEmails} variant="label-hidden" disabled="true">
+                    </lightning-input-field>
+                </lightning-layout-item>
+                <lightning-layout-item size="12" padding="around-medium">
+                    <label for="customerMeetingURL">Customer Meeting URL (To be provided, if this meeting is not happening through Host's Zoom)</label>
+                    <lightning-input-field id="customerMeetingURL" field-name="Street" value={customerMeetingURL} onchange={handleChange} variant="label-hidden">
+                    </lightning-input-field>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+    </lightning-record-edit-form>
+    <template if:true={showButtons}>
+        <div class="slds-p-around_x-small slds-border_top">
+            <lightning-button label="Save Meeting" variant="brand" title="Save Meeting" onclick={handleNext} class="slds-p-right_small slds-float_right slds-m-vertical_small"></lightning-button>
+            <lightning-button label="Previous" variant="neutral" title="Previous" onclick={handleBack} class="slds-p-right_small slds-float_right slds-m-vertical_small"></lightning-button>
+        </div>
+    </template>
+</template>

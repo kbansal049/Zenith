@@ -1,0 +1,1019 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 06-22-2022
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<template>
+   <lightning-card>
+      <!--<lightning-tabset active-tab-value={activeTab}>
+          <div class="slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">-->
+      <!-- Key Required Activities -->
+      <!--      <lightning-tab label="Required Activities" value="1" onactive={handleActive}>-->
+      <div class="slds-align_absolute-center">
+         <span style="font-size: large;font-weight: bold;">{headerInfo}</span>
+      </div>
+      <div class="slds-p-around_small">
+         <div style="font-size: small;color: darkgray;">The following pre requisites need to be met for booking this
+            deal</div>
+         <template if:true={isSystemEditable}>
+            <template if:true={isAmountWithinSalesTeamThreshold}>
+               <div style="font-size: small;color: darkgray;padding-top: 5px;">(The system will not allow you to move
+                  opportunity to Stage 6 until all pre-requisites are met)</div>
+            </template>
+            <template if:false={isAmountWithinSalesTeamThreshold}>
+               <div style="font-size: small;color: darkgray;padding-top: 5px;">(The system will not allow you to move
+                  opportunity to Stage 5A until all pre-requisites are met)</div>
+            </template>
+         </template>
+      </div>
+      <hr class="hrLine" />
+      <template if:true={loading}>
+         <div class="slds-spinner_container">
+            <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+         </div>
+      </template>
+      <template if:true={isAmberRoadFailed}>
+         <div class="slds-p-horizontal_small">
+            <div class="redItem">This account has been blocked by export compliance screening. Contact
+               dplscreening@zscaler.com who can help review this account.</div>
+         </div>
+      </template>
+      <template if:false={isAmberRoadFailed}>
+         <template if:true={isServiceDateCheckRequired}>
+            <div class="slds-p-horizontal_small">
+               <div style="font-size: small;color: darkgray;padding-top: 5px;">(Service Start Date is earlier than the
+                  provision date, hence Provision date will be used as Service Start Date.)</div>
+            </div>
+         </template>
+         <template if:true={ottTicketName}>
+            <div class="slds-p-horizontal_small">
+               <div style="text-align : right;font-size: small;color: darkgray;padding-top: 5px;">OTT Ticket -
+                  {ottTicketName}</div>
+            </div>
+         </template>
+         <div class="slds-p-bottom_xxx-small">&nbsp;</div>
+         <div class="slds-p-horizontal_small">
+            <ul class="slds-has-dividers_around-space">
+               <!-- Quote Approval check -->
+               <template if:true={checkIfPrimaryQuoteExist}>
+                  <template if:true={checkIfQuoteIsApproved}>
+                     <li class="slds-item greenItem">
+                        <span style="position:relative; top:-3px;padding-right: 3px;">
+                           <lightning-icon class="app-icon" size="xx-small" icon-name="utility:check"
+                              alternative-text="Approved" title="Approved"></lightning-icon>
+                        </span>
+                        <span>Approved primary quote. <a style="padding-left: 5px;" href="#" key={primaryQuote.Id}
+                              data-id={primaryQuote.Id} onclick={reDirectToQuoteRecord}>{primaryQuote.Name}</a></span>
+                     </li>
+                  </template>
+                  <template if:false={checkIfQuoteIsApproved}>
+                     <li class="slds-item ">
+                        <span style="position:relative; top:-3px;padding-right: 3px;">
+                           <lightning-icon class="rej-icon" size="xx-small" icon-name="utility:close"
+                              alternative-text="Reject" title="Reject"></lightning-icon>
+                        </span>
+                        <span class="redItem">
+                           Approved primary quote : Please get the primary quote approved.
+                        </span>
+                     </li>
+                  </template>
+               </template>
+               <template if:false={checkIfPrimaryQuoteExist}>
+                  <li class="slds-item redItem">
+                     <span style="position:relative; top:-3px;padding-right: 3px;">
+                        <lightning-icon class="rej-icon" size="xx-small" icon-name="utility:close"
+                           alternative-text="Reject" title="Reject"></lightning-icon>
+                     </span>
+                     <span class="redItem">
+                        Approved primary quote : Please mark one quote as primary.
+                     </span>
+                  </li>
+               </template>
+               <!-- PR Request Check-->
+               <template if:true={checkIfPRRequired}>
+                  <template if:true={checkIFPRProvisioned}>
+                     <li class="slds-item greenItem">
+                        <span style="position:relative; top:-3px;padding-right: 3px;">
+                           <lightning-icon class="app-icon" size="xx-small" icon-name="utility:check"
+                              alternative-text="Approved" title="Approved"></lightning-icon>
+                        </span>
+                        <span>Cloud Instance Provisioned.</span>
+                     </li>
+                  </template>
+                  <template if:false={checkIFPRProvisioned}>
+                     <template if:true={prNotRaised}>
+                        <li class="slds-item redItem">
+                           <span style="position:relative; top:-3px;padding-right: 3px;">
+                              <lightning-icon class="rej-icon" size="xx-small" icon-name="utility:close"
+                                 alternative-text="Reject" title="Reject"></lightning-icon>
+                           </span>
+                           <span>
+                              Cloud instance Provisioning pending -
+                              <template if:true={prNotRaisedList}>
+                                 <template for:each={prNotRaisedList} for:item="pr">
+                                    <a style="padding-left: 5px;" href="#" key={pr.Id} data-id={pr.Id}
+                                       onclick={reDirectToPRRecord}>{pr.Name}</a>
+                                 </template>
+                              </template>
+                              <template if:true={prgNotRaisedList}>
+                                 <template for:each={prgNotRaisedList} for:item="prg">
+                                    <a style="padding-left: 5px;" href="#" key={prg.Id} data-id={prg.Id}
+                                       onclick={reDirectToPRRecord}>{prg.Name}</a>
+                                 </template>
+                              </template>
+                           </span>
+                        </li>
+                     </template>
+                     <template if:false={prNotRaised}>
+                        <li class="slds-item redItem">
+                           <span style="position:relative; top:-3px;padding-right: 3px;">
+                              <lightning-icon class="rej-icon" size="xx-small" icon-name="utility:close"
+                                 alternative-text="Reject" title="Reject"></lightning-icon>
+                           </span>
+                           <span>
+                              Cloud Instance Not Provisioned -
+                              <template if:true={prNotRaisedCategoryList}>
+                                 <template for:each={prNotRaisedCategoryList} for:item="pr">
+                                    <span key={pr}
+                                       style="position:relative; padding-right: 3px;padding-left: 3px;">{pr}</span>
+                                 </template>
+                              </template>
+                           </span>
+                           <span style="padding-left: 0.4rem;">
+                              <button class="slds-button" onclick={handleNewPR}>
+                                 <span style="padding-left: 0.2rem;">New PRG</span>
+                              </button>
+                           </span>
+                        </li>
+                     </template>
+                  </template>
+               </template>
+               <!-- Legal Check-->
+               <template if:true={islegalNeeded}>
+                  <template if:false={legalApproved}>
+                     <li class="slds-item redItem">
+                        <span style="position:relative; top:-3px;padding-right: 3px;">
+                           <lightning-icon class="rej-icon" size="xx-small" icon-name="utility:close"
+                              alternative-text="Reject" title="Reject"></lightning-icon>
+                        </span>
+                        <span>
+                           Legal Approval pending : work with Legal team to complete this step.
+                           <template if:true={legalUnApprovedList}>
+                              <template for:each={legalUnApprovedList} for:item="legal">
+                                 <a style="padding-left: 5px;" href="#" key={legal.Id} data-id={legal.Id}
+                                    onclick={reDirectToLeaglRecord}>{legal.Name}</a>
+                              </template>
+                           </template>
+                        </span>
+                     </li>
+                  </template>
+                  <template if:true={legalApproved}>
+                     <li class="slds-item greenItem">
+                        <span style="position:relative; top:-3px;padding-right: 3px;">
+                           <lightning-icon class="app-icon" size="xx-small" icon-name="utility:check"
+                              alternative-text="Approved" title="Approved"></lightning-icon>
+                        </span>
+                        <span>
+                           Legal Approval Completed.
+                        </span>
+                     </li>
+                  </template>
+               </template>
+               <!-- Equipment Request  Check-->
+               <template if:true={erApprovalNeeded}>
+                  <template if:true={erApprovalStatus}>
+                     <li class="slds-item greenItem">
+                        <span style="position:relative; top:-3px;padding-right: 3px;">
+                           <lightning-icon class="app-icon" size="xx-small" icon-name="utility:check"
+                              alternative-text="Approved" title="Approved"></lightning-icon>
+                        </span>
+                        <span>Equipment Request has been approved.</span>
+                     </li>
+                  </template>
+                  <template if:false={erApprovalStatus}>
+                     <li class="slds-item redItem">
+                        <span style="position:relative; top:-3px;padding-right: 3px;">
+                           <lightning-icon class="rej-icon" size="xx-small" icon-name="utility:close"
+                              alternative-text="Reject" title="Reject"></lightning-icon>
+                        </span>
+                        <span>
+                           Equipment Request is not approved yet -
+                           <template if:true={unApprovedERList}>
+                              <template for:each={unApprovedERList} for:item="er">
+                                 <a style="padding-left: 5px;" href="#" key={er.Id} data-id={er.Id}
+                                    onclick={reDirectToERRecord}>{er.Name}</a>
+                              </template>
+                           </template>
+                        </span>
+                     </li>
+                  </template>
+               </template>
+               <!-- PO Check-->
+               <template if:true={checkIfPOAttached}>
+                  <li class="slds-item greenItem">
+                     <span style="position:relative; top:-3px;padding-right: 3px;">
+                        <lightning-icon class="app-icon" size="xx-small" icon-name="utility:check"
+                           alternative-text="Approved" title="Approved"></lightning-icon>
+                     </span>
+                     <template if:false={isPOReceivedThroughEDI}>
+                        <span>Purchase Order Attached.</span>
+                     </template>
+                     <template if:true={isPOReceivedThroughEDI}>
+                        <span>Purchase Order has been received through EDI.</span>
+                     </template>
+                     <template if:false={isPOReceivedThroughEDI}>
+                        <template if:false={isSystemReadOnly}>
+                           <span style="padding-left: 0.4rem;">
+                              <button class="slds-button" onclick={handlePOModalPopUp}>
+                                 <lightning-icon size="xx-small" icon-name="utility:attach" alternative-text="Attach PO"
+                                    title="Attach PO"></lightning-icon>
+                                 <!-- CR# 4946 START -->
+                                 <template if:true={isModalPOFilesUploaded}>
+                                    <span style="padding-left: 0.2rem;">Attach PO</span>
+                                 </template>
+                                 <template if:false={isModalPOFilesUploaded}>
+                                    <span style="padding-left: 0.2rem;">Modify Attach PO</span>
+                                 </template>
+                                 <!-- CR# 4946 END -->
+                              </button>
+                           </span>
+                        </template>
+                        <template for:each={modalPOFilesUploaded} for:item="file" for:index="index">
+                           <span style="padding-left: 0.4rem;color: #0175d1;" key={file.fileId}>
+                              <a data-id={file.fileId} class="slds-cell-wrap"
+                                 onclick={handleAttachmentClick}>{file.fileTitle}</a>
+                           </span>
+                        </template>
+                     </template>
+                     <template if:true={isPOReceivedThroughEDI}>
+                        <span style="padding-left: 0.4rem;color: #0175d1;" if:true={poDetRecord}>
+                           <a data-id={poDetRecord.Id} class="slds-cell-wrap"
+                              onclick={handlePODetailRedirectClick}>{poDetRecord.Name}</a>
+                        </span>
+                     </template>
+                  </li>
+               </template>
+               <template if:false={checkIfPOAttached}>
+                  <li class="slds-item redItem">
+                     <span style="position:relative; top:-3px;padding-right: 3px;">
+                        <lightning-icon class="rej-icon" size="xx-small" icon-name="utility:close"
+                           alternative-text="Reject" title="Reject"></lightning-icon>
+                     </span>
+                     <span class="redItem">
+                        Purchase Order missing :
+                        <template if:false={isSystemReadOnly}>
+                           <span style="padding-left: 0.4rem;">
+                              <button class="slds-button" onclick={handlePOModalPopUp}>
+                                 <lightning-icon size="xx-small" icon-name="utility:attach" alternative-text="Attach PO"
+                                    title="Attach PO"></lightning-icon>
+                                 <span style="padding-left: 0.2rem;">Attach PO</span>
+                              </button>
+                           </span>
+                        </template>
+                        <template if:true={modalPOFilesUploaded} for:each={modalPOFilesUploaded} for:item="file"
+                           for:index="index">
+                           <span style="padding-left: 0.4rem;color: #0175d1;" key={file.fileId}>
+                              <a data-id={file.fileId} class="slds-cell-wrap"
+                                 onclick={handleAttachmentClick}>{file.fileTitle}</a>
+                           </span>
+                        </template>
+                     </span>
+                  </li>
+               </template>
+
+
+               <!-- MultiCloud Check by CR# 3611-->
+               <template if:true={checkIfMultipleCloudIds}>
+                  <!-- If SpecialInstructionsNotRequired == true-->
+                  <template if:true={checkIfSpecialInstructionsNotRequired}>
+                     <li class="slds-item greenItem">
+                        <span style="position:relative; top:-3px;padding-right: 3px;">
+                           <lightning-icon class="app-icon" size="xx-small" icon-name="utility:check"
+                              alternative-text="Approved" title="Approved"></lightning-icon>
+                        </span>
+                        <span>Special Instructions required for Multicloud instance.</span>
+                     </li>
+                  </template>
+                  <template if:false={checkIfSpecialInstructionsNotRequired}>
+                     <li class="slds-item redItem">
+                        <span style="position:relative; top:-3px;padding-right: 3px;">
+                           <lightning-icon class="rej-icon" size="xx-small" icon-name="utility:close"
+                              alternative-text="Reject" title="Reject"></lightning-icon>
+                        </span>
+                        <span class="redItem">
+                           Special Instructions required for Multicloud instance.
+                           <template if:false={isSystemReadOnly}>
+                              <span style="padding-left: 0.4rem;">
+                                 <button class="slds-button" onclick={openSpecialInstructionModal}>
+                                    <span style="padding-left: 0.2rem;">Click here</span>
+                                 </button>
+                              </span>
+                           </template>
+                        </span>
+                     </li>
+                  </template>
+               </template>
+               <!-- SOW Attached-->
+               <template if:true={isSOWRequired}>
+                  <template if:true={isSOWAttached}>
+                     <li class="slds-item greenItem">
+                        <span style="position:relative; top:-3px;padding-right: 3px;">
+                           <lightning-icon class="app-icon" size="xx-small" icon-name="utility:check"
+                              alternative-text="Approved" title="Approved"></lightning-icon>
+                        </span>
+                        <span>SOW Attached.</span>
+                        <template if:false={isSystemReadOnly}>
+                           <span style="padding-left: 0.4rem;">
+                              <button class="slds-button" onclick={handleSOWModalPopUp}>
+                                 <lightning-icon size="xx-small" icon-name="utility:attach"
+                                    alternative-text="Attach SOW" title="Attach SOW"></lightning-icon>
+                                 <span style="padding-left: 0.2rem;">Attach SOW</span>
+                              </button>
+                           </span>
+                        </template>
+                        <template if:true={modalSOWFilesUploaded} for:each={modalSOWFilesUploaded} for:item="file"
+                           for:index="index">
+                           <span style="padding-left: 0.4rem;color: #0175d1;" key={file.fileId}>
+                              <a data-id={file.fileId} class="slds-cell-wrap"
+                                 onclick={handleAttachmentClick}>{file.fileTitle}</a>
+                           </span>
+                        </template>
+                     </li>
+                  </template>
+                  <template if:false={isSOWAttached}>
+                     <li class="slds-item redItem">
+                        <span style="position:relative; top:-3px;padding-right: 3px;">
+                           <lightning-icon class="rej-icon" size="xx-small" icon-name="utility:close"
+                              alternative-text="Reject" title="Reject"></lightning-icon>
+                        </span>
+                        <span class="redItem">
+                           SOW missing :
+                           <template if:false={isSystemReadOnly}>
+                              <span style="padding-left: 0.4rem;">
+                                 <button class="slds-button" onclick={handleSOWModalPopUp}>
+                                    <lightning-icon size="xx-small" icon-name="utility:attach"
+                                       alternative-text="Attach SOW" title="Attach SOW"></lightning-icon>
+                                    <span style="padding-left: 0.2rem;">Attach SOW</span>
+                                 </button>
+                              </span>
+                           </template>
+                        </span>
+                        <template if:true={modalSOWFilesUploaded} for:each={modalSOWFilesUploaded} for:item="file"
+                           for:index="index">
+                           <span style="padding-left: 0.4rem;color: #0175d1;" key={file.fileId}>
+                              <a data-id={file.fileId} class="slds-cell-wrap"
+                                 onclick={handleAttachmentClick}>{file.fileTitle}</a>
+                           </span>
+                        </template>
+                     </li>
+                  </template>
+               </template>
+               <!-- Billing Declaration Attached-->
+               <template if:true={isBillingDeclartionRequired}>
+                  <template if:true={isBillingDeclartionAttached}>
+                     <li class="slds-item greenItem">
+                        <span style="position:relative; top:-3px;padding-right: 3px;">
+                           <lightning-icon class="app-icon" size="xx-small" icon-name="utility:check"
+                              alternative-text="Approved" title="Approved"></lightning-icon>
+                        </span>
+                        <span>Declaration to accept Invoice Attached.</span>
+                        <template if:false={isSystemReadOnly}>
+                           <span style="padding-left: 0.4rem;">
+                              <button class="slds-button" onclick={handleBillingModalPopUp}>
+                                 <lightning-icon size="xx-small" icon-name="utility:attach"
+                                    alternative-text="Attach Billing Declartion" title="Attach Billing Declartion">
+                                 </lightning-icon>
+                                 <span style="padding-left: 0.2rem;">Upload Declaration</span>
+                              </button>
+                           </span>
+                        </template>
+                        <template if:true={modalBillFilesUploaded} for:each={modalBillFilesUploaded} for:item="file"
+                           for:index="index">
+                           <span style="padding-left: 0.4rem;color: #0175d1;" key={file.fileId}>
+                              <a data-id={file.fileId} class="slds-cell-wrap"
+                                 onclick={handleAttachmentClick}>{file.fileTitle}</a>
+                           </span>
+                        </template>
+                     </li>
+                  </template>
+                  <template if:false={isBillingDeclartionAttached}>
+                     <li class="slds-item redItem">
+                        <span style="position:relative; top:-3px;padding-right: 3px;">
+                           <lightning-icon class="rej-icon" size="xx-small" icon-name="utility:close"
+                              alternative-text="Reject" title="Reject"></lightning-icon>
+                        </span>
+                        <span class="redItem">
+                           Declaration to accept Invoice missing :
+                           <template if:false={isSystemReadOnly}>
+                              <span style="padding-left: 0.4rem;">
+                                 <button class="slds-button" onclick={handleBillingModalPopUp}>
+                                    <lightning-icon size="xx-small" icon-name="utility:attach"
+                                       alternative-text="Attach Billing Declartion" title="Attach Billing Declartion">
+                                    </lightning-icon>
+                                    <span style="padding-left: 0.2rem;">Upload Declaration</span>
+                                 </button>
+                              </span>
+                           </template>
+                        </span>
+                        <template if:true={modalBillFilesUploaded} for:each={modalBillFilesUploaded} for:item="file"
+                           for:index="index">
+                           <span style="padding-left: 0.4rem;color: #0175d1;" key={file.fileId}>
+                              <a data-id={file.fileId} class="slds-cell-wrap"
+                                 onclick={handleAttachmentClick}>{file.fileTitle}</a>
+                           </span>
+                        </template>
+                     </li>
+                  </template>
+               </template>
+               <!--PO Check List-->
+               <template if:true={checkPOChecklistPassed}>
+                  <li class="slds-item greenItem">
+                     <span style="position:relative; top:-3px;padding-right: 3px;">
+                        <lightning-icon class="app-icon" size="xx-small" icon-name="utility:check"
+                           alternative-text="check" title="check"></lightning-icon>
+                     </span>
+                     <span class="greenItem">
+                        Confirm PO matches the Primary Quote
+                        <template if:true={isAllRestStepsPassed}>
+                           <template if:false={isSystemReadOnly}>
+                              <span style="padding-left: 0.4rem;">
+                                 <button class="slds-button" onclick={openPOCheckListModal}>
+                                    <span style="padding-left: 0.2rem;">Click here</span>
+                                 </button>
+                              </span>
+                           </template>
+                        </template>
+                     </span>
+                  </li>
+               </template>
+               <template if:false={checkPOChecklistPassed}>
+                  <li class="slds-item redItem" if:true={isAllRestStepsPassed}>
+                     <span style="position:relative; top:-3px;padding-right: 3px;">
+                        <lightning-icon class="rej-icon" size="xx-small" icon-name="utility:close"
+                           alternative-text="Reject" title="Reject"></lightning-icon>
+                     </span>
+                     <span class="redItem">
+                        Confirm PO matches the Primary Quote
+                        <template if:false={isSystemReadOnly}>
+                           <span style="padding-left: 0.4rem;">
+                              <button class="slds-button" onclick={openPOCheckListModal}>
+                                 <span style="padding-left: 0.2rem;">Click here</span>
+                              </button>
+                           </span>
+                        </template>
+                     </span>
+                  </li>
+               </template>
+               <!--CR# 4782 START - Bikram - Competitive Tracking-->
+               <template if:true={isCoreSalesOrRenewalsUser}>
+                  <template if:true={areCompetitiveFieldsPopulated}>
+                     <template if:true={isCompetitiveFieldsRequired}>
+                        <li class="slds-item greenItem">
+                           <span style="position:relative; top:-3px;padding-right: 3px;">
+                              <lightning-icon class="app-icon" size="xx-small" icon-name="utility:check"
+                                 alternative-text="check" title="check"></lightning-icon>
+                           </span>
+                           <span class="greenItem">
+                              Fill in the Competitive fields.
+                              <span style="padding-left: 0.4rem;">
+                                 <button class="slds-button" onclick={openCompetitiveFieldsModal}>
+                                    <span style="padding-left: 0.2rem;">Click here</span>
+                                 </button>
+                              </span>
+                           </span>
+                        </li>
+                     </template>
+                  </template>
+                  <template if:false={areCompetitiveFieldsPopulated}>
+                     <template if:true={isCompetitiveFieldsRequired}>
+                        <li class="slds-item redItem">
+                           <span style="position:relative; top:-3px;padding-right: 3px;">
+                              <lightning-icon class="rej-icon" size="xx-small" icon-name="utility:close"
+                                 alternative-text="Reject" title="Reject"></lightning-icon>
+                           </span>
+                           <span class="redItem">
+                              Fill in the Competitive fields.
+                              <span style="padding-left: 0.4rem;">
+                                 <button class="slds-button" onclick={openCompetitiveFieldsModal}>
+                                    <span style="padding-left: 0.2rem;">Click here</span>
+                                 </button>
+                              </span>
+                           </span>
+                        </li>
+                     </template>
+                  </template>
+               </template>
+               <!--CR# 4782 END - Bikram - Competitive Tracking -->
+            </ul>
+            <template if:true={isSystemEditable}>
+               <template if:true={isAllStepsPassed}>
+                  <template if:true={isAmountWithinSalesTeamThreshold}>
+                     <template if:false={nsIntegartionSuccess}>
+                        <div class="slds-p-around_small slds-align--absolute-center">
+                           <lightning-button variant="brand" name="update" label="Create Sales Order"
+                              onclick={triggerCreateSalesOrderProcess}></lightning-button>
+                        </div>
+                     </template>
+                     <template if:true={isCurrentStageis5C}>
+                        <div class="slds-p-around_small slds-align--absolute-center">
+                           <lightning-button variant="brand" name="update" label="Move Stage to 5A"
+                              onclick={triggerMoveOpptoFinanceProcess}></lightning-button>
+                        </div>
+                     </template>
+                  </template>
+                  <template if:false={isAmountWithinSalesTeamThreshold}>
+                     <div class="slds-p-around_small slds-align--absolute-center">
+                        <lightning-button variant="brand" name="update" label="Move Stage to 5A"
+                           onclick={triggerMoveOpptoFinanceProcess}></lightning-button>
+                     </div>
+                  </template>
+               </template>
+            </template>
+         </div>
+      </template>
+      <template if:false={isLoading}>
+         <div class="slds-p-around_x-medium slds-align_absolute-center slds-p-top_medium">
+            <!--<div class="slds-float_left">
+                         <lightning-button variant="brand" type="submit" name="submit" label="Prev Stage" class="slds-m-horizontal_small slds-align_absolute-center" if:true={displayRegress}  onclick={regressStage} disabled={disablePrevious}></lightning-button>
+                      </div>
+                      <div class="slds-float_right">-->
+            <button class="slds-m-horizontal_small slds-align_absolute-center slds-button slds-button_destructive"
+               data-id="Stage" data-value={stageVal} data-name="StageName" data-dependent-fields="Sub_Stage__c"
+               data-label="PICKLIST" onclick={openModal} if:true={ShowClosedLostButton} disabled={disableClosed}>Closed
+               Lost</button>
+            <!-- </div>-->
+         </div>
+      </template>
+      <!--</lightning-tab>-->
+      <!-- Guide for Success -->
+      <!--
+             <lightning-tab label="Other Activities" value="2" onactive={handleActive}>
+                <div class="slds-p-horizontal_small">
+                   <div style="font-size: small;">The following activities are nice to have to move to next stage </div>
+                   <div style="font-size: small;padding-top: 5px; color:gray;">(The system will let you move opportunity to next stage even if these activities are not met) </div>
+                   <template for:each={optionalFields} for:item="fieldProp">
+                      <ul class="slds-has-dividers_around-space slds-p-around_x-small" key={fieldProp.randomId}>
+                         <template if:true={fieldProp.booleanValue}>
+                            <li class="slds-item greenItem slds-p-around_x-medium">
+                               <span style="position:relative; top:-3px;padding-right: 3px;">
+                                  <lightning-icon class="app-icon" size="xx-small" icon-name="utility:check"
+                                     alternative-text="Approved" title="Approved"></lightning-icon>
+                               </span>
+                               <span style="position:relative; padding-right: 3px;">
+                                  {fieldProp.fieldLabel}
+                                  <template if:true={fieldProp.displayFieldValue}>
+                                     <span style="padding-left: 0.5rem;" class="fieldValue">
+                                     {fieldProp.fieldValue}
+                                     </span>
+                                  </template>
+                                  <template if:true={fieldProp.attrs}>
+                                     <template for:each={fieldProp.attrs} for:item="att">
+                                        <a style="padding-left: 5px;" class="lineHeader" href="#" key={att.recId} data-id={att.recId} data-name={att.objectName} onclick={redirectToRecord}>{att.recValue}</a>
+                                     </template>
+                                  </template>
+                                  <template if:true={fieldProp.fileInfo}>
+                                     <span style="padding: 2px;" key={fieldProp.fileInfo.fileId}>
+                                     <a style="padding-left: 5px;" class="lineHeader" href="#"  data-id={fieldProp.fileInfo.fileId} onclick={previewFile}>{fieldProp.fileInfo.Title}</a>
+                                     </span>
+                                  </template>
+                                  <template if:true={fieldProp.allowInput}>
+                                     <span style="padding-left: 0.4rem;">
+                                        <template if:true={fieldProp.fileInfo}>
+                                           <button  class="slds-button" onclick={openModal} data-id={fieldProp.fieldLabel} data-value={fieldProp.fieldValue} data-file-name={fieldProp.fileInfo.Title} data-file-id={fieldProp.fileInfo.fileId}  
+                                              data-dependent-fields={fieldProp.dependentFieldNames} data-err-msg={fieldProp.errMsg} data-allowed-values={fieldProp.allowedValues} data-name={fieldProp.fieldName} data-label={fieldProp.fieldType}>
+                                           <span style="padding-left: 0.2rem;" class="lineHeader"> Click here</span>
+                                           </button >
+                                        </template>
+                                        <template if:false={fieldProp.fileInfo}>
+                                           <button  class="slds-button" onclick={openModal} data-id={fieldProp.fieldLabel}
+                                              data-dependent-fields={fieldProp.dependentFieldNames}   data-value={fieldProp.fieldValue} data-name={fieldProp.fieldName} data-label={fieldProp.fieldType} data-err-msg={fieldProp.errMsg} data-allowed-values={fieldProp.allowedValues}>
+                                           <span style="padding-left: 0.2rem;" class="lineHeader"> Click here</span>
+                                           </button >
+                                        </template>
+                                     </span>
+                                  </template>
+                               </span>
+                            </li>
+                         </template>
+                         <template if:false={fieldProp.booleanValue}>
+                            <li class="slds-item redItem slds-p-around_x-medium" >
+                               <span style="position:relative; top:-3px;padding-right: 3px;">
+                                  <lightning-icon class="rej-icon" size="xx-small" icon-name="utility:close" alternative-text="Reject" title="Reject"></lightning-icon>
+                               </span>
+                               <span class="redItem">
+                                  {fieldProp.fieldLabel}
+                                  <template if:true={fieldProp.allowInput}>
+                                     <span style="padding-left: 0.4rem;">
+                                     <button  class="slds-button" onclick={openModal} data-id={fieldProp.fieldLabel} data-value={fieldProp.fieldValue}
+                                        data-dependent-fields={fieldProp.dependentFieldNames} data-name={fieldProp.fieldName} data-label={fieldProp.fieldType} data-err-msg={fieldProp.errMsg} data-allowed-values={fieldProp.allowedValues}>
+                                     <span style="padding-left: 0.2rem;" class="lineHeader">Click here</span>
+                                     </button >
+                                     </span>
+                                  </template>
+                                  <template if:true={fieldProp.actionName}>
+                                     <span style="padding-left: 0.4rem;">
+                                     <button  class="slds-button" onclick={redirectToRecord} data-name={fieldProp.actionObjectName}>
+                                     <span style="padding-left: 0.2rem;" class="lineHeader">{fieldProp.actionName}</span>
+                                     </button >
+                                     </span>
+                                  </template>
+                               </span>
+                            </li>
+                         </template>
+                      </ul>
+                   </template>
+                </div>
+             </lightning-tab>
+             <lightning-tab label="Guide for Success" value="3" onactive={handleActive}>
+                <div class="slds-p-horizontal_small">
+                   <div class="slds-grid slds-gutters slds-p-around_x-small">
+                      <div style="font-size: x-small;vertical-align: middle;" class="slds-col lineHeader">No. of Days in the current Stage</div>
+                      <div style="font-size: small; font-weight:bold;" class="slds-col slds-size_5-of-7" >{daysinCurrentStage}</div>
+                   </div>
+                   <div class="slds-grid slds-gutters slds-p-around_x-small">
+                      <div style="font-size: x-small;vertical-align: middle;" class="slds-col lineHeader">Stage Description</div>
+                      <div style="font-size: x-small;" class="slds-col slds-size_5-of-7" >
+                         <lightning-formatted-rich-text value={stageDescription} ></lightning-formatted-rich-text>
+                      </div>
+                   </div>
+                   <div class="slds-grid slds-gutters slds-p-around_x-small">
+                      <div class="slds-col lineHeader" style="font-size: x-small;">Action Steps &amp; Owner</div>
+                      <div class="slds-col slds-size_5-of-7" style="font-size: x-small; text-align: left;">
+                         <lightning-formatted-rich-text value={actorsInvolved}></lightning-formatted-rich-text>
+                      </div>
+                   </div>
+                   <div class="slds-grid slds-gutters slds-p-around_x-small">
+                      <div class="slds-col lineHeader" style="font-size: x-small;">Important Links</div>
+                      <div class="slds-col slds-size_5-of-7" style="font-size: x-small; text-align: left; word-wrap: break-word;">
+                         <template if:true={importantLinks}>
+                            <template for:each={importantLinks} for:item="obj">
+                               <a class="lineHeader"  href="#" key={obj.recId} data-id={obj.recId} data-name={obj.objectName} onclick={redirectToRecord}>{obj.recValue} <br/></a>
+                            </template>
+                         </template>
+                      </div>
+                   </div>-->
+      <!--
+                      <div class="slds-grid slds-gutters slds-p-around_x-small">
+                         <div class="slds-col lineHeader" style="font-size: small;">Created By</div>
+                         <div class="slds-col  slds-size_4-of-7" style="font-size: small; text-align: left;">{createdByName}</div>
+                      </div>
+                      <div class="slds-grid slds-gutters slds-p-around_x-small">
+                         <div class="slds-col lineHeader" style="font-size: small;">Opp Owner</div>
+                         <div class="slds-col slds-size_4-of-7" style="font-size: small; text-align: left;">{ownerName}</div>
+                      </div>
+                      <div class="slds-grid slds-gutters slds-p-around_x-small">
+                         <div class="slds-col lineHeader" style="font-size: small;">Rep Forecast Category</div>
+                         <div class="slds-col slds-size_4-of-7" style="font-size: small; text-align: left;">{forecastCategory}</div>
+                      </div>
+                      <div class="slds-grid slds-gutters slds-p-around_x-small">
+                         <div class="slds-col lineHeader" style="font-size: small;">Current Stage Creation Date</div>
+                         <div class="slds-col slds-size_4-of-7" style="font-size: small; text-align: left;">{lastChangedDate}</div>
+                      </div>
+                      -->
+      <!--</div>
+             </lightning-tab>
+          </div>
+       </lightning-tabset>-->
+      <template if:true={modalWindow}>
+         <!--   <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+             class="slds-modal slds-fade-in-open">
+             <div class="slds-modal__container">-->
+         <c-opp-stage-checklist-child-cmp record-id={recordId} record-type-id={recordTypeId} field-name={fieldName}
+            field-label={fieldLabel} field-val={fieldVal} file-name={fileName} file-id={fileId} field-type={fieldType}
+            allowed-values={allowedValues} dependent-fields={dependentFieldNames} err-msg={errMsg}
+            oncallpasstoparent={handleChildMessage} onchildclose={handleChildClose}></c-opp-stage-checklist-child-cmp>
+         <!--</div>
+             </section>-->
+         <div class="slds-backdrop slds-backdrop_open"></div>
+      </template>
+   </lightning-card>
+   <!-- Upload File Modal/Popup Box Starts here -->
+   <template if:true={openUploadFileModal}>
+      <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+         class="slds-modal slds-fade-in-open">
+         <div class="slds-modal__container">
+            <div class="slds-is-relative">
+               <!-- Modal/Popup Box LWC header here -->
+               <header class="slds-modal__header">
+                  <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                     onclick={closeModal}>
+                     <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small">
+                     </lightning-icon>
+                     <span class="slds-assistive-text">Close</span>
+                  </button>
+                  <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{fileUploadHeader}</h2>
+               </header>
+               <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                  <template if:true={isSpinnerLoading}>
+                     <lightning-spinner alternative-text="Loading" variant="brand" size="large">
+                     </lightning-spinner>
+                  </template>
+                  <!--Upload PO Body -->
+                  <template if:true={isPOFileUpload}>
+                     <div class="slds-p-around_medium slds-align--absolute-center">Please attached the verified PO
+                        documents only.</div>
+                     <lightning-record-edit-form object-api-name='Opportunity' record-id={recordId}
+                        onsubmit={handlePOSubmit} onsuccess={handlePOSuccess} onerror={handlePOError}>
+                        <lightning-messages></lightning-messages>
+                        <template if:true={poHasError}>
+                           <div class="slds-p-around_medium slds-align--absolute-center redItem">{poErrorMsg}</div>
+                        </template>
+                        <div class="slds-p-horizontal_small">
+                           <lightning-input-field placeholder="Please specify partner PO Number here."
+                              field-name='Partner_PO_Number__c' required>
+                           </lightning-input-field>
+                        </div>
+                        <div class="slds-p-horizontal_small">
+                           <lightning-file-upload name="fileUploader" onuploadfinished={handleUploadFinished}
+                              file-field-name="Source_fileupload__c" file-field-value={fileFieldValue}>
+                           </lightning-file-upload>
+                        </div>
+                        <div class="slds-p-around_medium">
+                           <!--<template for:each={modalPOFilesUploaded} for:item="file">-->
+                           <template for:each={loadedFiles} for:item="file" for:index="index">
+                              <span style="padding: 2px;" key={file.fileId}>
+                                 <lightning-pill label={file.fileTitle} data-id={file.fileId} onremove={handleRemove}>
+                                 </lightning-pill>
+                              </span>
+                           </template>
+                        </div>
+                        <div class="slds-p-top_medium slds-p-horizontal_small slds-align--absolute-center">
+                           <lightning-button variant="brand" type="submit" name="update" label="Save Details">
+                           </lightning-button>
+                        </div>
+                     </lightning-record-edit-form>
+                  </template>
+                  <!--Upoad SOW Body -->
+                  <template if:true={isSOWFileUpload}>
+                     <div class="slds-p-around_medium slds-align--absolute-center">Please attached the verified SOW
+                        document only.</div>
+                     <div class="slds-p-around_medium">
+                        <lightning-file-upload name="fileUploader" onuploadfinished={handleUploadFinished}
+                           file-field-name="Source_fileupload__c" file-field-value={fileFieldValue}>
+                        </lightning-file-upload>
+                     </div>
+                     <div class="slds-p-around_medium">
+                        <!--<template for:each={modalSOWFilesUploaded} for:item="file" for:index="index">-->
+                        <template for:each={loadedFiles} for:item="file" for:index="index">
+                           <span style="padding: 2px;" key={file.fileId}>
+                              <lightning-pill label={file.fileTitle} data-id={file.fileId} onremove={handleRemove}>
+                              </lightning-pill>
+                           </span>
+                        </template>
+                     </div>
+                  </template>
+                  <!-- Bill Declartion -->
+                  <template if:true={isBILLFileUpload}>
+                     <div class="slds-p-around_medium slds-align--absolute-center">Declaration to accept Invoice
+                        missing.</div>
+                     <div class="slds-p-around_medium">
+                        <lightning-file-upload name="fileUploader" onuploadfinished={handleUploadFinished}
+                           file-field-name="Source_fileupload__c" file-field-value={fileFieldValue}>
+                        </lightning-file-upload>
+                     </div>
+                     <div class="slds-p-around_medium">
+                        <!--<template for:each={modalBillFilesUploaded} for:item="file" for:index="index">-->
+                        <template for:each={loadedFiles} for:item="file" for:index="index">
+                           <span style="padding: 2px;" key={file.fileId}>
+                              <lightning-pill label={file.fileTitle} data-id={file.fileId} onremove={handleRemove}>
+                              </lightning-pill>
+                           </span>
+                        </template>
+                     </div>
+                  </template>
+               </div>
+               <footer class="slds-modal__footer">
+                  <button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Cancel</button>
+                  <template if:false={isPOFileUpload}>
+                     <button class="slds-button slds-button_brand" onclick={submitDetails} title="Save">Save</button>
+                  </template>
+               </footer>
+            </div>
+         </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+   </template>
+   <!-- PO Check List Modal Starts here -->
+   <template if:true={poCheckList}>
+      <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-02" aria-modal="true"
+         class="slds-modal slds-fade-in-open">
+         <div class="slds-modal__container">
+            <lightning-record-edit-form object-api-name='Opportunity' record-id={recordId}
+               onload={handlePOCheckPrimaryQuoteLoad} onsubmit={handlePOCheckPrimaryQuoteSubmit}
+               onsuccess={handlePOCheckPrimaryQuoteSuccess}>
+               <!-- Modal/Popup Box LWC header here -->
+               <header class="slds-modal__header">
+                  <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                     onclick={closePOCheckListModal}>
+                     <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small">
+                     </lightning-icon>
+                     <span class="slds-assistive-text">Close</span>
+                  </button>
+                  <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">PO matches the Primary Quote
+                  </h2>
+               </header>
+               <div class="slds-modal__content slds-p-around_medium slds-is-relative " id="modal-content-id-2">
+                  <template if:true={isSpinnerLoading}>
+                     <lightning-spinner alternative-text="Loading" variant="brand" size="large">
+                     </lightning-spinner>
+                  </template>
+                  <lightning-messages></lightning-messages>
+                  <template if:true={poCheckListHasError}>
+                     <div class="slds-p-around_medium slds-align--absolute-center redItem">{poCheckListErrorMsg}</div>
+                  </template>
+                  <div class="slds-p-horizontal_small">
+                     <lightning-input-field placeholder="Please specify any special instruction to finance."
+                        field-name='Special_Instructions_to_Finance__c'>
+                     </lightning-input-field>
+                  </div>
+                  <div class="slds-p-around_medium">I have confirmed the following.</div>
+                  <div class="slds-p-around_medium">
+                     <lightning-checkbox-group name="PO Checklist Group" label="" options={checkListOptionValues}
+                        value={poCheckBoxValues} onchange={handlePoCheckListChange}></lightning-checkbox-group>
+                  </div>
+               </div>
+               <footer class="slds-modal__footer">
+                  <lightning-button if:false={isSpinnerLoading} variant="brand" type="submit" name="submit"
+                     label="Submit" class="slds-m-horizontal_small"></lightning-button>
+                  <button class="slds-button slds-button_neutral" onclick={closePOCheckListModal}
+                     title="Cancel">Cancel</button>
+               </footer>
+            </lightning-record-edit-form>
+         </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+   </template>
+   <!-- CR# 3611 Special Instruction Modal Starts here -->
+   <template if:true={specialInstructionForMultiCloud}>
+      <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-02" aria-modal="true"
+         class="slds-modal slds-fade-in-open">
+         <div class="slds-modal__container">
+            <lightning-record-edit-form object-api-name='Opportunity' record-id={recordId}
+               onload={handleSpecialInstructionModal} onsubmit={handleSpecialInstructionSubmit}
+               onsuccess={handleSpecialInstructionSuccess}>
+               <!-- Modal/Popup Box LWC header here -->
+               <header class="slds-modal__header">
+                  <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                     onclick={closeSpecialInstructionModal}>
+                     <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small">
+                     </lightning-icon>
+                     <span class="slds-assistive-text">Close</span>
+                  </button>
+                  <h2 id="modal-heading-03" class="slds-text-heading_medium slds-hyphenate">Mutli Cloud Instructions
+                  </h2>
+               </header>
+               <div class="slds-modal__content slds-p-around_medium slds-is-relative " id="modal-content-id-3">
+                  <template if:true={isSpinnerLoading}>
+                     <lightning-spinner alternative-text="Loading" variant="brand" size="large">
+                     </lightning-spinner>
+                  </template>
+                  <lightning-messages></lightning-messages>
+                  <template if:true={poCheckListHasError}>
+                     <div class="slds-p-around_medium slds-align--absolute-center redItem">{poCheckListErrorMsg}</div>
+                  </template>
+                  <div class="slds-grid slds-wrap slds-p-around--medium">
+                     <div class="slds-col slds-size_12-of-12 slds-p-horizontal_medium">
+                        <template if:true={cloudTypeToCloudIDMap}>
+                           <h3 class="slds-p-vertical_small" title="Multi Cloud List">
+                              <b>{getOppAccountName} is deployed to following clouds</b>
+                           </h3>
+                           <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_col-bordered">
+                              <thead>
+                                 <tr class="slds-text-title_caps">
+                                    <th scope="col">
+                                       <div title="Key">ZScaler Type</div>
+                                    </th>
+                                    <th scope="col">
+                                       <div title="Value">ZScaler List</div>
+                                    </th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 <template for:each={cloudTypeToCloudIDMap} for:item="keyValue">
+                                    <tr key={keyValue.key}>
+                                       <th scope="col">
+                                          <div>{keyValue.key}</div>
+                                       </th>
+                                       <th scope="col">
+                                          <div class="slds-cell-wrap">{keyValue.value}</div>
+                                       </th>
+                                    </tr>
+                                 </template>
+                              </tbody>
+                           </table>
+                        </template>
+                     </div>
+                     <div class="slds-col slds-size_12-of-12 slds-p-horizontal_medium">
+                        &nbsp;
+                     </div>
+                     <div class="slds-col slds-size_10-of-12 slds-p-horizontal_medium">
+                        <div>
+                           <div class="slds-form-element slds-form-element_horizontal">
+                              <label class="slds-form-element__label" style="max-width: unset;" for="fieldid1">No
+                                 further instructions needed</label>
+                              <div class="slds-form-element__control">
+                                 <lightning-input-field id="fieldid1" type="checkbox"
+                                    label="No further information needed/Not Applicable" name="input1"
+                                    field-name='Special_Instructions_Not_Required__c' variant="label-hidden"
+                                    onchange={handleFieldChange}></lightning-input-field>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="slds-p-vertical_x-small">
+                           <label class="slds-form-element__label" style="max-width: unset;" for="fieldid1">Provide
+                              special instructions for Multiple Cloud Instances</label>
+                           <lightning-input-field type="text" label="Istructions for Multi-Cloud"
+                              placeholder="type here..." field-name='Special_Instructions_for_MultiCloud__c'
+                              variant="label-hidden" onchange={handleFieldChange}></lightning-input-field>
+                        </div>
+                     </div>
+                     <div class="slds-col slds-size_2-of-12 slds-p-horizontal_medium">
+                        &nbsp;
+                     </div>
+                  </div>
+               </div>
+               <footer class="slds-modal__footer">
+                  <lightning-button if:false={isSpinnerLoading} variant="brand" type="submit" name="submit"
+                     label="Submit" class="slds-m-horizontal_small" disabled={disableButton}></lightning-button>
+                  <lightning-button if:false={isSpinnerLoading} variant="brand" type="button" name="cancel"
+                     label="Cancel" onclick={closeSpecialInstructionModal} class="slds-m-horizontal_small">
+                  </lightning-button>
+               </footer>
+            </lightning-record-edit-form>
+         </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+   </template>
+   <!--CR# 4782 START - Bikram - Competitive Tracking Modal Starts here -->
+   <template if:true={isCompetitiveFieldsModalOpened}>
+      <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-02" aria-modal="true"
+         class="slds-modal slds-fade-in-open">
+         <div class="slds-modal__container">
+            <lightning-record-edit-form object-api-name='Opportunity' record-id={recordId}
+               onload={handleCompetitiveFieldsLoad} onsubmit={handleCompetitiveFieldsSubmit}
+               onsuccess={handleCompetitiveFieldsSuccess} onerror={handleCompetitiveFieldsError}>
+               <template if:true={isSpinnerLoading}>
+                  <lightning-spinner alternative-text="Loading" variant="brand" size="large">
+                  </lightning-spinner>
+               </template>
+               <header class="slds-modal__header">
+                  <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                     onclick={closeCompetitiveFieldsModal}>
+                     <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small">
+                     </lightning-icon>
+                     <span class="slds-assistive-text">Close</span>
+                  </button>
+                  <h2 id="modal-heading-09" class="slds-text-heading_medium slds-hyphenate">Enter Competitive field
+                     details.
+                  </h2>
+               </header>
+               <div class="slds-modal__content slds-p-around_medium slds-is-relative " id="modal-content-id-9">
+                  <lightning-messages if:true={closeLightningMessages}></lightning-messages>
+                  <div class="slds-p-horizontal_small">
+                     <lightning-input-field field-name='How_competitive_was_the_deal__c' variant="label-inline"
+                        required>
+                     </lightning-input-field>
+                  </div>
+                  <!-- StageName is required because of the dependent picklist Primary_Competitor__c, 
+                           using slds-hide as we are not showing it to the user -->
+                  <div class="slds-p-horizontal_small slds-hide">
+                     <lightning-input-field field-name='StageName' variant="label-inline" required>
+                     </lightning-input-field>
+                  </div>
+                  <div class="slds-p-horizontal_small">
+                     <lightning-input-field data-id={Primary_Competitor__c} field-name='Primary_Competitor__c'
+                        variant="label-inline" onchange={handlePrimaryCompetitorFieldChange} required>
+                     </lightning-input-field>
+                  </div>
+                  <div class="slds-p-horizontal_small">
+                     <lightning-input-field field-name='Other_Primary_competitor__c' variant="label-inline"
+                        required={isOtherPrimaryCompetitorRequired}>
+                     </lightning-input-field>
+                  </div>
+                  <div class="slds-p-horizontal_small">
+                     <lightning-input-field data-id={Secondary_Competitors__c} field-name='Secondary_Competitors__c'
+                        variant="label-inline" onchange={handleSecondaryCompetitorFieldChange} required>
+                     </lightning-input-field>
+                  </div>
+                  <div class="slds-p-horizontal_small">
+                     <lightning-input-field field-name='Other_Secondary_competitor__c' variant="label-inline"
+                        required={isOtherSecondaryCompetitorRequired}>
+                     </lightning-input-field>
+                  </div>
+               </div>
+               <footer class="slds-modal__footer">
+                  <lightning-button if:false={isSpinnerLoading} variant="brand" type="submit" name="submit"
+                     label="Submit" class="slds-m-horizontal_small"></lightning-button>
+                  <button class="slds-button slds-button_neutral" onclick={closeCompetitiveFieldsModal}
+                     title="Cancel">Cancel</button>
+               </footer>
+            </lightning-record-edit-form>
+         </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+   </template>
+   <!-- CR# 4782 END - Bikram - Competitive Tracking Modal ends here -->
+   <c-custom-toast-component auto-close-time="3000"></c-custom-toast-component>
+</template>

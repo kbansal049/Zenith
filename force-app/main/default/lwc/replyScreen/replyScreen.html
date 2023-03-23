@@ -1,0 +1,266 @@
+<template>
+    <div style="background:white">
+
+
+        <template if:true={openUploadFileModal}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box LWC header here -->
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close" onclick={closeModal}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                                size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">File Upload</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <!--<lightning-input style="bottom: 15px;" type="file" onchange={handleFilesChange} multiple>
+                        </lightning-input>-->
+              
+                                <div class="slds-p-around_medium">
+                                    <lightning-file-upload
+                                            name="fileUploader"
+                                            onuploadfinished={handleUploadFinished}
+                                            multiple>
+                                    </lightning-file-upload>
+                                </div>
+                    
+                        <div>
+                            <template for:each={modalFilesUploaded} for:item="file" for:index="index">
+                                <span style="padding: 2px;" key={file.fileId}>
+                                    <lightning-pill label={file.Title} data-id={index} onremove={handleRemove}>
+                                    </lightning-pill>
+                                </span>
+                            </template>
+                        </div>
+                    </div>
+
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={closeModal}
+                            title="Cancel">Cancel</button>
+                        <button class="slds-button slds-button_brand" onclick={submitDetails} title="Save">Save</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+
+        </template>
+
+
+        <template if:true={isSpinnerLoading}>
+            <lightning-spinner alternative-text="Loading" variant="brand" size="large">
+            </lightning-spinner>
+        </template>
+
+
+
+        <table style={borderStyle}>
+            <thead>
+
+                <template if:false={isOrderTrackerDashboard}>
+                    <th>
+                        <lightning-button variant="brand" label="Back to Mail Chain" title="Back to Mail Chain"
+                            icon-name="action:back" class="slds-m-left_x-small" onclick={handleParentComponent}>
+                        </lightning-button>
+                    </th>
+                </template>
+
+                <template if:true={isOrderTrackerDashboard}>
+                    <th style="background:#1B5297;
+                            border: solid 2px;
+                            height: 45px;">
+                        <!-- Back Arrow Button For Moving On Mail Chain Dashboard Component -->
+                        <div>
+                            <lightning-icon class="pointer" icon-name="utility:jump_to_left" size="x-large"
+                                alternative-text="Back" title="Back To Mail Chain" onclick={handleParentComponent}>
+                            </lightning-icon>
+                            <template if:true={isOrderTracker}>
+                                <span style="color: white;padding-left: 10px;
+                  padding-top: 1px;">ORDER TRACKER</span>
+                            </template>
+                            <template if:true={isEmailTracker}>
+                                <span style="color: white;padding-left: 10px;
+                    padding-top: 1px;">EMAIL TRACKER</span>
+                            </template>
+                        </div>
+                    </th>
+                </template>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="slds-p-around_medium lgc-bg">
+                            <p style="font-weight: bold">To <span style="color: red;">*<sup>
+                                        <lightning-helptext class="slds-m-left_xx-small"
+                                            content="Please provide semi-colon ';' seperated emails">
+                                        </lightning-helptext>
+                                    </sup></span></p>
+<!--                            <lightning-input type="text" variant="label-hidden" value={toEmails} oncommit={setToEmails}
+                                required="true"></lightning-input>-->
+                                <c-custom-reusable-lookup obj-name="User" search-placeholder="Search User"
+                                icon-name="utility:search" onlookupselected={handleLookup} is-multiselect></c-custom-reusable-lookup>
+                                <div if:true={toEmailAddress}>
+                                    <template for:each={toEmailAddress} for:item="pill" >
+                                        <lightning-pill key={pill} label={pill} onremove={handlePillRemove} data-id={pill}></lightning-pill>
+                                    </template>
+                                </div>
+                            <template if:true={toEmails}>
+                                <template if:true={toError}>
+                                    <p style="margin-left:1px;color: red;">Invalid Email address : {toError}</p>
+                                </template>
+                            </template>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="slds-p-around_medium lgc-bg">
+                            <p style="font-weight: bold">CC<sup>
+                                    <lightning-helptext class="slds-m-left_xx-small"
+                                        content="Please provide semi-colon ';' seperated emails"></lightning-helptext>
+                                </sup></p>
+                   <!--         <lightning-input type="text" variant="label-hidden" value={ccEmails} oncommit={setCCEmails}>
+                            </lightning-input>-->
+                            <c-custom-reusable-lookup obj-name="User" search-placeholder="Search User"
+                            icon-name="utility:search" onlookupselected={handleCClookup} is-multiselect></c-custom-reusable-lookup>
+                            <div if:true={ccEmailAddress}>
+                                <template for:each={ccEmailAddress} for:item="pill" >
+                                    <template if:true={pill} >
+                                        <lightning-pill key={pill} label={pill} onremove={handleCCPillRemove} data-id={pill}></lightning-pill>
+                                    </template>
+                                    
+                                </template>
+                            </div>
+
+                            <template if:true={ccEmails}>
+                                <template if:true={ccErrors}>
+                                    <p style="margin-left:1px;color: red;">Invalid Email address :{ccErrors}</p>
+                                </template>
+                            </template>
+                        </div>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>
+                        <div class="slds-p-around_medium lgc-bg">
+                            <p style="font-weight: bold">BCC<sup>
+                                    <lightning-helptext class="slds-m-left_xx-small"
+                                        content="Please Seach for a contact With the name or email or press enter"></lightning-helptext>
+                                </sup></p>
+                        <!--    <lightning-input type="text" variant="label-hidden" value={bccEmails}
+                                oncommit={setBccEmails}></lightning-input>-->
+
+                            <c-custom-reusable-lookup obj-name="User" search-placeholder="Search User"
+                                icon-name="utility:search" onlookupselected={handleBCClookup} is-multiselect></c-custom-reusable-lookup>
+                                <div if:true={bccEmailAddress}>
+                                    <template for:each={bccEmailAddress} for:item="pill" >
+                                        <template if:true={pill} >
+                                            <lightning-pill key={pill} label={pill} onremove={handleBCCPillRemove} data-id={pill}></lightning-pill>
+                                        </template>
+                                        
+                                    </template>
+                                </div>    
+                            <template if:true={bccEmails}>
+                                <template if:true={bccErrors}>
+                                    <p style="margin-left:1px;color: red;">Invalid Email address : {bccErrors}</p>
+                                </template>
+                            </template>
+                        </div>
+
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>
+                        <div class="slds-p-around_medium lgc-bg">
+                            <p style="font-weight: bold">Subject</span></p>
+                            <p style="
+                            font-size: 14px;
+                            padding-left: 9px;
+                            border: solid 0.5px rgb(221, 219, 218);
+                            border-radius: 3.5px;
+                            padding-top: 3px;
+                            padding-bottom: 3px;">
+                                <lightning-formatted-text value={subject}></lightning-formatted-text>
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-left:16px">
+                        <div class="slds-grid">
+                            <div class="slds-col slds-size_1-of-12">
+                                <lightning-button variant="brand" label="Attach Files" title="Attach Files"
+                                    onclick={handleModalPopUp}></lightning-button>
+                            </div>
+                            <div class="slds-col slds-size_11-of-12">
+                                <template for:each={savedfiles} for:item="file" for:index="index">
+                                    <span style="padding: 5px;" key={file.fileId}>
+                                        <lightning-pill class="my-pill" label={file.Title} name={index}
+                                            onremove={handleRemovesavedFiles}>
+                                            <lightning-icon class="my-icon" icon-name="utility:attach"
+                                                alternative-text="account"></lightning-icon>
+                                        </lightning-pill>
+                                    </span>
+                                </template>
+                            </div>
+                        </div>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div>
+                            <p style="font-weight: bold;margin:16px">Body</p>
+                            <lightning-input-rich-text class="richtextarea" label="Body" style="margin: 16px;"
+                                value={inputBody} onchange={setBody} disabled-categories="INSERT_CONTENT" >
+                            </lightning-input-rich-text>
+
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p style="font-weight: bold;margin:16px">Previous Mail Chain</p>
+                        <div class="slds-p-around_medium lgc-bg" style="overflow-y: auto;margin:16px;border-radius: 5px;height:500px;border-style: groove;
+                    border-color: aliceblue;">
+                            <lightning-formatted-rich-text value={previousMailChain}></lightning-formatted-rich-text>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div style="padding-left: 30%; margin-bottom: 23px;" class="slds-grid">
+                            <div class="slds-col slds-size_1-of-6">
+                                <template if:true={isOrderTracker}>
+                                    <lightning-combobox name="Status" label="" value={selectedStatusValue}
+                                        placeholder={orderTrackerstatus} onchange={handleStatusChange}
+                                        dropdown-alignment="bottom-left" options={orderTrackerStatusPicklist}>
+                                    </lightning-combobox>
+                                </template>
+                                <template if:true={isEmailTracker}>
+                                    <lightning-combobox name="Status" label="" value={selectedStatusValue}
+                                        placeholder={orderTrackerstatus} onchange={handleStatusChange}
+                                        dropdown-alignment="bottom-left" options={emailTrackerStatusPicklist}>
+                                    </lightning-combobox>
+                                </template>
+
+                            </div>
+                            <div style="padding-top: 17px;padding-left: 19%;" class="slds-col slds-size_1-of-6">
+                                <lightning-button style="margin-left:11%" variant="brand" label="Send" title="Send"
+                                    onclick={replyAll}></lightning-button>
+                            </div>
+                            
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <c-custom-toast-component auto-close-time="3000"></c-custom-toast-component>
+</template>

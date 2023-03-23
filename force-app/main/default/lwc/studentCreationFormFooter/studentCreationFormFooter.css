@@ -1,0 +1,567 @@
+/*! CSS Used from: Embedded */
+span,
+div,
+a,
+p {
+  font-family: "Roboto";
+}
+.flex-6 {
+  flex-basis: 50%;
+  flex-grow: 0;
+  max-width: 50%;
+}
+.flex-12 {
+  flex-basis: 100%;
+  flex-grow: 0;
+  max-width: 100%;
+}
+@media (min-width: 768px) {
+  .flex-m-4 {
+    flex-basis: 33.333333%;
+    flex-grow: 0;
+    max-width: 33.333333%;
+  }
+}
+@media (min-width: 1213px) {
+  .flex-l-2 {
+    flex-basis: 16.666667%;
+    flex-grow: 0;
+    max-width: 16.666667%;
+  }
+}
+.center-fixed-width {
+  margin: auto;
+}
+@media only screen and (max-width: 544px) {
+  .center-fixed-width {
+    padding: 0 12px;
+    width: 100%;
+  }
+}
+@media only screen and (min-width: 545px) {
+  .center-fixed-width {
+    width: 528px;
+  }
+}
+@media only screen and (min-width: 607px) {
+  .center-fixed-width {
+    width: 590px;
+  }
+}
+@media only screen and (min-width: 801px) {
+  .center-fixed-width {
+    width: 784px;
+  }
+}
+@media only screen and (min-width: 926px) {
+  .center-fixed-width {
+    padding: 0 24px;
+    width: 909px;
+  }
+}
+@media only screen and (min-width: 1213px) {
+  .center-fixed-width {
+    width: 1196px;
+  }
+}
+@media only screen and (min-width: 1500px) {
+  .center-fixed-width {
+    width: 1483px;
+  }
+}
+/*! CSS Used from: Embedded */
+.ep-footer {
+  border: unset;
+  height: unset;
+  margin-left: 0 !important;
+  padding: 0;
+  position: relative;
+  z-index: 1;
+  background-color: #fff;
+}
+.ep-footer .left {
+  display: none;
+}
+.ep-footer .right {
+  bottom: 30px;
+  left: 50%;
+  position: absolute;
+  transform: translateX(-50%);
+}
+@media (min-width: 768px) {
+  .ep-footer .right {
+    left: 128px;
+    transform: none;
+  }
+}
+.ep-footer .footer-container {
+  background: url(https://everpath-course-content.s3.amazonaws.com/instructor/2ot89qyy7b2f8-zscaler/proserv/home-footer-background%402x.webp);
+  background-position: center;
+}
+.ep-footer .footer-container .footer-upper {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 34px 24px 32px;
+}
+@media only screen and (max-width: 544px) {
+  .ep-footer .footer-container .footer-upper {
+    width: 100%;
+  }
+}
+.ep-footer .footer-container .footer-upper .footer-top {
+  border-bottom: 0.0625rem solid #4b5f88;
+  padding-bottom: 2.875rem;
+  margin-bottom: 3.125rem;
+  width: 100%;
+}
+.ep-footer .footer-container .footer-upper .footer-top img {
+  height: 30px;
+  width: 160px;
+  position: relative;
+  top: 0;
+  transition: margin-left ease 0.5s;
+}
+.ep-footer .footer-container .footer-upper .footer-top img:hover {
+  margin-left: -10px;
+}
+.ep-footer .footer-container .footer-upper .footer-section-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+.ep-footer
+  .footer-container
+  .footer-upper
+  .footer-section-container
+  .footer-section {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+@media (min-width: 768px) {
+  .ep-footer
+    .footer-container
+    .footer-upper
+    .footer-section-container
+    .footer-section {
+    align-items: flex-start;
+  }
+}
+.ep-footer
+  .footer-container
+  .footer-upper
+  .footer-section-container
+  .footer-section
+  .footer-link:not(.footer-section-header) {
+  color: #bcc4d6;
+  font-size: 0.875rem;
+  line-height: 1.3125rem;
+  font-weight: 400;
+  display: block;
+  margin-bottom: 0.875rem;
+  margin-top: 0.5rem;
+}
+.ep-footer
+  .footer-container
+  .footer-upper
+  .footer-section-container
+  .footer-section
+  .footer-section-header {
+  font-size: 0.75rem;
+  line-height: 14 0.25rem;
+  margin-bottom: 0.625rem;
+  white-space: nowrap;
+  pointer-events: none;
+  color: #fffaee;
+  font-weight: 500 !important;
+}
+.ep-footer
+  .footer-container
+  .footer-upper
+  .footer-section-container
+  .footer-section
+  .footer-section-header.placeholder {
+  visibility: hidden;
+}
+.ep-footer .footer-container .footer-lower {
+  padding: 36px 16px 60px;
+}
+@media (min-width: 768px) {
+  .ep-footer .footer-container .footer-lower {
+    padding: 36px 128px;
+  }
+}
+.ep-footer .footer-container .footer-lower .social-media-container,
+.ep-footer .footer-container .footer-lower .footer-bottom-links,
+.ep-footer .footer-container .footer-lower .footer-copyright {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+.ep-footer
+  .footer-container
+  .footer-lower
+  .social-media-container
+  .footer-link {
+  padding: 0;
+  margin: 0 0.25rem;
+  height: 29px;
+  width: 29px;
+}
+.ep-footer
+  .footer-container
+  .footer-lower
+  .social-media-container
+  .footer-link
+  img {
+  height: 29px;
+  width: 29px;
+}
+.ep-footer .footer-container .footer-lower .footer-bottom-links {
+  margin-top: 1.875rem;
+}
+.ep-footer .footer-container .footer-lower .footer-bottom-links .footer-link {
+  padding-left: 0.625rem;
+  padding-right: 0.625rem;
+  color: #fff;
+  font-size: 0.75rem;
+  margin-bottom: 0;
+  line-height: 0.9375rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+.ep-footer .footer-container .footer-lower .footer-copyright {
+  margin-top: 1.875rem;
+}
+/*! CSS Used from: Embedded */
+.sj-page-other .ep-footer {
+  margin-bottom: 0px;
+}
+@media (min-width: 768px) {
+  .sj-page-other .ep-footer {
+    margin-bottom: initial;
+  }
+}
+/*! CSS Used from: Embedded */
+span,
+div,
+a,
+p {
+  font-family: "Roboto";
+}
+.flex-6 {
+  flex-basis: 50%;
+  flex-grow: 0;
+  max-width: 50%;
+}
+.flex-12 {
+  flex-basis: 100%;
+  flex-grow: 0;
+  max-width: 100%;
+}
+@media (min-width: 768px) {
+  .flex-m-4 {
+    flex-basis: 33.333333%;
+    flex-grow: 0;
+    max-width: 33.333333%;
+  }
+}
+@media (min-width: 1213px) {
+  .flex-l-2 {
+    flex-basis: 16.666667%;
+    flex-grow: 0;
+    max-width: 16.666667%;
+  }
+}
+.center-fixed-width {
+  margin: auto;
+}
+@media only screen and (max-width: 544px) {
+  .center-fixed-width {
+    padding: 0 12px;
+    width: 100%;
+  }
+}
+@media only screen and (min-width: 545px) {
+  .center-fixed-width {
+    width: 528px;
+  }
+}
+@media only screen and (min-width: 607px) {
+  .center-fixed-width {
+    width: 590px;
+  }
+}
+@media only screen and (min-width: 801px) {
+  .center-fixed-width {
+    width: 784px;
+  }
+}
+@media only screen and (min-width: 926px) {
+  .center-fixed-width {
+    padding: 0 24px;
+    width: 909px;
+  }
+}
+@media only screen and (min-width: 1213px) {
+  .center-fixed-width {
+    width: 1196px;
+  }
+}
+@media only screen and (min-width: 1500px) {
+  .center-fixed-width {
+    width: 1483px;
+  }
+}
+/*! CSS Used from: Embedded */
+.ep-footer {
+  border: unset;
+  height: unset;
+  margin-left: 0 !important;
+  padding: 0;
+  position: relative;
+  z-index: 1;
+  background-color: #fff;
+}
+.ep-footer .left {
+  display: none;
+}
+.ep-footer .right {
+  bottom: 30px;
+  left: 50%;
+  position: absolute;
+  transform: translateX(-50%);
+}
+@media (min-width: 768px) {
+  .ep-footer .right {
+    left: 128px;
+    transform: none;
+  }
+}
+.ep-footer .footer-container {
+  background: url(https://everpath-course-content.s3.amazonaws.com/instructor/2ot89qyy7b2f8-zscaler/proserv/home-footer-background%402x.webp);
+  background-position: center;
+}
+.ep-footer .footer-container .footer-upper {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 34px 24px 32px;
+}
+@media only screen and (max-width: 544px) {
+  .ep-footer .footer-container .footer-upper {
+    width: 100%;
+  }
+}
+.ep-footer .footer-container .footer-upper .footer-top {
+  border-bottom: 0.0625rem solid #4b5f88;
+  padding-bottom: 2.875rem;
+  margin-bottom: 3.125rem;
+  width: 100%;
+}
+.ep-footer .footer-container .footer-upper .footer-top img {
+  height: 30px;
+  width: 160px;
+  position: relative;
+  top: 0;
+  transition: margin-left ease 0.5s;
+}
+.ep-footer .footer-container .footer-upper .footer-top img:hover {
+  margin-left: -10px;
+}
+.ep-footer .footer-container .footer-upper .footer-section-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+.ep-footer
+  .footer-container
+  .footer-upper
+  .footer-section-container
+  .footer-section {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+@media (min-width: 768px) {
+  .ep-footer
+    .footer-container
+    .footer-upper
+    .footer-section-container
+    .footer-section {
+    align-items: flex-start;
+  }
+}
+.ep-footer
+  .footer-container
+  .footer-upper
+  .footer-section-container
+  .footer-section
+  .footer-link:not(.footer-section-header) {
+  color: #bcc4d6;
+  font-size: 0.875rem;
+  line-height: 1.3125rem;
+  font-weight: 400;
+  display: block;
+  margin-bottom: 0.875rem;
+  margin-top: 0.5rem;
+}
+.ep-footer
+  .footer-container
+  .footer-upper
+  .footer-section-container
+  .footer-section
+  .footer-section-header {
+  font-size: 0.75rem;
+  line-height: 14 0.25rem;
+  margin-bottom: 0.625rem;
+  white-space: nowrap;
+  pointer-events: none;
+  color: #fffaee;
+  font-weight: 500 !important;
+}
+.ep-footer
+  .footer-container
+  .footer-upper
+  .footer-section-container
+  .footer-section
+  .footer-section-header.placeholder {
+  visibility: hidden;
+}
+.ep-footer .footer-container .footer-lower {
+  padding: 36px 16px 60px;
+}
+@media (min-width: 768px) {
+  .ep-footer .footer-container .footer-lower {
+    padding: 36px 128px;
+  }
+}
+.ep-footer .footer-container .footer-lower .social-media-container,
+.ep-footer .footer-container .footer-lower .footer-bottom-links,
+.ep-footer .footer-container .footer-lower .footer-copyright {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+.ep-footer
+  .footer-container
+  .footer-lower
+  .social-media-container
+  .footer-link {
+  padding: 0;
+  margin: 0 0.25rem;
+  height: 29px;
+  width: 29px;
+}
+.ep-footer
+  .footer-container
+  .footer-lower
+  .social-media-container
+  .footer-link
+  img {
+  height: 29px;
+  width: 29px;
+}
+.ep-footer .footer-container .footer-lower .footer-bottom-links {
+  margin-top: 1.875rem;
+}
+.ep-footer .footer-container .footer-lower .footer-bottom-links .footer-link {
+  padding-left: 0.625rem;
+  padding-right: 0.625rem;
+  color: #fff;
+  font-size: 0.75rem;
+  margin-bottom: 0;
+  line-height: 0.9375rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+.ep-footer .footer-container .footer-lower .footer-copyright {
+  margin-top: 1.875rem;
+}
+/*! CSS Used from: Embedded */
+.sj-page-other .ep-footer {
+  margin-bottom: 0px;
+}
+@media (min-width: 768px) {
+  .sj-page-other .ep-footer {
+    margin-bottom: initial;
+  }
+}
+/*! CSS Used fontfaces */
+@font-face {
+  font-family: "Roboto";
+  font-weight: 100;
+  src: url(https://skilljar-public.s3.amazonaws.com/zscaler/Roboto-Thin.ttf)
+    format("truetype");
+}
+@font-face {
+  font-family: "Roboto";
+  font-weight: 300;
+  src: url(https://skilljar-public.s3.amazonaws.com/zscaler/Roboto-Light.ttf)
+    format("truetype");
+}
+@font-face {
+  font-family: "Roboto";
+  font-weight: normal;
+  src: url(https://skilljar-public.s3.amazonaws.com/zscaler/Roboto-Regular.ttf)
+    format("truetype");
+}
+@font-face {
+  font-family: "Roboto";
+  font-weight: 500;
+  src: url(https://skilljar-public.s3.amazonaws.com/zscaler/Roboto-Medium.ttf)
+    format("truetype");
+}
+@font-face {
+  font-family: "Roboto";
+  font-weight: bold;
+  src: url(https://skilljar-public.s3.amazonaws.com/zscaler/Roboto-Bold.ttf)
+    format("truetype");
+}
+@font-face {
+  font-family: "Roboto";
+  font-weight: 900;
+  src: url(https://skilljar-public.s3.amazonaws.com/zscaler/Roboto-Black.ttf)
+    format("truetype");
+}
+@font-face {
+  font-family: "Roboto";
+  font-weight: 100;
+  src: url(https://skilljar-public.s3.amazonaws.com/zscaler/Roboto-Thin.ttf)
+    format("truetype");
+}
+@font-face {
+  font-family: "Roboto";
+  font-weight: 300;
+  src: url(https://skilljar-public.s3.amazonaws.com/zscaler/Roboto-Light.ttf)
+    format("truetype");
+}
+@font-face {
+  font-family: "Roboto";
+  font-weight: normal;
+  src: url(https://skilljar-public.s3.amazonaws.com/zscaler/Roboto-Regular.ttf)
+    format("truetype");
+}
+@font-face {
+  font-family: "Roboto";
+  font-weight: 500;
+  src: url(https://skilljar-public.s3.amazonaws.com/zscaler/Roboto-Medium.ttf)
+    format("truetype");
+}
+@font-face {
+  font-family: "Roboto";
+  font-weight: bold;
+  src: url(https://skilljar-public.s3.amazonaws.com/zscaler/Roboto-Bold.ttf)
+    format("truetype");
+}
+@font-face {
+  font-family: "Roboto";
+  font-weight: 900;
+  src: url(https://skilljar-public.s3.amazonaws.com/zscaler/Roboto-Black.ttf)
+    format("truetype");
+}

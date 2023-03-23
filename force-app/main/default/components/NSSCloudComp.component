@@ -1,0 +1,32 @@
+<apex:component controller="NSSCloudCompController" access="global" >
+    <apex:attribute name="prgID" type="Id" description="Id of the PRG" assignTo="{!prgIdRec}"/>       
+    
+    <html>
+        <body>
+            
+            
+            Hi Lidor, 
+           <p>
+               
+           Greetings of the day!   </p> 
+ <p> Seeking your approval to provision Cloud NSS for the following tenant.  </p> 
+
+<h3>
+    
+        <!--style='color:blue' -->  <p >  Account Name :- {!PRGrecord.Account__r.Name}   </p>   </h3>
+
+           <p> <h3> Cloud Name :-  {!PRGrecord.Zscaler_Cloud_ID__r.name}  </h3> </p> 
+
+ PRG No :- {!PRGrecord.Name}
+            <br/>
+PRG Link :- {!PRGLink}
+
+            <br/>
+            <br/>
+            Form has been filled by :- {!PRGrecord.owner.name}  <br/><br/> 
+            Regards,<br/>
+            Zscaler Sales Ops
+        </body>
+    </html> 
+    
+</apex:component>

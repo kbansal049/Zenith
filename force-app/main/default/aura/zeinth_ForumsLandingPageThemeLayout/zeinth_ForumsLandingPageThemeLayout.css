@@ -1,0 +1,31 @@
+@media screen and (min-width: 1024px){
+	.THIS .bodyDiv{
+    	margin: 0% 10%;
+        padding-top:3.125rem;
+	}   
+}
+
+@media screen and (max-width: 1023px){
+	.THIS.bodyDiv{
+    	margin: 0% 0%!important;
+    }
+     .THIS .sf_main{
+        margin-left:10%;
+        margin-right:10%;
+    }
+       .THIS .forceCommunitySection .cb-section_column:last-child {
+        padding:0px !important;
+    }
+    
+}
+
+@media screen and (max-width: 767px){
+    .THIS .forceCommunitySection .cb-section_column:last-child {
+        padding:0px !important;
+    }
+    
+    .THIS .sf_main{
+        margin-left:5%;
+        margin-right:5%;
+    }
+}

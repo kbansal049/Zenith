@@ -1,0 +1,1654 @@
+<template>
+    <lightning-card>
+        <div class="slds-align_absolute-center" style="height: 3rem;font-size: x-large;font-weight: bold;">
+            <span>Jira Ticket</span>
+        </div>
+
+        <div class="slds-p-horizontal_small">
+            <div class="progressIndicator slds-p-vertical_medium" style="height: 50px;margin-top: 20px;">
+                <lightning-progress-indicator current-step={currentStep} type="base" variant="base">
+                    <lightning-progress-step value="1"></lightning-progress-step>
+                    <lightning-progress-step value="2"></lightning-progress-step>
+                    <lightning-progress-step value="3"></lightning-progress-step>
+                </lightning-progress-indicator>
+            </div>
+
+            <!--Step 1 : Save Details-->
+            <template if:true={showFirstStep}>
+                <div class="stepOne">
+                    <lightning-record-edit-form object-api-name="NC_JIRA_Ticket__c" record-id={recordId}
+                        onsubmit={handleSubmit} onerror={handleError} onsuccess={handleSuccess}>
+                        <lightning-messages></lightning-messages>
+
+                        <lightning-accordion allow-multiple-sections-open active-section-name={activeSections}>
+                            <lightning-accordion-section name="A" label="Customer Details">
+                                <div class="slds-grid slds-wrap">
+                                    <!--Node Configuration -->
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <template if:true={nodeConfigId}>
+                                            <lightning-input-field field-name='Node_Configuration__c'
+                                                onchange={nodeConfigChangeHandler} value={nodeConfigId}>
+                                            </lightning-input-field>
+                                        </template>
+                                        <template if:false={nodeConfigId}>
+                                            <lightning-input-field field-name='Node_Configuration__c'
+                                                onchange={nodeConfigChangeHandler}>
+                                            </lightning-input-field>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <template if:true={checkIfNewRecordCreation}>
+                                            <div class="slds-form-element slds-form-element_horizontal">
+                                                <label class="slds-form-element__label" for="customerNameID">Customer
+                                                    (Organization) Name</label>
+                                                <div class="slds-form-element__control">
+                                                    <lightning-formatted-text id="customerNameID" value={customerName}>
+                                                    </lightning-formatted-text>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template if:false={checkIfNewRecordCreation}>
+                                            <lightning-output-field field-name='Customer_Organization_Name__c'>
+                                            </lightning-output-field>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <template if:true={checkIfNewRecordCreation}>
+                                            <div class="slds-form-element slds-form-element_horizontal">
+                                                <label class="slds-form-element__label"
+                                                    for="equipmentRequestNameId">Equipment
+                                                    Request</label>
+                                                <div class="slds-form-element__control">
+                                                    <lightning-formatted-text id="equipmentRequestNameId"
+                                                        value={equipmentRequestName}>
+                                                    </lightning-formatted-text>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template if:false={checkIfNewRecordCreation}>
+                                            <lightning-output-field field-name='Equipment_Request__c'>
+                                            </lightning-output-field>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <template if:true={checkIfNewRecordCreation}>
+                                            <div class="slds-form-element slds-form-element_horizontal">
+                                                <label class="slds-form-element__label" for="dataCenterNameId">Data
+                                                    Center</label>
+                                                <div class="slds-form-element__control">
+                                                    <lightning-formatted-text id="dataCenterNameId"
+                                                        value={dataCenterName}>
+                                                    </lightning-formatted-text>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template if:false={checkIfNewRecordCreation}>
+                                            <lightning-output-field field-name='Data_Center__c'>
+                                            </lightning-output-field>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <template if:true={checkIfNewRecordCreation}>
+                                            <div class="slds-form-element slds-form-element_horizontal">
+                                                <label class="slds-form-element__label"
+                                                    for="opportunityNameId">Opportunity
+                                                    Name</label>
+                                                <div class="slds-form-element__control">
+                                                    <lightning-formatted-text id="opportunityNameId"
+                                                        value={opportunityName}>
+                                                    </lightning-formatted-text>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template if:false={checkIfNewRecordCreation}>
+                                            <lightning-output-field field-name='Opportunity_Name__c'>
+                                            </lightning-output-field>
+                                        </template>
+                                    </div>
+                                </div>
+                            </lightning-accordion-section>
+
+                            <lightning-accordion-section name="B" label="Details section for JIRA">
+                                <div class="slds-grid slds-wrap">
+                                    <!--Priority-->
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <template if:true={checkIfNewRecordCreation}>
+                                            <lightning-input-field required field-name='Priority__c' value={priority}>
+                                            </lightning-input-field>
+                                        </template>
+                                        <template if:false={checkIfNewRecordCreation}>
+                                            <lightning-input-field required field-name='Priority__c'>
+                                            </lightning-input-field>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <template if:true={checkIfNewRecordCreation}>
+                                            <lightning-input-field required field-name='Issue_Type__c'
+                                                value={issueType}>
+                                            </lightning-input-field>
+                                        </template>
+                                        <template if:false={checkIfNewRecordCreation}>
+                                            <lightning-input-field required field-name='Issue_Type__c'>
+                                            </lightning-input-field>
+                                        </template>
+                                    </div>
+                                </div>
+                            </lightning-accordion-section>
+
+                            <lightning-accordion-section name="C" label="Location & Shipping Details">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <template if:true={checkIfNewRecordCreation}>
+                                            <lightning-input-field field-name='Customer_Contact_Name_and_Email__c'
+                                                value={customerConInfo}>
+                                            </lightning-input-field>
+                                        </template>
+                                        <template if:false={checkIfNewRecordCreation}>
+                                            <lightning-input-field field-name='Customer_Contact_Name_and_Email__c'>
+                                            </lightning-input-field>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <template if:true={checkIfNewRecordCreation}>
+                                            <lightning-input-field field-name='Shipping_Remote_Contact_Information__c'
+                                                value={shippingConInfo}>
+                                            </lightning-input-field>
+                                        </template>
+                                        <template if:false={checkIfNewRecordCreation}>
+                                            <lightning-input-field field-name='Shipping_Remote_Contact_Information__c'>
+                                            </lightning-input-field>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <template if:true={checkIfNewRecordCreation}>
+                                            <lightning-input-field field-name='Shipping_Destination_Address__c'
+                                                value={shippingAddress}>
+                                            </lightning-input-field>
+                                        </template>
+                                        <template if:false={checkIfNewRecordCreation}>
+                                            <lightning-input-field field-name='Shipping_Destination_Address__c'>
+                                            </lightning-input-field>
+                                        </template>
+                                    </div>
+                                </div>
+                            </lightning-accordion-section>
+
+                            <lightning-accordion-section name="D" label="DNS & NTP Servers">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <template if:true={checkIfNewRecordCreation}>
+                                            <lightning-input-field field-name='DNS_Servers__c' value={dnsServers}>
+                                            </lightning-input-field>
+                                        </template>
+                                        <template if:false={checkIfNewRecordCreation}>
+                                            <lightning-input-field field-name='DNS_Servers__c'>
+                                            </lightning-input-field>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <template if:true={checkIfNewRecordCreation}>
+                                            <lightning-input-field field-name='NTP_Servers__c' value={ntpServers}>
+                                            </lightning-input-field>
+                                        </template>
+                                        <template if:false={checkIfNewRecordCreation}>
+                                            <lightning-input-field field-name='NTP_Servers__c'>
+                                            </lightning-input-field>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <template if:true={checkIfNewRecordCreation}>
+                                            <lightning-input-field field-name='Public_Virtual_IP__c'
+                                                value={pubVirtualIp}>
+                                            </lightning-input-field>
+                                        </template>
+                                        <template if:false={checkIfNewRecordCreation}>
+                                            <lightning-input-field field-name='Public_Virtual_IP__c'>
+                                            </lightning-input-field>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <template if:true={checkIfNewRecordCreation}>
+                                            <lightning-input-field field-name='Private_Virtual_IP__c'
+                                                value={privateVirtualIp}>
+                                            </lightning-input-field>
+                                        </template>
+                                        <template if:false={checkIfNewRecordCreation}>
+                                            <lightning-input-field field-name='Private_Virtual_IP__c'>
+                                            </lightning-input-field>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <template if:true={checkIfNewRecordCreation}>
+                                            <lightning-input-field field-name='VPN_Public_Virtual_IP__c'
+                                                value={vpnPubVirtualIp}>
+                                            </lightning-input-field>
+                                        </template>
+                                        <template if:false={checkIfNewRecordCreation}>
+                                            <lightning-input-field field-name='VPN_Public_Virtual_IP__c'>
+                                            </lightning-input-field>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <template if:true={checkIfNewRecordCreation}>
+                                            <lightning-input-field field-name='VPN_Private_Virtual_IP__c'
+                                                value={vpnPrivateVirtualIp}>
+                                            </lightning-input-field>
+                                        </template>
+                                        <template if:false={checkIfNewRecordCreation}>
+                                            <lightning-input-field field-name='VPN_Private_Virtual_IP__c'>
+                                            </lightning-input-field>
+                                        </template>
+                                    </div>
+                                </div>
+                            </lightning-accordion-section>
+
+                            <template if:true={checkIfShowNCFields}>
+                                <div class="slds-accordion__section">
+                                    <div class="slds-accordion__summary">
+                                        <h3 class="slds-accordion__summary-heading">
+                                            <a onclick={toggleNCSectionVisibility}
+                                                style="text-decoration: none;color: black;">
+                                                <span class="slds-m-right_x-small">
+                                                    <lightning-icon icon-name={ncSectionButtonType}
+                                                        alternative-text="Expand" size="x-small" title="Expand">
+                                                    </lightning-icon>
+                                                </span>
+                                                <span class="slds-truncate" title="Node Details">Node Details</span>
+                                            </a>
+                                        </h3>
+                                    </div>
+                                    <div class="bodyWrapper">
+                                        <div class={ncSectionBodyCSS}>
+                                            <div class="slds-grid slds-wrap">
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <lightning-input-field required field-name='Summary__c'>
+                                                    </lightning-input-field>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='Components__c'
+                                                            value={ncComponent}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='Components__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field required field-name='Hardware_Type__c'
+                                                            value={hardwareType}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field required field-name='Hardware_Type__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field required field-name='Quantity__c'
+                                                            value={quantity}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field required field-name='Quantity__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <lightning-input-field required field-name='Hostname__c'>
+                                                    </lightning-input-field>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfManadtoryForSecondary}>
+                                                        <lightning-input-field required
+                                                            field-name='Hostname_secondary__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfManadtoryForSecondary}>
+                                                        <lightning-input-field field-name='Hostname_secondary__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field required field-name='Public_IPMI_IP__c'
+                                                            value={ncIPMIpublicIp}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field required field-name='Public_IPMI_IP__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <template if:false={checkIfNanoLog}>
+                                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                        <template if:true={checkIfManadtoryForSecondary}>
+                                                            <template if:true={checkIfNewRecordCreation}>
+                                                                <lightning-input-field required
+                                                                    field-name='Public_IPMI_IP_secondary__c'
+                                                                    value={nc2IPMIpublicIp}>
+                                                                </lightning-input-field>
+                                                            </template>
+                                                            <template if:false={checkIfNewRecordCreation}>
+                                                                <lightning-input-field required
+                                                                    field-name='Public_IPMI_IP_secondary__c'>
+                                                                </lightning-input-field>
+                                                            </template>
+                                                        </template>
+                                                        <template if:false={checkIfManadtoryForSecondary}>
+                                                            <template if:true={checkIfNewRecordCreation}>
+                                                                <lightning-input-field
+                                                                    field-name='Public_IPMI_IP_secondary__c'
+                                                                    value={nc2IPMIpublicIp}>
+                                                                </lightning-input-field>
+                                                            </template>
+                                                            <template if:false={checkIfNewRecordCreation}>
+                                                                <lightning-input-field
+                                                                    field-name='Public_IPMI_IP_secondary__c'>
+                                                                </lightning-input-field>
+                                                            </template>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='Private_IPMI_IP__c'
+                                                            value={ncIPMIprivateIp}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='Private_IPMI_IP__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <template if:false={checkIfNanoLog}>
+                                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                        <template if:true={checkIfNewRecordCreation}>
+                                                            <lightning-input-field
+                                                                field-name='Private_IPMI_IP_secondary__c'
+                                                                value={nc2IPMIprivateIp}>
+                                                            </lightning-input-field>
+                                                        </template>
+                                                        <template if:false={checkIfNewRecordCreation}>
+                                                            <lightning-input-field
+                                                                field-name='Private_IPMI_IP_secondary__c'>
+                                                            </lightning-input-field>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='IPMI_Subnet_Netmask__c'
+                                                            value={ncIPMISubnetNetmask}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='IPMI_Subnet_Netmask__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <template if:false={checkIfNanoLog}>
+                                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                        <template if:true={checkIfNewRecordCreation}>
+                                                            <lightning-input-field
+                                                                field-name='IPMI_Subnet_Netmask_secondary__c'
+                                                                value={nc2IPMISubnetNetmask}>
+                                                            </lightning-input-field>
+                                                        </template>
+                                                        <template if:false={checkIfNewRecordCreation}>
+                                                            <lightning-input-field
+                                                                field-name='IPMI_Subnet_Netmask_secondary__c'>
+                                                            </lightning-input-field>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='IPMI_Default_Gateway__c'
+                                                            value={ncIPMIDefaultGateway}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='IPMI_Default_Gateway__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <template if:false={checkIfNanoLog}>
+                                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                        <template if:true={checkIfNewRecordCreation}>
+                                                            <lightning-input-field
+                                                                field-name='IPMI_Default_Gateway_secondary__c'
+                                                                value={nc2IPMIDefaultGateway}>
+                                                            </lightning-input-field>
+                                                        </template>
+                                                        <template if:false={checkIfNewRecordCreation}>
+                                                            <lightning-input-field
+                                                                field-name='IPMI_Default_Gateway_secondary__c'>
+                                                            </lightning-input-field>
+                                                        </template>
+                                                    </div>
+                                                </template>
+
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    &nbsp;
+                                                </div>
+
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    &nbsp;
+                                                </div>
+
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field required
+                                                            field-name='Public_Management_IP__c'
+                                                            value={ncPublicManagementIP}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field required
+                                                            field-name='Public_Management_IP__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+
+                                                <template if:false={checkIfNanoLog}>
+                                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                        <template if:true={checkIfManadtoryForSecondary}>
+                                                            <template if:true={checkIfNewRecordCreation}>
+                                                                <lightning-input-field required
+                                                                    field-name='Public_Management_IP_secondary__c'
+                                                                    value={nc2PublicManagementIP}>
+                                                                </lightning-input-field>
+                                                            </template>
+                                                            <template if:false={checkIfNewRecordCreation}>
+                                                                <lightning-input-field required
+                                                                    field-name='Public_Management_IP_secondary__c'>
+                                                                </lightning-input-field>
+                                                            </template>
+                                                        </template>
+                                                        <template if:false={checkIfManadtoryForSecondary}>
+                                                            <template if:true={checkIfNewRecordCreation}>
+                                                                <lightning-input-field
+                                                                    field-name='Public_Management_IP_secondary__c'
+                                                                    value={nc2PublicManagementIP}>
+                                                                </lightning-input-field>
+                                                            </template>
+                                                            <template if:false={checkIfNewRecordCreation}>
+                                                                <lightning-input-field
+                                                                    field-name='Public_Management_IP_secondary__c'>
+                                                                </lightning-input-field>
+                                                            </template>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='Private_Management_IP__c'
+                                                            value={ncPrivateManagementIP}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='Private_Management_IP__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <template if:false={checkIfNanoLog}>
+                                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                        <template if:true={checkIfNewRecordCreation}>
+                                                            <lightning-input-field
+                                                                field-name='Private_Management_IP_secondary__c'
+                                                                value={nc2PrivateManagementIP}>
+                                                            </lightning-input-field>
+                                                        </template>
+                                                        <template if:false={checkIfNewRecordCreation}>
+                                                            <lightning-input-field
+                                                                field-name='Private_Management_IP_secondary__c'>
+                                                            </lightning-input-field>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='Management_Subnet_Netmask__c'
+                                                            value={ncManagementSubnetNetmask}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='Management_Subnet_Netmask__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <template if:false={checkIfNanoLog}>
+                                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                        <template if:true={checkIfNewRecordCreation}>
+                                                            <lightning-input-field
+                                                                field-name='Management_Subnet_Netmask_secondary__c'
+                                                                value={nc2ManagementSubnetNetmask}>
+                                                            </lightning-input-field>
+                                                        </template>
+                                                        <template if:false={checkIfNewRecordCreation}>
+                                                            <lightning-input-field
+                                                                field-name='Management_Subnet_Netmask_secondary__c'>
+                                                            </lightning-input-field>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='Management_Default_Gateway__c'
+                                                            value={ncManagementDefaultGateway}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='Management_Default_Gateway__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <template if:false={checkIfNanoLog}>
+                                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                        <template if:true={checkIfNewRecordCreation}>
+                                                            <lightning-input-field
+                                                                field-name='Management_Default_Gateway_secondary__c'
+                                                                value={nc2ManagementDefaultGateway}>
+                                                            </lightning-input-field>
+                                                        </template>
+                                                        <template if:false={checkIfNewRecordCreation}>
+                                                            <lightning-input-field
+                                                                field-name='Management_Default_Gateway_secondary__c'>
+                                                            </lightning-input-field>
+                                                        </template>
+                                                    </div>
+                                                </template>
+
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    &nbsp;
+                                                </div>
+
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    &nbsp;
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='Public_Service_s_IP__c'
+                                                            value={ncPubServicesIP}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='Public_Service_s_IP__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <template if:false={checkIfNanoLog}>
+                                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                        <template if:true={checkIfNewRecordCreation}>
+                                                            <lightning-input-field
+                                                                field-name='Public_Service_s_IP_secondary__c'
+                                                                value={nc2PubServicesIP}>
+                                                            </lightning-input-field>
+                                                        </template>
+                                                        <template if:false={checkIfNewRecordCreation}>
+                                                            <lightning-input-field
+                                                                field-name='Public_Service_s_IP_secondary__c'>
+                                                            </lightning-input-field>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='Private_Service_s_IP__c'
+                                                            value={ncPrivServicesIP}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='Private_Service_s_IP__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+
+                                                <template if:false={checkIfNanoLog}>
+                                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                        <template if:true={checkIfNewRecordCreation}>
+                                                            <lightning-input-field
+                                                                field-name='Private_Service_s_IP_secondary__c'
+                                                                value={nc2PrivServicesIP}>
+                                                            </lightning-input-field>
+                                                        </template>
+                                                        <template if:false={checkIfNewRecordCreation}>
+                                                            <lightning-input-field
+                                                                field-name='Private_Service_s_IP_secondary__c'>
+                                                            </lightning-input-field>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    &nbsp;
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    &nbsp;
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='Service_s_Subnet_Netmask__c'
+                                                            value={ncServiceCIDRNetmask}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='Service_s_Subnet_Netmask__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+
+                                                <template if:false={checkIfNanoLog}>
+                                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                        <template if:true={checkIfNewRecordCreation}>
+                                                            <lightning-input-field
+                                                                field-name='Service_s_Subnet_Netmask_secondary__c'
+                                                                value={nc2ServiceCIDRNetmask}>
+                                                            </lightning-input-field>
+                                                        </template>
+                                                        <template if:false={checkIfNewRecordCreation}>
+                                                            <lightning-input-field
+                                                                field-name='Service_s_Subnet_Netmask_secondary__c'>
+                                                            </lightning-input-field>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='Service_s_Default_Gateway__c'
+                                                            value={ncServiceDefaultGateway}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='Service_s_Default_Gateway__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <template if:false={checkIfNanoLog}>
+                                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                        <template if:true={checkIfNewRecordCreation}>
+                                                            <lightning-input-field
+                                                                field-name='Service_s_Default_Gateway_secondary__c'
+                                                                value={nc2ServiceDefaultGateway}>
+                                                            </lightning-input-field>
+                                                        </template>
+                                                        <template if:false={checkIfNewRecordCreation}>
+                                                            <lightning-input-field
+                                                                field-name='Service_s_Default_Gateway_secondary__c'>
+                                                            </lightning-input-field>
+                                                        </template>
+                                                    </div>
+                                                </template>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <template if:true={checkIfShowLBFields}>
+                                <div class="slds-accordion__section">
+                                    <div class="slds-accordion__summary">
+                                        <h3 class="slds-accordion__summary-heading">
+                                            <a onclick={toggleLBSectionVisibility}
+                                                style="text-decoration: none;color: black;">
+                                                <span class="slds-m-right_x-small">
+                                                    <lightning-icon icon-name={lbSectionButtonType}
+                                                        alternative-text="Expand" size="x-small" title="Expand">
+                                                    </lightning-icon>
+                                                </span>
+                                                <span class="slds-truncate" title="Load Balancer Details">Load Balancer
+                                                    Details</span>
+                                            </a>
+                                        </h3>
+                                    </div>
+                                    <div class="bodyWrapper">
+                                        <div class={lbSectionBodyCSS}>
+                                            <div class="slds-grid slds-wrap">
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <lightning-input-field required field-name='LB_Summary__c'>
+                                                    </lightning-input-field>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='LB_Components__c'
+                                                            value={lbComponent}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='LB_Components__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='LB_Hardware_Type__c'
+                                                            value={lbhardwareType}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='LB_Hardware_Type__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='LB_Quantity__c'
+                                                            value={lbquantity}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='LB_Quantity__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <lightning-input-field required field-name='LB_Hostname__c'>
+                                                    </lightning-input-field>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfManadtoryForSecondary}>
+                                                        <lightning-input-field required
+                                                            field-name='LB_Hostname_secondary__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfManadtoryForSecondary}>
+                                                        <lightning-input-field field-name='LB_Hostname_secondary__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='LB_Public_IPMI_IP__c'
+                                                            value={lbIPMIpublicIp}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='LB_Public_IPMI_IP__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Public_IPMI_IP_secondary__c'
+                                                            value={lb2IPMIpublicIp}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Public_IPMI_IP_secondary__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='LB_Private_IPMI_IP__c'
+                                                            value={lbIPMIprivateIp}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='LB_Private_IPMI_IP__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Private_IPMI_IP_secondary__c'
+                                                            value={lb2IPMIprivateIp}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Private_IPMI_IP_secondary__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='LB_IPMI_Subnet_Netmask__c'
+                                                            value={lbIPMISubnetNetmask}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='LB_IPMI_Subnet_Netmask__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_IPMI_Subnet_Netmask_secondary__c'
+                                                            value={lb2IPMISubnetNetmask}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_IPMI_Subnet_Netmask_secondary__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='LB_IPMI_Default_Gateway__c'
+                                                            value={lbIPMIDefaultGateway}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='LB_IPMI_Default_Gateway__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_IPMI_Default_Gateway_secondary__c'
+                                                            value={lb2IPMIDefaultGateway}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_IPMI_Default_Gateway_secondary__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    &nbsp;
+                                                </div>
+
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    &nbsp;
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='LB_Public_Management_IP__c'
+                                                            value={lbPublicManagementIP}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='LB_Public_Management_IP__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Public_Management_IP_secondary__c'
+                                                            value={lb2PublicManagementIP}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Public_Management_IP_secondary__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='LB_Private_Management_IP__c'
+                                                            value={lbPrivateManagementIP}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='LB_Private_Management_IP__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Private_Management_IP_secondary__c'
+                                                            value={lb2PrivateManagementIP}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Private_Management_IP_secondary__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Management_Subnet_Netmask__c'
+                                                            value={lbManagementSubnetNetmask}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Management_Subnet_Netmask__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Management_Subnet_Netmask_secondary__c'
+                                                            value={lb2ManagementSubnetNetmask}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Management_Subnet_Netmask_secondary__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Management_Default_Gateway__c'
+                                                            value={lbManagementDefaultGateway}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Management_Default_Gateway__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Management_DefaultGateway_secondary__c'
+                                                            value={lb2ManagementDefaultGateway}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Management_DefaultGateway_secondary__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    &nbsp;
+                                                </div>
+
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    &nbsp;
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='LB_Public_Services_IP__c'
+                                                            value={lbPubServicesIP}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='LB_Public_Services_IP__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Public_Services_IP_secondary__c'
+                                                            value={lb2PubServicesIP}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Public_Services_IP_secondary__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='LB_Private_Services_IP__c'
+                                                            value={lbPrivServicesIP}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field field-name='LB_Private_Services_IP__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Private_Services_IP_secondary__c'
+                                                            value={lb2PrivServicesIP}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Private_Services_IP_secondary__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    &nbsp;
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    &nbsp;
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Services_Subnet_Netmask__c'
+                                                            value={lbServiceCIDRNetmask}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Services_Subnet_Netmask__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Services_Subnet_Netmask_secondary__c'
+                                                            value={lb2ServiceCIDRNetmask}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Services_Subnet_Netmask_secondary__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Services_Default_Gateway__c'
+                                                            value={lbServiceDefaultGateway}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Services_Default_Gateway__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                                    <template if:true={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Service_s_DefaultGateway_secondary__c'
+                                                            value={lb2ServiceDefaultGateway}>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                    <template if:false={checkIfNewRecordCreation}>
+                                                        <lightning-input-field
+                                                            field-name='LB_Service_s_DefaultGateway_secondary__c'>
+                                                        </lightning-input-field>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <lightning-accordion-section name="G" label="Extra Details">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <template if:true={checkIfNewRecordCreation}>
+                                            <lightning-input-field field-name='Datacenter_ID__c' value={dataCenterVal}>
+                                            </lightning-input-field>
+                                        </template>
+                                        <template if:false={checkIfNewRecordCreation}>
+                                            <lightning-input-field field-name='Datacenter_ID__c'>
+                                            </lightning-input-field>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <template if:true={checkIfNewRecordCreation}>
+                                            <lightning-input-field required field-name='Privnode_Datacenter_ID__c'
+                                                value={provDataCenterVal}>
+                                            </lightning-input-field>
+                                        </template>
+                                        <template if:false={checkIfNewRecordCreation}>
+                                            <lightning-input-field required field-name='Privnode_Datacenter_ID__c'>
+                                            </lightning-input-field>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <template if:true={checkIfNewRecordCreation}>
+                                            <lightning-input-field field-name='Description__c' value={description}>
+                                            </lightning-input-field>
+                                        </template>
+                                        <template if:false={checkIfNewRecordCreation}>
+                                            <lightning-input-field field-name='Description__c'>
+                                            </lightning-input-field>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                    </div>
+                                </div>
+                            </lightning-accordion-section>
+                        </lightning-accordion>
+                        <!--Actions/Buttons-->
+                        <div class="slds-text-align_right">
+                            <lightning-button
+                                class="slds-m-around_small slds-text-align_right slds-p-vertical_medium slds-p-right_large"
+                                variant="brand" type="submit" label="Save & Review">
+                            </lightning-button>
+                        </div>
+                    </lightning-record-edit-form>
+                </div>
+            </template>
+
+            <!--Step 2 : Review Changes-->
+            <template if:true={showSecondStep}>
+                <div class="stepTwo">
+                    <lightning-record-view-form object-api-name="NC_JIRA_Ticket__c" record-id={recordId}>
+
+                        <lightning-accordion allow-multiple-sections-open active-section-name={activeSections}>
+                            <lightning-accordion-section name="A" label="Customer Details">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field name='Node_Configuration__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <div class="slds-form-element slds-form-element_horizontal">
+                                            <label class="slds-form-element__label" for="customerNameIDView">Customer
+                                                (Organization) Name</label>
+                                            <div class="slds-form-element__control">
+                                                <lightning-formatted-text id="customerNameIDView" value={customerName}>
+                                                </lightning-formatted-text>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <div class="slds-form-element slds-form-element_horizontal">
+                                            <label class="slds-form-element__label"
+                                                for="equipmentRequestNameIdView">Equipment
+                                                Request</label>
+                                            <div class="slds-form-element__control">
+                                                <lightning-formatted-text id="equipmentRequestNameIdView"
+                                                    value={equipmentRequestName}>
+                                                </lightning-formatted-text>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <div class="slds-form-element slds-form-element_horizontal">
+                                            <label class="slds-form-element__label" for="dataCenterNameIdView">Data
+                                                Center</label>
+                                            <div class="slds-form-element__control">
+                                                <lightning-formatted-text id="dataCenterNameIdView"
+                                                    value={dataCenterName}>
+                                                </lightning-formatted-text>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <div class="slds-form-element slds-form-element_horizontal">
+                                            <label class="slds-form-element__label"
+                                                for="opportunityNameIdView">Opportunity
+                                                Name</label>
+                                            <div class="slds-form-element__control">
+                                                <lightning-formatted-text id="opportunityNameIdView"
+                                                    value={opportunityName}>
+                                                </lightning-formatted-text>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </lightning-accordion-section>
+
+                            <lightning-accordion-section name="B" label="Details section for JIRA">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field required field-name='Priority__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field required field-name='Issue_Type__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                </div>
+                            </lightning-accordion-section>
+
+                            <lightning-accordion-section name="C" label="Location & Shipping Details">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large">
+                                        <lightning-output-field field-name='Customer_Contact_Name_and_Email__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='Shipping_Remote_Contact_Information__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large">
+                                        <lightning-output-field field-name='Shipping_Destination_Address__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                </div>
+                            </lightning-accordion-section>
+
+                            <lightning-accordion-section name="D" label="DNS & NTP Servers">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='DNS_Servers__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='NTP_Servers__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-input-field field-name='Public_Virtual_IP__c'>
+                                        </lightning-input-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-input-field field-name='Private_Virtual_IP__c'>
+                                        </lightning-input-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-input-field field-name='VPN_Public_Virtual_IP__c'>
+                                        </lightning-input-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-input-field field-name='VPN_Private_Virtual_IP__c'>
+                                        </lightning-input-field>
+                                    </div>
+                                </div>
+                            </lightning-accordion-section>
+
+                            <lightning-accordion-section if:true={checkIfShowNCFields} name="E" label="Node Details">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field required field-name='Summary__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='Components__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='Hardware_Type__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='Quantity__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='Hostname__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='Hostname_secondary__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='Public_IPMI_IP__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <template if:false={checkIfNanoLog}>
+                                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                            <lightning-output-field field-name='Public_IPMI_IP_secondary__c'>
+                                            </lightning-output-field>
+                                        </div>
+                                    </template>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='Private_IPMI_IP__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <template if:false={checkIfNanoLog}>
+                                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                            <lightning-output-field field-name='Private_IPMI_IP_secondary__c'>
+                                            </lightning-output-field>
+                                        </div>
+                                    </template>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='IPMI_Subnet_Netmask__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <template if:false={checkIfNanoLog}>
+                                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                            <lightning-output-field field-name='IPMI_Subnet_Netmask_secondary__c'>
+                                            </lightning-output-field>
+                                        </div>
+                                    </template>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='IPMI_Default_Gateway__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <template if:false={checkIfNanoLog}>
+                                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                            <lightning-output-field field-name='IPMI_Default_Gateway_secondary__c'>
+                                            </lightning-output-field>
+                                        </div>
+                                    </template>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='Public_Management_IP__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <template if:false={checkIfNanoLog}>
+                                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                            <lightning-output-field field-name='Public_Management_IP_secondary__c'>
+                                            </lightning-output-field>
+                                        </div>
+                                    </template>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='Private_Management_IP__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <template if:false={checkIfNanoLog}>
+                                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                            <lightning-output-field field-name='Private_Management_IP_secondary__c'>
+                                            </lightning-output-field>
+                                        </div>
+                                    </template>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large">
+                                        <lightning-output-field field-name='Management_Subnet_Netmask__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <template if:false={checkIfNanoLog}>
+                                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                            <lightning-output-field field-name='Management_Subnet_Netmask_secondary__c'>
+                                            </lightning-output-field>
+                                        </div>
+                                    </template>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='Management_Default_Gateway__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <template if:false={checkIfNanoLog}>
+                                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                            <lightning-output-field
+                                                field-name='Management_Default_Gateway_secondary__c'>
+                                            </lightning-output-field>
+                                        </div>
+                                    </template>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='Public_Service_s_IP__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <template if:false={checkIfNanoLog}>
+                                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                            <lightning-output-field field-name='Public_Service_s_IP_secondary__c'>
+                                            </lightning-output-field>
+                                        </div>
+                                    </template>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='Private_Service_s_IP__c'>
+                                        </lightning-output-field>
+                                    </div>
+
+                                    <template if:false={checkIfNanoLog}>
+                                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                            <lightning-output-field field-name='Private_Service_s_IP_secondary__c'>
+                                            </lightning-output-field>
+                                        </div>
+                                    </template>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='Service_s_Subnet_Netmask__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <template if:false={checkIfNanoLog}>
+                                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                            <lightning-output-field field-name='Service_s_Subnet_Netmask_secondary__c'>
+                                            </lightning-output-field>
+                                        </div>
+                                    </template>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='Service_s_Default_Gateway__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <template if:false={checkIfNanoLog}>
+                                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                            <lightning-output-field field-name='Service_s_Default_Gateway_secondary__c'>
+                                            </lightning-output-field>
+                                        </div>
+                                    </template>
+                                </div>
+                            </lightning-accordion-section>
+
+                            <lightning-accordion-section if:true={checkIfShowLBFields} name="F"
+                                label="Load Balancer Details">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Summary__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Components__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Hardware_Type__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Quantity__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Hostname__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Hostname_secondary__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Public_IPMI_IP__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Public_IPMI_IP_secondary__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Private_IPMI_IP__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Private_IPMI_IP_secondary__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_IPMI_Subnet_Netmask__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_IPMI_Subnet_Netmask_secondary__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_IPMI_Default_Gateway__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_IPMI_Default_Gateway_secondary__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Public_Management_IP__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Public_Management_IP_secondary__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Private_Management_IP__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Private_Management_IP_secondary__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Management_Subnet_Netmask__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Management_Subnet_Netmask_secondary__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Management_Default_Gateway__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Management_DefaultGateway_secondary__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Public_Services_IP__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Public_Services_IP_secondary__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Private_Services_IP__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Private_Services_IP_secondary__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Services_Subnet_Netmask__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Services_Subnet_Netmask_secondary__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Services_Default_Gateway__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='LB_Service_s_DefaultGateway_secondary__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                </div>
+                            </lightning-accordion-section>
+
+                            <lightning-accordion-section name="G" label="Extra Details">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='Hostname__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='Datacenter_ID__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='Privnode_Datacenter_ID__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='Description__c'>
+                                        </lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                                    </div>
+                                </div>
+                            </lightning-accordion-section>
+                        </lightning-accordion>
+
+                        <!--Actions/Buttons-->
+                        <div class="slds-text-align_right">
+                            <template if:false={checkIfNewRecordCreation}>
+                                <lightning-button
+                                    class="slds-m-around_small slds-text-align_right slds-p-vertical_medium"
+                                    onclick={backToFirstStep} label="Back">
+                                </lightning-button>
+                            </template>
+                            <template if:false={checkIfNewRecordCreation}>
+                                <lightning-button
+                                    class="slds-m-around_small slds-text-align_right slds-p-vertical_medium slds-p-right_large"
+                                    variant="brand" onclick={openModal} label="Submit to Jira">
+                                </lightning-button>
+                            </template>
+                        </div>
+                    </lightning-record-view-form>
+                </div>
+            </template>
+
+            <!--Step 3 : Success-->
+            <template if:true={showThirdStep}>
+                <div class="stepThree">
+                    <div class="slds-align_absolute-center slds-p-top_xx-large">
+                        <p class="slds-text-color_success">
+                            Your request has been submitted succefully, you will receive the confirmation on email.
+                            </br>
+                            You will be redircetd to Node Configuration in (5) seconds : ({count}) seconds
+                        </p>
+                    </div>
+
+                    <div class="slds-align_absolute-center slds-p-vertical_large">
+                        <lightning-record-view-form object-api-name="Node_Configuration__c" record-id={nodeConfigId}>
+                            <div class="slds-theme_default">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_1-of-1 slds-p-horizontal_large ">
+                                        <lightning-output-field field-name='Name'></lightning-output-field>
+                                    </div>
+                                    <template if:true={checkIfShowNCFields}>
+                                        <div class="slds-col slds-size_1-of-1 slds-p-horizontal_large ">
+                                            <lightning-output-field field-name='Jira_Integration_Status__c'>
+                                            </lightning-output-field>
+                                        </div>
+                                    </template>
+                                    <template if:true={checkIfShowLBFields}>
+                                        <div class="slds-col slds-size_1-of-1 slds-p-horizontal_large ">
+                                            <lightning-output-field field-name='LB_Jira_Integration_Status__c'>
+                                            </lightning-output-field>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </lightning-record-view-form>
+                    </div>
+                </div>
+            </template>
+
+            <div if:false={isLoaded}>
+                <lightning-spinner alternative-text="Loading..." variant="brand">
+                </lightning-spinner>
+            </div>
+        </div>
+    </lightning-card>
+
+    <!--Use template if:true to display/hide popup based on isModalOpen value-->
+    <template if:true={isModalOpen}>
+        <!-- Modal/Popup Box LWC starts here -->
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box LWC header here -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                            size="small">
+                        </lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Submit ticket to JIRA
+                    </h2>
+                </header>
+                <!-- Modal/Popup Box LWC body starts here -->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <p><b>Are you sure you want to submit the request to Jira?</b></p>
+                </div>
+                <!-- Modal/Popup Box LWC footer starts here -->
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Cancel</button>
+                    <button class="slds-button slds-button_brand" onclick={submitDetails} title="OK">OK</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

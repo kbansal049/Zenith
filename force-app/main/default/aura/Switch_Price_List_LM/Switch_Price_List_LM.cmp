@@ -1,0 +1,59 @@
+<!--**********************************************************************************************************************
+* @CompName 	: Switch_Price_List_LM
+* @Author   	: Dhawal Sharda
+* @Date     	: 15 March, 2020
+* @Description	: Lightning component that redirects to ApttusSelectPriceListPage
+* @CR#			: 2084
+************************************************************************************************************ -->
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader,lightning:actionOverride" access="global" >
+    <!-- ATTRIBUTES START -->
+    <aura:attribute name="isPartnerProgramTraditional" type="Boolean"/>
+    <aura:attribute name="isInReview" type="Boolean"/>
+    <!-- ATTRIBUTES END -->
+    <force:recordData aura:id="recordLoader"
+                      recordId="{!v.recordId}"
+                      fields="Model_Type_Partner__c"
+                      targetFields="{!v.record}"
+                      mode="EDIT"
+                      recordUpdated="{!c.recordUpdate}"
+                      />  
+    
+    <aura:if isTrue="{!v.spinner}">
+        <div class="slds-is-relative">
+            <lightning:spinner alternativeText="Loading" title="Processing.." size="small" 
+                               class="slds-show backgroundSpinner"/> 
+        </div>
+    </aura:if>
+    <div class="slds-m-around--small slds-p-left_x-small">
+        <aura:if isTrue="{!v.isPartnerProgramTraditional}">
+            <ui:message title="Error" severity="error">
+                <br />
+                {!$Label.c.Switch_Price_List_PPTrad}              
+            </ui:message>
+            <aura:set attribute="else">
+                <aura:if isTrue="{!v.isInReview}">
+                    <ui:message title="Error" severity="error">
+                        <br />
+                        {!$Label.c.Switch_Price_List_InReview}              
+                    </ui:message>
+                    <aura:set attribute="else">
+                        <ui:message title="Confirm" severity="confirm">
+                            <br />
+                            {!$Label.c.Switch_Price_List_Confirmation_Question}                
+                        </ui:message>                
+                        <br />
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col">
+                                <lightning:button class="slds-align_absolute-center" variant="brand" label="Ok" title="Ok" onclick="{!c.invokeVFPage}"/>               
+                            </div>
+                            <div class="slds-col">
+                                <lightning:button class="slds-align_absolute-center" variant="brand" label="Cancel" title="Cancel" onclick="{!c.closeQA}"/>  
+                            </div>
+                        </div>
+                        
+                    </aura:set>
+                </aura:if>
+            </aura:set>
+        </aura:if>
+    </div>
+</aura:component>

@@ -1,0 +1,49 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 04-29-2021
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+  Modifications Log 
+  Ver   Date         Author                               Modification
+  1.0   04-29-2021   ChangeMeIn@UserSettingsUnder.SFDoc   Initial Version
+-->
+<template>
+   
+	<div>
+		<div class="slds-grid slds-wrap slds-dropdown_length-with-icon-7 slds-dropdown_fluid slds-p-left_small">
+			<div class="slds-col slds-size_4-of-4">
+				<ul class="slds-listbox slds-listbox_vertical" role="presentation">
+					<li role="presentation" class="slds-listbox__item">
+						<div class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta" 
+							role="option"
+							onclick={handleSelect}
+						>
+							<span class="slds-media__figure slds-listbox__option-icon">
+								<lightning-icon 
+									icon-name={iconName} 
+									size="small"
+								></lightning-icon>
+							</span>
+
+							<span class="slds-media__body"
+								style="padding-top: 9px;font-size: var(--lwc-fontSize3,0.8125rem);font-weight: 300;"
+							>
+							
+								<span class="slds-listbox__option-text slds-listbox__option-text_entity" style="text-transform:none">
+									{record.recordName}
+								</span>
+
+							</span>
+
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+
+
+
+</template>

@@ -1,0 +1,122 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 02-10-2023
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<template>
+    <article class="slds-card">
+        <div class="slds-page-header slds-card__header" style="padding-bottom:1.25rem">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__figure">
+                        <span class="slds-icon_container">
+                            <lightning-icon icon-name="standard:custom" title="Segment"></lightning-icon>
+                        </span>
+                    </div>
+                    <div class="slds-media__body">
+                        <div class="slds-page-header__name">
+                            <div class="slds-page-header__name-title">
+                                <h1>
+                                    <span>Configure Premium Support</span>
+                                    <span class="slds-page-header__title slds-truncate"
+                                        title="Segment">
+                                        {quoteName}
+                                    </span>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding-top: 20px;">
+                        <lightning-button label="Go to Cart" onclick={onBack}></lightning-button>
+                    </div>
+                </header>
+            </div>
+            <!-- Header - End -->
+
+            <!-- Body - Start -->
+            <div class="slds-card__body slds-card__body_inner">
+                <div class="slds-notify slds-notify_alert" role="alert">
+                    <span class="slds-assistive-text">info</span>
+                    <h2>If you want to use Premium Support Plus-16 or Premium Support Plus-24, make sure you have an approved PS request. If the ACV of the opportunity is more than 30K, 
+                        Premium Support will be auto upgraded to Premium Support Plus</h2>
+                    </div>
+                <div class="slds-notify slds-notify_alert slds-alert_warning" style="margin-bottom: .75rem" role="alert">
+                    <span class="slds-icon_container" style="padding-right:0.5rem;">
+                        <lightning-icon icon-name="utility:warning" size="x-small" ></lightning-icon>
+                    </span>
+                    <h2>Did you remember to quick save your cart? If you did not, please hit the "Go to Cart" and quick save before configuring Premium support.</h2>
+                </div>
+                <div if:false={isLoaded} class="slds-p-around_x-large">
+                    <lightning-spinner alternative-text="Loading...">
+                    </lightning-spinner>
+                </div>
+                <div if:true={isLoaded}></div> 
+                <template if:true={showDataTable}>
+                    <div class="slds-table_striped">
+                        
+                        <c-l-w-c-custom-datatable-type columns={columns} data={dataTable} key-field="Id" hide-checkbox-column="true" onrowaction={handleRowAction} onvalueselect={handleSelection}
+                        draft-values={draftValues} 
+                        oncellchange={handleCellChange} suppress-bottom-bar class="my-brand">
+                        </c-l-w-c-custom-datatable-type>
+                    </div>
+                    <template if:true={isModalOpen}>
+                        <!-- Modal/Popup Box LWC starts here -->
+                        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                            <div class="slds-modal__container">
+                                <!-- Modal/Popup Box LWC header here -->
+                                <header class="slds-modal__header">
+                                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                                        <lightning-icon icon-name="utility:close"
+                                            alternative-text="close"
+                                            variant="inverse"
+                                            size="small" ></lightning-icon>
+                                        <span class="slds-assistive-text">Close</span>
+                                    </button>
+                                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Create a P&S Request</h2>
+                                </header>
+                                <!-- Modal/Popup Box LWC body starts here -->
+                                <div class="slds-modal__content" id="modal-content-id-1">
+                                    <div if:false={isLoaded} class="slds-p-around_x-large">
+                                        <lightning-spinner alternative-text="Loading...">
+                                        </lightning-spinner>
+                                    </div>
+                                    <lightning-record-edit-form object-api-name="Equipment_Request__c" onsuccess={handleSuccess}>
+                                        <lightning-layout multiple-rows="true" class="slds-p-around_medium">
+                                            <lightning-layout-item size="6">
+                                                <lightning-input-field field-name="Name"  required="true"> </lightning-input-field>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size="6">
+                                                <lightning-input-field field-name="Use_Case__c" required="true"> </lightning-input-field>    
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size="6">
+                                                <lightning-input-field field-name="Opportunity__c" value={oppId} disabled="true"></lightning-input-field>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size="6">
+                                                <lightning-input-field field-name="Justification__c" required="true"> </lightning-input-field>    
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size="6">
+                                                <lightning-input-field field-name="Product__c" name="Product" value={prodId} disabled="true"></lightning-input-field>     
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size="6">
+                                                <lightning-input-field field-name="Country_Language__c" name="countryLanguage" value={Country_Language} ></lightning-input-field>     
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size="6">
+                                                <lightning-input-field field-name="RecordTypeId" value={recordTypeId} disabled="true"></lightning-input-field>     
+                                            </lightning-layout-item>
+                                        </lightning-layout>
+                                    </lightning-record-edit-form>    
+                                </div>
+                                <!-- Modal/Popup Box LWC footer starts here -->
+                                <footer class="slds-modal__footer">
+                                    <button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Cancel</button>
+                                    <button class="slds-button slds-button_brand" onclick={submitDetails} title="Submit for Approval">Submit for Approval</button>
+                                </footer>
+                            </div>
+                        </section>
+                        <div class="slds-backdrop slds-backdrop_open"></div>
+                    </template>    
+                </template>
+        </div>
+    </article>  
+</template>

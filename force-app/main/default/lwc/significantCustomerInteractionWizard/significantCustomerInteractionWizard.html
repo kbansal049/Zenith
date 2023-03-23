@@ -1,0 +1,51 @@
+<template>
+    <lightning-card>
+
+        <template if:true={showSpinner}>
+            <div class="slds-align_absolute-center">
+                <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+            </div>
+        </template>
+    <div style="height:75rem !important;">
+        <lightning-progress-indicator current-step={currentStep} type="path" variant="base">
+            <lightning-progress-step label="Select SCI Type" value="1" data-key="1" onclick={handlePathClick}>
+            </lightning-progress-step>
+            <lightning-progress-step label="Enter SCI Details" value="2" data-key="2" onclick={handlePathClick}>
+            </lightning-progress-step>
+            <lightning-progress-step label="Manage Zscaler Attendees" value="3" data-key="3" onclick={handlePathClick}>
+            </lightning-progress-step>
+            <lightning-progress-step label="Manage External Attendees" value="4" data-key="4" onclick={handlePathClick}>
+            </lightning-progress-step>
+        </lightning-progress-indicator>
+
+        <template if:true={step1}>
+            <lightning-card>
+                <c-select-s-c-i-type selected-meeting-location={selectedMeetingLocation} selected-record-type-id={selectedRecordTypeId} selected-date={selectedDate} sci-record-id={sciRecordId} selected-meeting-notes={selectedMeetingNotes}
+                    ongotonextstep={handleGoToNextStep} account-record-id={recordId}></c-select-s-c-i-type>
+            </lightning-card>
+        </template>
+
+        <template if:true={step2}>
+            <lightning-card>
+                <c-enter-s-c-i-details internal-attendee={internalAttendee} selected-sci-id={selectedSciId} record-exist={recordExist} save-data={saveData} participation={participation} selected-meeting-notes={selectedMeetingNotes} selected-meeting-location={selectedMeetingLocation} selected-record-type-id={selectedRecordTypeId} selected-date={selectedDate} sci-record-id={sciRecordId}
+                    ongotonextstep={handleGoToNextStep} account-record-id={recordId}></c-enter-s-c-i-details>
+            </lightning-card>
+        </template>
+
+        <template if:true={step3}>
+            <lightning-card>
+                <c-manage-zscaler-attendees attendee-exist={attendeeExist} generated-record-id={generatedRecordId} internal-attendee={internalAttendee} record-exist={recordExist} save-data={saveData} participation={participation} selected-meeting-notes={selectedMeetingNotes} selected-meeting-location={selectedMeetingLocation} sci-record-id={sciRecordId} selected-record-type-id={selectedRecordTypeId} selected-date={selectedDate}
+                    ongotonextstep={handleGoToNextStep} account-record-id={recordId}></c-manage-zscaler-attendees>
+            </lightning-card>
+        </template>
+
+        <template if:true={step4}>
+            <lightning-card>
+                <c-manage-external-attendees attendee-exist={attendeeExist} save-data={saveData} participation={participation} sci-record-id={sciRecordId} account-record-id={recordId} selected-meeting-notes={selectedMeetingNotes} selected-meeting-location={selectedMeetingLocation} selected-date={selectedDate} selected-record-type-id={selectedRecordTypeId}
+                    ongotonextstep={handleGoToNextStep}></c-manage-external-attendees>
+            </lightning-card>
+        </template>
+    </div>
+        
+    </lightning-card>
+</template>

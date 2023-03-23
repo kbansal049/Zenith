@@ -1,0 +1,17 @@
+<aura:component
+    implements="flexipage:availableForAllPageTypes,force:lightningQuickAction,lightning:actionOverride,force:hasRecordId,lightning:hasPageReference,force:appHostable,lightning:isUrlAddressable"
+    access="global" controller="PSQuestionnaireQuickActionController">
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="recordTypeId" type="Id" />
+    <aura:attribute name="opportunityId" type="Id" />
+    <aura:attribute name="projectId" type="Id" />
+    <aura:attribute name="showPSQComponent" type="boolean" default="true" />
+    <aura:attribute name="navigateToRecord" type="boolean" default="false" />
+    <lightning:Navigation aura:Id="navService" />
+    <aura:handler event="force:showToast" action="{!c.navigateToRecordDetailPage}" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:if isTrue="{!v.showPSQComponent}">
+        <c:psQuestionnaireComponent questionnaireId="{!v.recordId}" recordTypeId="{!v.recordTypeId}"
+            opportunityId="{!v.opportunityId}" projectId="{!v.projectId}"></c:psQuestionnaireComponent>
+    </aura:if>
+</aura:component>

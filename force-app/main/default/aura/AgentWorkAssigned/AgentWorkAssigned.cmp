@@ -1,0 +1,22 @@
+<aura:component controller="AgentWorkAssignedCompCtrl" implements="flexipage:availableForAllPageTypes" access="global" >
+    <lightning:omniToolkitAPI aura:id="omniToolkit" />  
+   
+    <aura:handler event="lightning:omniChannelWorkAccepted" action="{! c.onWorkAccepted }"/>
+    <aura:handler event="lightning:omniChannelWorkloadChanged" action="{! c.onWorkloadChanged }"/>
+    <aura:handler event="lightning:omniChannelStatusChanged" action="{! c.onStatusChanged }"/>
+    <aura:handler event="lightning:omniChannelLogout" action="{! c.onLogout }"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler name="render" value="{!this}" action="{!c.onRender}"/>
+    <aura:attribute name="currentUSPId" type="String" />
+    <aura:attribute name="currentUSPName" type="String"/>
+    <aura:attribute name="currentPriority" type="String"/>
+    <aura:attribute name="isSpecialUser" type="Boolean" default="false"/>
+    <aura:attribute name="setIntervalId" type="Integer"/>
+    
+    
+    <lightning:tile label="Presence status update based on 'Workload Capacity'">
+        <p class="slds-wrap">
+        	When any work get assigned to the agent, If Agent Load is 100%, Set the Agent status as "On a Web Case".
+        </p>
+    </lightning:tile>
+</aura:component>

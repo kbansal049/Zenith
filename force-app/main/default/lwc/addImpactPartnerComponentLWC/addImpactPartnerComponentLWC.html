@@ -1,0 +1,105 @@
+<template>
+    <template if:true={isValidUser}>
+        <a onclick={openModal} style="color: black;"><b>Add New</b></a>
+    </template>
+
+	<!--Use template if:true to display/hide popup based on isModalOpen value--> 
+    <template if:true={isModalOpen}>
+
+        <!-- Modal/Popup Box LWC starts here -->
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container" style="text-transform:capitalize;">
+                <!-- Modal/Popup Box LWC header here -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close"
+                            alternative-text="close"
+                            variant="inverse"
+                            size="small" ></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    
+
+                    <h2 class="slds-section-title--divider" style="background-color: white;text-transform:capitalize;">
+                        <b>{modalHeader}</b>
+                    </h2>
+
+
+                </header>
+            
+
+                <!-- Modal/Popup Box LWC body starts here -->
+                
+                <div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id-1" style="overflow-y: scroll;">
+
+                    <template if:true={loading}>
+                        <div class="slds-spinner_container">
+                            <lightning-spinner variant="brand" alternative-text="Loading..." size="medium"></lightning-spinner>
+                        </div>
+                    </template>
+
+                    <template if:true={error}> 
+                        <template if:true={error.body}>
+                            <template if:true={error.body.message}>
+                                <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error"
+                                    style="text-transform: none;"
+                                    role="alert">
+                                    <span class="slds-assistive-text">Error</span>
+                                    <h2>{error.body.message}</h2>
+                                </div>
+                            </template>
+                        </template>
+
+                    </template>
+
+                    <template if:true={customError}>
+                        <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error"
+                            style="text-transform: none;"
+                            role="alert">
+                            <span class="slds-assistive-text">Error</span>
+                            <h2>{customError}</h2>
+                        </div>
+                    </template>
+
+                    <template for:each={impactTechPartnerList} for:item="eachTechPartner">
+
+                        <div class="slds-grid slds-wrap" key={eachTechPartner} >
+                            <div class="slds-size_1-of-2 slds-p-around_small">
+                               <label class="slds-form-element__label" style="margin-bottom:-5px;margin-left:10px;"><span style="padding-right:5px;" class="slds-required">*</span>Tech Partner</label>
+                                <c-custom-typeahead 
+                                    icon-name="standard:account" 
+                                    object-name="Account" 
+                                    search-field="Name"
+                                    valuefield=""
+                                    partner-type="Impact"
+                                    onselectedrec={handleSelectedRec}
+                                    data-id={eachTechPartner.id}
+                                ></c-custom-typeahead>
+                            </div>
+                            <div class="slds-size_1-of-2 slds-p-around_small">
+                                <lightning-input type="text" read-only label="Tech Partner Primary Contact" value={contactName}></lightning-input>
+                             </div>
+                        </div>
+                        <div class="slds-grid slds-wrap" key={eachTechPartner} >
+                            <div class="slds-size_1-of-2 slds-p-around_small">
+                                <lightning-input type="text" required label="Partner Rep Name for Account" data-id={eachTechPartner.id} onchange={handleRepNameChange}></lightning-input>
+                            </div>
+                            <div class="slds-size_1-of-2 slds-p-around_small">
+                                <lightning-input type="email" required label="Partner Rep Email for Account" data-id={eachTechPartner.id} onchange={handleRepEmailChange}></lightning-input>
+                            </div>
+                        </div>
+                        <div style="height:25px;" key={eachTechPartner}>
+                        </div>
+                    </template>
+
+                    <footer class="slds-modal__footer" style="margin-left: -15px;margin-right: -15px;margin-bottom: -15px;">
+                        <button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Cancel</button>
+                        <button class="slds-button slds-button_brand" onclick={submitDetails} title="Submit">Submit</button>
+                    </footer>
+                </div>
+                <!-- Modal/Popup Box LWC footer starts here -->
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

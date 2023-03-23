@@ -1,0 +1,116 @@
+<template>
+    <div class="zs-case-details">
+        <div class="slds-grid" style="padding: 10px;">
+            <div class="slds-col slds-size_12-of-12">
+                <lightning-button label="Add" class="slds-float_right" variant="brand" onclick={openmodal} ></lightning-button>
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-col slds-size_7-of-12">
+                <span>Name</span>
+            </div>
+            <div class="slds-col slds-size_3-of-12">
+                <span>Role</span>
+            </div>
+            <div class="slds-col slds-size_2-of-12">
+                <span>&nbsp;</span>
+            </div>
+        </div>
+        <template if:true={loading}>
+            <div class="slds-spinner_container">
+                <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+            </div>
+        </template>
+        <div class="slds-scrollable_y" style="height:10rem;">
+        <template for:each={emailList} for:item="email">
+            <div key={email.key}>
+                <div class="slds-grid" style="padding-top: 10px;">
+                    <div class="slds-col slds-size_7-of-12">
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col contact-name-label">
+                                <span>{email.FirstName}&nbsp;{email.LastName}</span>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col contact-email-label">
+                                <span>{email.Email}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_3-of-12" if:true={email.isCustomer}>
+                        <span>Customer</span>
+                    </div>
+                    <div class="slds-col slds-size_3-of-12" if:false={email.isCustomer}>
+                        <span>Internal</span>
+                    </div>
+                    <div class="slds-col slds-size_2-of-12">
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col">
+                                <a>
+                                    <lightning-icon icon-name="utility:delete"
+                                        onclick={handleDeleteEmail} data-contactid={email.Id}
+                                        size="xx-small" variant="error" alternative-text="Delete" title="Delete">
+                                    </lightning-icon>
+                                </a>
+                            </div>
+                            <div class="slds-col">
+                                <a if:true={email.isCustomer}>
+                                    <lightning-icon icon-name="utility:edit"
+                                        onclick={handleEditEmail} data-contactid={email.Id} data-email={email.Email}
+                                        size="xx-small" variant="error" alternative-text="Edit" title="Edit">
+                                    </lightning-icon>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+        </div>
+        <!--Use template if:true to display/hide popup based on isModalOpen value--> 
+    <template if:true={openmodel}>
+        <!-- Modal/Popup Box LWC starts here -->
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <template if:true={loading}>
+                    <lightning-spinner alternative-text="Loading" size="medium" style="background-color: rgba(0, 0, 0, 0) !important;"></lightning-spinner>
+                </template>
+                <!-- Modal/Popup Box LWC header here -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close"
+                            alternative-text="close"
+                            variant="inverse"
+                            size="small" ></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 style="font-weight:bold;" class="slds-text-heading_medium slds-hyphenate">
+                        <span if:true={addMode}>Add Case Team Member</span>
+                        <span if:true={editMode}>Edit Email</span>
+                    </h2>
+                </header>
+                <!-- Modal/Popup Box LWC body starts here -->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <template if:true={showcommentmandatorymessage}>
+                        <div class="slds-box slds-theme_error" style="margin-bottom:5px;">
+                            {errormsg}
+                        </div>
+                    </template>
+                        <div class="slds-col slds-size_5-of-12">
+                            <label style="font-weight:bold;" class="Email">Enter an email below</label>
+                        </div>
+                        <div class="slds-col slds-size_7-of-12">
+                            <lightning-input type="text" value={ctRecord.Email} onchange={handleEmailChange}></lightning-input>
+                        </div>
+                </div>
+                <!-- Modal/Popup Box LWC footer starts here -->
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Cancel</button>
+                    <button class="slds-button slds-button_brand" onclick={handleContactSave} title="Save">Save</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    </div>
+</template>

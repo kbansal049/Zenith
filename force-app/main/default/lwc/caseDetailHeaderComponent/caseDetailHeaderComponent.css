@@ -1,0 +1,38 @@
+.zs-case-header-comp ul {
+    font-weight: normal;
+    font-style: initial;
+    font-size: 18px;
+}
+.zs-case-header-comp {
+    margin-right: 0.8rem;
+    margin-left: 0.8rem;
+}
+.grid{
+    display:grid;
+    grid-template-columns: auto max-content;
+}
+.flex{
+    display: flex;
+    align-items: start;
+}
+.margin{
+    margin :4px;
+    font-weight: 600;
+}
+.casenumber{
+    font-weight: 600;
+    margin-bottom: 4px;
+    margin-left: 4px;
+    font-size: large;
+}
+.subject{
+    font-size: medium;
+    margin-left: 4px;
+}
+.status{
+    font-size: large;
+    margin-left: 4px;
+    padding: 2px;
+    width:fit-content;
+    font-weight:600;
+}

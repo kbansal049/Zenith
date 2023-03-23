@@ -1,0 +1,18 @@
+<apex:page standardController="Egress_Location__c" extensions="EgressLocationPageController">
+<apex:form >
+<apex:includeLightning />
+    <div id="lightning" style="padding-left: 30%;"/>
+    <script>
+    //alert('{!oppId}');
+        $Lightning.use("c:EgressLocationApp", function() {
+          $Lightning.createComponent("c:EgressLocationCmp",
+                    {PassesValueFromVF:'{!oppId}',
+                    optyURL:'{!optyURL}'},
+                    "lightning",
+                    function(cmp) {
+                        console.log('>>>>> App is hosted');
+                    });
+        });
+    </script>
+</apex:form>
+</apex:page>

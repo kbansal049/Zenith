@@ -1,0 +1,200 @@
+<template>
+  <lightning-card>
+    <div class="slds-border_top"></div>
+    <div title="External Attendees">
+      <h4 class="slds-m-around_medium"><strong>Zscaler Attendees</strong></h4>
+    </div>
+    <div title="Manage Internal Attendees">
+      <div class="slds-box slds-box_xx-small slds-m-around_medium">
+        <h3><strong>Manage Internal Attendees</strong></h3>
+      </div>
+      <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+        <thead>
+          <tr class="slds-line-height_reset">
+            <th class="" scope="col">
+              <div class="slds-truncate" title="ACTION">ACTION</div>
+            </th>
+            <th class="" scope="col">
+              <div class="slds-truncate" title="NAME">NAME</div>
+            </th>
+            <th class="" scope="col">
+              <div class="slds-truncate" title="DEPARTMENT">DEPARTMENT</div>
+            </th>
+            <th class="" scope="col">
+              <div class="slds-truncate" title="PARTICIPATION">
+                PARTICIPATION
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <template if:true={data.length}>
+            <template for:each={data} for:item="con">
+              <tr key={con.Id}>
+                <th scope="col">
+                  <div>
+                    <lightning-icon
+                      data-id={con.Id}
+                      icon-name="action:delete"
+                      size="x-small"
+                      alternative-text="delete"
+                      title="delete"
+                      onclick={callRowAction}
+                    ></lightning-icon>
+                  </div>
+                </th>
+                <th scope="col">
+                  <div>{con.Name}</div>
+                </th>
+                <th scope="col">
+                  <div>{con.Department}</div>
+                </th>
+                <!-- <th scope="col">
+                                              <div>
+                                                  <lightning-combobox
+                                                      name="progress"
+                                                      data-id={con.Id}
+                                                      label="Status"
+                                                      variant="label-hidden"
+                                                      value={con.attendeeType}
+                                                      placeholder="Select Attendee"
+                                                      onchange={handleAttendee}
+                                                      options={optionsAttendee}></lightning-combobox>
+                                              </div>
+                                          </th> -->
+                <th scope="col">
+                  <div>
+                    <div>
+                      <lightning-combobox
+                        name="progress"
+                        data-id={con.Id}
+                        label="Status"
+                        variant="label-hidden"
+                        placeholder="--Select--"
+                        required
+                        value={con.Participation}
+                        onchange={handleParticipation}
+                        options={optionsParticipation}
+                      ></lightning-combobox>
+                    </div>
+                  </div>
+                </th>
+              </tr>
+            </template>
+          </template>
+          <template if:false={data.length}>
+            <div class="slds-box slds-box_xx-small slds-m-around_medium">
+              <h3>
+                No attendees were added. Use the below section to search and add
+                attendees.
+              </h3>
+            </div>
+          </template>
+        </tbody>
+      </table>
+    </div>
+
+    <div title="Search">
+      <div class="slds-box slds-box_xx-small slds-m-around_medium">
+        <lightning-record-edit-form object-api-name={objectApiName}>
+          <label for="fieldidAttendee">Enter the attendee name</label>
+          <lightning-input-field
+            id="fieldidAttendee"
+            variant="label-hidden"
+            field-name="Attendee_Name__c"
+            onchange={handleUser}
+          ></lightning-input-field>
+        </lightning-record-edit-form>
+        <div class="slds-m-around_medium">
+          <p class="slds-m-around_medium" style="text-align: center">
+            Pause..., remember everybody from Zscaler in this meeting? Add them
+            here.
+          </p>
+        </div>
+      </div>
+    </div>
+    <template if:true={attData}>
+      <div title="Suggested Attendees">
+        <div class="slds-box slds-box_xx-small slds-m-around_medium">
+          <h3><strong>Suggested Attendees</strong></h3>
+        </div>
+        <div class="slds-scrollable_y" style="height: 15rem">
+          <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <thead>
+              <tr class="slds-line-height_reset">
+                <th class="" scope="col">
+                  <div class="slds-truncate" title="ACTION">ACTION</div>
+                </th>
+                <th class="" scope="col">
+                  <div class="slds-truncate" title="NAME">NAME</div>
+                </th>
+                <th class="" scope="col">
+                  <div class="slds-truncate" title="DEPARTMENT">DEPARTMENT</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <template for:each={attData} for:item="con">
+                <tr key={con.Id}>
+                  <th scope="col">
+                    <lightning-record-edit-form object-api-name={objectApiName}>
+                      <div>
+                        <lightning-icon
+                          data-id={con.Id}
+                          icon-name="action:approval"
+                          size="x-small"
+                          alternative-text="Add"
+                          title="Add"
+                          onclick={handleAddUser}
+                        ></lightning-icon>
+                      </div>
+                    </lightning-record-edit-form>
+                  </th>
+                  <th scope="col">
+                    <div><a href={con.Id}></a>{con.Name}</div>
+                  </th>
+                  <th scope="col">
+                    <div>{con.Department}</div>
+                  </th>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </template>
+    <template if:true={previousLoading}>
+      <lightning-spinner alternative-text="Loading"></lightning-spinner>
+    </template>
+    <template if:true={dataSearchLoading}>
+      <lightning-spinner alternative-text="Loading"></lightning-spinner>
+    </template>
+    <template if:true={dataAddLoading}>
+      <lightning-spinner alternative-text="Loading"></lightning-spinner>
+    </template>
+    <template if:true={dataDeleteLoading}>
+      <lightning-spinner alternative-text="Loading"></lightning-spinner>
+    </template>
+    <template if:true={isLoading}>
+      <lightning-spinner alternative-text="Loading"></lightning-spinner>
+    </template>
+    <lightning-button
+      class="slds-m-around_small"
+      label="Cancel"
+      onclick={handleCancel}
+    ></lightning-button>
+    <lightning-button
+      class="slds-m-around_small"
+      variant="brand"
+      label="Previous"
+      onclick={handlePreviousLoader}
+    ></lightning-button>
+    <lightning-button
+      class="slds-m-around_small"
+      variant="brand"
+      label="Next"
+      onclick={handleSubmit}
+    ></lightning-button>
+  </lightning-card>
+  <c-custom-toast-component auto-close-time="3000"></c-custom-toast-component>
+</template>

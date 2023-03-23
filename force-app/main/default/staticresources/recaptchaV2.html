@@ -1,0 +1,69 @@
+<html>
+
+<head>
+  <title>reCAPTCHA : ZS Academy</title>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <style>
+    .btn {
+      background-color: #236bf5;
+      color: #fff;
+      display: inline-block;
+	  font-size: large;
+	  font-weight: 200;
+      letter-spacing: .03em;
+      margin: 12px 0;
+      padding: 12px 8px;
+      text-align: center;
+      transition: ease-in-out .25s;
+      z-index: 1;
+      width: fit-content;
+      cursor: pointer;
+	  border: none;
+	  border-radius: 18px;
+      padding: 9px 33px;
+    }
+	
+	.centerCaptcha {
+		display: flex;
+		justify-content: space-around;
+		align-items: stretch;
+	}
+
+    .centerBtn {
+      display: flex;
+	  justify-content: space-around;
+    }
+  </style>
+</head>
+
+<body>
+	<div>
+	<br />
+	<form action="?" onsubmit="return validateForm()" method="POST">
+		<div class="centerCaptcha">
+			<div class="g-recaptcha" data-sitekey="6LfKneIgAAAAAMDXe_29iM1TAAQdlWmVzgRePZsA">
+			</div>
+		</div>
+		<br />
+		<br />
+		<div class="centerBtn">
+		<button class="btn" type="submit" value="Register">Register</button>
+		</div>
+	</form>
+
+	</div>
+
+  <script type="text/javascript">
+    function validateForm() {
+      if (grecaptcha.getResponse().length == 0) {
+        alert('Please click the reCAPTCHA checkbox');
+        parent.postMessage("captcha failed", location.origin);
+        return false;
+      }
+      parent.postMessage("captcha success", location.origin);
+      return true;
+    }
+  </script>
+</body>
+
+</html>

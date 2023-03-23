@@ -1,0 +1,13 @@
+.componentHolder{
+    position: relative;
+    min-height: 40px;
+}
+
+.custom-size-class{
+    min-height: 100vh;
+    min-width: 100vh;
+}
+
+.slds-scope .slds-card {
+    min-height: 100vh;
+}

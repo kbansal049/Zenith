@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>52.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="showOnlyChat" label="Show Only Chat" type="Boolean"/>
+            <property name="showMainHeader" label="Show Main Header" type="Boolean"/>
+            <property name="createCasePageOnly" type='Boolean'/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

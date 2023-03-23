@@ -1,0 +1,49 @@
+<!--allDataCentersOfAnEquipmentRequest-->
+<apex:component controller="GetDataCentersOfAnEquipment" access="global">
+    <style type="text/css">
+        .tableBorder{
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        .tableDataPadding{
+            padding: 5px;
+            text-align: left;
+        	width:50%;
+        }
+    </style>
+    <apex:attribute name="equipmentRequestIdValue" type="String" description="This is the Id of the Equipment Request" 
+                    assignTo="{!equipmentRequestId}" access="global" />
+    
+    <apex:repeat value="{!dataCenterRecords}" var="dcRecord" id="dataCenterTable">
+        <table class="tableBorder" style="width:100%">
+            <tr>
+                <th class="tableBorder tableDataPadding">Site Name</th>
+                <td class="tableBorder tableDataPadding"><apex:outputLink value="{!dataCenterIdLink}{!dcRecord.Id}">{!dcRecord.Name}</apex:outputLink></td>
+            </tr>
+            <tr>
+                <th class="tableBorder tableDataPadding">Upload throughput - ServiceEdge[Gbps]</th>
+                <td class="tableBorder tableDataPadding"><apex:outputText value="{!dcRecord.Available_Bandwidth_MBPS__c}"/></td>
+            </tr>
+            <tr>
+                <th class="tableBorder tableDataPadding">Download throughput - ServiceEdge[Gbps]</th>
+                <td class="tableBorder tableDataPadding"><apex:outputText value="{!dcRecord.Download_throughput_ServiceEdge_Gbps__c}"/></td>
+            </tr>
+            <tr>
+                <th class="tableBorder tableDataPadding">Number of Users at location</th>
+                <td class="tableBorder tableDataPadding"><apex:outputText value="{!dcRecord.Number_of_Users_at_location__c}"/></td>
+            </tr>
+            <tr>
+                <th class="tableBorder tableDataPadding">Requested Hardware Mode</th>
+                <td class="tableBorder tableDataPadding"><apex:outputText value="{!dcRecord.Requested_Hardware_Model__c}"/></td>
+            </tr>
+            <tr>
+                <th class="tableBorder tableDataPadding">Quantity Requested</th>
+                <td class="tableBorder tableDataPadding"><apex:outputText value="{!dcRecord.Quantity_Requested__c}"/></td>
+            </tr>
+            <br/>
+            <br/>
+        </table>
+    
+    </apex:repeat>
+    
+</apex:component>

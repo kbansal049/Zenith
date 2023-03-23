@@ -1,0 +1,152 @@
+<template>
+    <lightning-card class="slds-text-heading_medium" title={heading}>
+        <div class="slds-text-title slds-has-dividers_around-space"><b><i>In the section please attach the latest files
+                    available - do not include URL
+                    links as this can delay accessing the required files and Kick-Off preparation</i></b>
+            <ul class="slds-has-dividers_around-space">
+                <li class="slds-item greenItem">
+                    <p><b> > please attach relevant files below</b></p>
+                </li>
+            </ul>
+        </div>
+        <ul class="slds-has-dividers_around-space slds-text-title_caps">
+            <template for:each={listOfFieldsMap} for:item="mapKey">
+                <li class="slds-item greenItem" key={mapKey}>
+                    <div key={mapKey}>
+                        <span> {mapKey.Label} :
+                            <template if:false={isSystemReadOnly}>
+                                <span style="padding-left: 0.4rem;color:#0175d1;">
+                                    <template if:false={mapKey.isFilePresent}>
+                                        <button class="slds-button" data-id={mapKey.Label} onclick={handleButtonClick}>
+                                            <lightning-icon size="xx-small" icon-name="utility:relate"
+                                                alternative-text={mapKey.Label} title={mapKey.Label}>
+                                            </lightning-icon>
+                                            <span class="Label-color" style="padding-left: 0.2rem;">Upload file</span>
+                                        </button>
+                                    </template>
+                                    <template if:true={mapKey.isFilePresent}>
+                                        <button class="slds-button" data-id={mapKey.Label} data-edit-id={mapKey.Label}
+                                            onclick={handleEditButtonClick}>
+                                            <lightning-icon size="xx-small" icon-name="utility:edit"
+                                                alternative-text={mapKey.Label} title={mapKey.Label}>
+                                            </lightning-icon>
+                                            <span class="Label-color" style="padding-left: 0.2rem;">Replace |
+                                            </span>
+                                        </button>
+                                        <button class="slds-button" data-id={mapKey.Label} data-delete-id={mapKey.Label}
+                                            onclick={handleDeleteButton}>
+                                            <lightning-icon size="xx-small" icon-name="utility:delete"
+                                                alternative-text={mapKey.Label} title={mapKey.Label}>
+                                            </lightning-icon>
+                                            <span class="Label-color" style="padding-left: 0.2rem;">Remove |
+                                            </span>
+                                        </button>
+                                    </template>
+                                </span>
+                            </template>
+                            <template if:true={isFileAvailable}>
+                                <span style="padding-left: 0.4rem;color: #01d16d;">
+                                    <a data-id={mapKey.file.Id} class="slds-cell-wrap" style="color:#008000;"
+                                        onclick={filePreview}>{mapKey.file.Title}</a>
+                                </span>
+                            </template>
+                        </span>
+                    </div>
+                </li>
+            </template>
+        </ul>
+        <template if:true={showAttachmentSection}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- modal header start -->
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-destructive"
+                            title="Close" onclick={hideModalBox}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" variant="destructive"
+                                size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Attach Files Here</h2>
+                    </header>
+
+                    <!-- modal body start -->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <lightning-card>
+                            <div class="slds-grid slds-page-header forceRelatedListCardHeader"
+                                data-aura-class="forceRelatedListCardHeader">
+                                <header class="slds-media slds-media--center slds-has-flexi-truncate">
+                                    <div class="slds-media__figure stencil slds-avatar slds-avatar_small"
+                                        aria-hidden="true">
+                                        <lightning-icon icon-name="utility:file" alternative-text="files" title="files"
+                                            size="x-small">
+                                        </lightning-icon>
+                                    </div>
+                                    <div class="slds-no-flex">
+                                        <ul class="branding-actions slds-button-group slds-m-bottom_small">
+                                            <lightning-file-upload name="fileUploader"
+                                                file-field-name="Source_fileupload__c" file-field-value={fileFieldValue}
+                                                accept={acceptedFormats} record-id={recordId}
+                                                onuploadfinished={handleActionFinished} multiple>
+                                            </lightning-file-upload>
+                                        </ul>
+                                    </div>
+                                </header>
+                            </div>
+                        </lightning-card>
+                    </div>
+                </div>
+            </section>
+        </template>
+        <!-- modal start -->
+        <template if:true={isDeleteModal}>
+
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- modal header start -->
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close" onclick={hideDeleteBox}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                                size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Delete File</h2>
+                    </header>
+
+                    <!-- modal body start -->
+                    <div class="slds-modal__content slds-p-around_medium slds-grid slds-grid_align-center"
+                        id="modal-content-id-2">
+                        <p>Please confirm if you want to delete the file?</p>
+                    </div>
+
+                    <!-- modal footer start-->
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={handleConfirmDelete}>Confirm</button>
+                        <button class="slds-button slds-button_neutral" onclick={hideDeleteBox}>Cancel</button>
+                    </footer>
+
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+        <!-- modal end -->
+
+        <template if:false={isLoaded}>
+            <lightning-spinner variant="brand" alternative-text="Loading" size="small"></lightning-spinner>
+        </template>
+        <template if:true={isLoaded}>
+            <template if:true={hasError}>
+                <div class="slds-align_absolute-center slds-text-color_error">{errMsg}
+                    <a onclick={showDetailErrorMessage}>&nbsp; More Information</a>
+                </div>
+                <template if:true={showDetailError}>
+                    <div class="slds-align_absolute-center slds-text-color_error">
+                        {errDetail}
+                    </div>
+                </template>
+            </template>
+        </template>
+    </lightning-card>
+</template>

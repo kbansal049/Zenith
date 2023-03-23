@@ -1,0 +1,209 @@
+<template>
+	<template if:true={errorMessage}>
+		<div class="textFormat">
+			{errorMessage}
+		</div>
+	</template>
+
+	<template if:false={_isDuplicateFound}>
+		<template if:false={recordCreated}>
+			<div class="recordEditFormBorder">
+				<div class="slds-grid slds-wrap">
+					<div class="textFormat textFontSize slds-align_absolute-center slds-col slds-size_12-of-12">
+						<h2 class="formHeaderText">{label.ZS_ACADEMY_STUDENTFORMHEADER}</h2></div>
+					<br />
+					<br />
+					<div class="slds-col slds-size_12-of-12">
+						<lightning-record-edit-form object-api-name="skilljar__Student__c" record-id={studentRecordId}
+							onload={handleLoad} onsubmit={handleSubmit} onsuccess={handleSuccess} onerror={handleError}>
+							<div class="slds-text-align_center">
+								<label class="textFormat slds-form-element__label slds-text-heading_small">
+									Gov. Cloud customers, please reach out to your account team for access. 
+								</label>
+							</div>
+							<div class="slds-grid slds-wrap">
+								<template for:each={recordEditFormFieldDetails} for:item="field">
+									<div key={field.fieldApiName}
+										class="slds-col slds-size_1-of-1 slds-p-horizontal_x-small">
+
+										<template if:true={field.noCustomLogicOrValidation}>
+											<lightning-input-field data-id={field.fieldApiName}
+												field-name={field.fieldApiName} variant="label-inline"
+												onchange={handleFieldChange} required={field.isFieldRequired}>
+											</lightning-input-field>
+										</template>
+
+										<!-- IBA-1800 START -->
+
+										<template if:true={field.stringValidationRequired}>
+											<div class="slds-form-element_horizontal slds-form-element">
+												<label class="textFormat slds-form-element__label">
+													<abbr if:true={field.isFieldRequired} class="slds-required">*</abbr>
+													{field.fieldlabel}
+												</label>
+												<lightning-input-field data-id={field.fieldApiName}
+													field-name={field.fieldApiName} variant="label-hidden"
+													onchange={handleFieldChange} data-required={field.isFieldRequired}
+													data-error-message-element-id={field.errorMessageElement} required={field.isFieldRequired}>
+												</lightning-input-field>
+												<div class="slds-form-element__help slds-required"
+													data-id={field.errorMessageElement} data-help-message=""
+													role="alert"></div>
+											</div>
+										</template>
+
+										<!-- IBA-1800 END -->
+
+										<template if:true={field.isEmailField}>
+											<div class="slds-form-element_horizontal slds-form-element">
+												<label class="textFormat slds-form-element__label">
+													<abbr class="slds-required">*</abbr>
+													{label.ZS_ACADEMY_EMAIL_FIELD_LABEL}
+												</label>
+												<lightning-input-field data-id={field.fieldApiName}
+													field-name={field.fieldApiName} variant="label-hidden"
+													onchange={handleFieldChange} required={field.isFieldRequired}>
+												</lightning-input-field>
+												<div if:true={_invalidEmailDomainMessage}
+													class="slds-form-element__help slds-required"
+													data-id="emailDomainMessage" data-help-message="" role="alert">
+													{_invalidEmailDomainMessage}</div>
+											</div>
+										</template>
+
+										<template if:true={field.isPhoneField}>
+											<div class="slds-form-element_horizontal slds-form-element">
+												<lightning-input-field data-id={field.fieldApiName}
+													field-name={field.fieldApiName} label="Phone" required
+													variant="label-inline" onchange={handleFieldChange}>
+												</lightning-input-field>
+												<div if:true={_invalidPhoneMessage}
+													class="slds-form-element__help slds-required" data-id="phoneMessage"
+													data-help-message="" role="alert">
+													{_invalidPhoneMessage}</div>
+											</div>
+										</template>
+
+										<template if:true={field.isTitleField}>
+											<div class="slds-form-element_horizontal slds-form-element">
+												<label class="textFormat slds-form-element__label">
+													<abbr if:true={field.isFieldRequired} class="slds-required">*</abbr>
+													{field.fieldlabel}
+												</label>
+												<lightning-input-field data-id={field.fieldApiName}
+													field-name={field.fieldApiName} variant="label-hidden" placeholder="I am a " 
+													onchange={handleTitleChange} required={field.isFieldRequired}>
+												</lightning-input-field>
+											</div>
+										</template>
+
+									</div>
+								</template>
+
+								<!-- Commented the below code because it was not shwoing required field message -->
+								<!--<lightning-combobox class="no-bottom-padding-margin" name="Tell us a little about yourself"
+									label="Tell us a little about yourself" dropdown-alignment="auto"
+									variant="label-inline" value={titleComboBoxValue} placeholder="I am a "
+									options={titleComboBoxOptions} onchange={handleTitleChange} required>
+								</lightning-combobox>
+								<template if:true={_showTitleComboBoxRequiredError}>
+									<div class="errorString">Complete this field.</div>
+								</template>-->
+
+							</div>
+							<!-- <c-recaptcha-v2></c-recaptcha-v2>
+							<input data-id="hiddenbtn" class="hiddenbtn" type="submit" /> -->
+
+							<div class="centerBtn">
+								<button class="btn" type="submit" value="Register">Register</button>
+							</div>
+
+						</lightning-record-edit-form>
+					</div>
+				</div>
+			</div>
+		</template>
+
+		<template if:true={recordCreated}>
+			<br />
+			<br />
+			<br />
+			<br />
+			<div class="textFormat">
+    				<lightning-formatted-rich-text
+        				value={StudentRegSuccessMsg}
+    				></lightning-formatted-rich-text>
+			</div>
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+		</template>
+	</template>
+
+	<template if:true={_isDuplicateFound}>
+
+		<template if:true={_isDuplicateAndEmailVerified}>
+			<br />
+			<br />
+			<div class="textFormat slds-align_absolute-center">
+				{label.DUPLICATE_STUDENT_EMAIL_VERIFIED_LABEL}
+			</div>
+			<br />
+			<br />
+			<div class="slds-align_absolute-center">
+				<button class="signInBtn" value="Sign In" onclick={handleSignInButton}>Sign In</button>
+			</div>
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+		</template>
+		<br />
+		<br />
+		<template if:true={_isDuplicateAndEmailNotVerified}>
+			<div class="textFormat slds-align_absolute-center">
+				{label.DUPLICATE_STUDENT_EMAIL_NOT_VERIFIED_LABEL}
+			</div>
+			<br />
+			<br />
+			<div class="slds-align_absolute-center">
+				<button class="signInBtn" value="Sign In" onclick={handleSignInButton}>Sign In</button>
+			</div>
+		</template>
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+
+	</template>
+
+	<template if:true={showSpinner}>
+		<lightning-spinner alternative-text="Loading" variant="brand" size="large">
+		</lightning-spinner>
+	</template>
+
+</template>

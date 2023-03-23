@@ -1,0 +1,92 @@
+<!--**********************************************************************************************************************
+* @CompName 	: NFR_ApprovalCmp
+* @ClassName	: NFR_ApprovalController
+* @Author   	: Priyanka J
+* @Date     	: 28 Dec, 2020
+* @Description	: Lightning component that invokes from Quick action and VF page to enable approval submission
+************************************************************************************************************ -->
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader" 
+                access="global" controller="NFR_ApprovalController">
+    <!-- ATTRIBUTES START -->
+    <aura:attribute name="record" type="NFR__c" />    
+    <aura:attribute name="submitted" type="Boolean" default="false"/>
+    <aura:attribute name="failed" type="Boolean" default="false"/>
+    <aura:attribute name="spinner" type="boolean" default="false"/>
+    <aura:attribute name="fromVF" type="Boolean" />
+    <aura:attribute name="showSuccessVF" type="Boolean" default="false"/>
+    <aura:attribute name="successMsg" type="String" default=""/>
+    <!-- ATTRIBUTES END -->
+    <force:recordData aura:id="recordLoader"
+                      recordId="{!v.recordId}"
+                      fields="Approval_Status__c,Name,NFR_Sales_Engineer__c"
+                      targetFields="{!v.record}"
+                      recordUpdated="{!c.recordUpdate}" />
+    <aura:if isTrue="{!v.spinner}">
+        <div class="slds-is-relative">
+            <lightning:spinner alternativeText="Loading" title="Processing.." size="small"
+                               class="slds-show backgroundSpinner"/> 
+        </div>
+    </aura:if> 
+       <aura:if isTrue="{!v.fromVF}">   
+        <div class="slds-m-around--large slds-p-left_x-small">
+            <article>
+                <div class="slds-media">                    
+                    <div class="slds-media__body">
+                        <h1 class="slds-text-body_small slds-line-height_reset" title="NFR License">
+                            {!$Label.c.SubmitNFRApproval}
+                        </h1>
+                        <p class="slds-page-header__title slds-truncate slds-align-middle">
+                            <a href="{!'/'+v.recordId}" target="_parent">{!v.record.Name}</a></p>
+                    </div>
+                    <aura:if isTrue="{!!v.showSuccessVF}">
+                    <div class="slds-float_right" style="align-self: flex-end;">
+                        <a href="{!'/'+v.recordId}" target="_parent">{!$Label.c.BackToNFR}</a>
+                    </div>
+                    </aura:if>
+                </div>                
+            </article>
+        </div>
+        <div class="slds-m-bottom--medium"></div>
+     </aura:if>
+    <div class="slds-m-around--small slds-p-left_x-small">
+        <aura:if isTrue="{!or(v.record.NFR_Sales_Engineer__c == '', v.record.NFR_Sales_Engineer__c == null)}">
+            <ui:message title="Error" severity="error" >
+                <br />
+                {!$Label.c.NFR_SE_PBC_Value_Not_Provided}      
+            </ui:message>
+        </aura:if>
+        <aura:if isTrue="{!v.record.Approval_Status__c == 'Approved'}">
+            <ui:message title="Error" severity="error" >
+                <br />
+                {!$Label.c.NFRApproved}            
+            </ui:message>
+        </aura:if>
+        <aura:if isTrue="{!or(v.record.Approval_Status__c == 'Submitted', v.record.Approval_Status__c == 'In-Progress')}">
+            <ui:message title="Unable to Submit for Approval" severity="error"> 
+                <br />
+                {!$Label.c.NFRSubmitted}
+            </ui:message>
+        </aura:if>
+        <aura:if isTrue="{!v.failed}">
+            <aura:if isTrue="{!!or(v.record.Approval_Status__c == 'Submitted', v.record.Approval_Status__c == 'In-Progress')}">
+            <ui:message title="Error" severity="error">
+                <br />
+                {!$Label.c.NFRFailed}
+            </ui:message>
+            </aura:if>
+        </aura:if>
+        
+            <aura:if isTrue="{!v.showSuccessVF}">
+                <ui:message title="Success" severity="confirm">
+                    <br />
+                    <div class="slds-p-bottom_medium">
+                    {!v.successMsg}. {!$Label.c.NFRLink}
+                    </div>
+                    <div class="slds-float_left" style="align-self: flex-end;">
+                        <a href="{!'/'+v.recordId}" target="_parent">{!$Label.c.BackToNFR}</a>
+                    </div>
+                </ui:message>
+            </aura:if>
+       
+    </div>
+</aura:component>

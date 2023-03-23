@@ -1,0 +1,289 @@
+<template>
+    <template if:true={oppLoaded}>
+
+        <lightning-record-edit-form object-api-name="Opportunity" record-id={oppRecordId} onload={handleOpportunityLoad}
+            onsubmit={handleOpportunitySubmit} onerror={handleOpportunityError} onsuccess={handleOpportunitySuccess}>
+            <lightning-accordion allow-multiple-sections-open active-section-name={activeSections}>
+
+
+                <template if:true={hasError}>
+                    <template if:true={error}>
+                        <c-error-panel errors={error} friendly-message="Error saving the details"></c-error-panel>
+                    </template>
+                </template>
+
+
+                <lightning-accordion-section name="A" label="Bill To Customer">
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            <div class="slds-form-element slds-form-element_horizontal">
+                                <label class="slds-form-element__label" for="netPrimaryPartnerID">Bill To Customer
+                                    ID</label>
+                                <div class="slds-form-element__control">
+                                    <lightning-output-field variant="label-hidden" id="netPrimaryPartnerID"
+                                        field-name='Netsuite_Primary_Partner_ID__c'
+                                        value={oppRecord.Netsuite_Primary_Partner_ID__c}>
+                                    </lightning-output-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            &nbsp;
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            <div class="slds-form-element slds-form-element_horizontal">
+                                <label class="slds-form-element__label" for="customerBillToDet">Bill To Customer
+                                    Details</label>
+                                <div class="slds-form-element__control">
+                                    <lightning-formatted-text id="customerBillToDet" value={billToDetails}>
+                                    </lightning-formatted-text>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            &nbsp;
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            <div class="slds-form-element slds-form-element_horizontal">
+                                <label for="PrimaryPartnerID" class="slds-form-element__label">Order Ops Bill To
+                                    Override</label>
+                                <div class="slds-form-element__control">
+                                    <lightning-input-field id="PrimaryPartnerID"
+                                        field-name='Netsuite_Primary_Partner_ID_Override__c' variant="label-hidden"
+                                        onchange={handleBillToOverride}>
+                                    </lightning-input-field>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            <div class="slds-form-element slds-form-element_horizontal">
+                                <label class="slds-form-element__label" for="PartnerInternalID">Netsuite Partner
+                                    Internal ID Override</label>
+                                <div class="slds-form-element__control">
+                                    <lightning-input-field id="PartnerInternalID"
+                                        field-name='Netsuite_Partner_Internal_ID_Override__c' variant="label-hidden"
+                                        onchange={handleInternalPartnerOverride}>
+                                    </lightning-input-field>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            <div class="slds-form-element slds-form-element_horizontal">
+                                <label class="slds-form-element__label" for="orderOpsBillToDet">Order Ops Bill To
+                                    Override Customer Detail</label>
+                                <div class="slds-form-element__control">
+                                    <lightning-formatted-text id="orderOpsBillToDet" value={billToOverriddenDetails}>
+                                    </lightning-formatted-text>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            <div class="slds-form-element slds-form-element_horizontal">
+                                <label for="orderOpsPartnerOverrideDet" class="slds-form-element__label">Order Ops
+                                    Partner Override Detail</label>
+                                <div class="slds-form-element__control">
+                                    <lightning-formatted-text id="orderOpsPartnerOverrideDet"
+                                        value={partnerIdOverriddendetails}>
+                                    </lightning-formatted-text>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            <div class="slds-form-element slds-form-element_horizontal">
+                                <label for="overrideBillToAccount" class="slds-form-element__label">Apply Override on
+                                    SFDC Bill To Account</label>
+                                <div class="slds-form-element__control">
+                                    <lightning-input type="checkbox" id="overrideBillToAccount" value={overrideBillToId}
+                                        onchange={handleOverrideBillToIdChange}>
+                                    </lightning-input>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            <div class="slds-form-element slds-form-element_horizontal">
+                                <label for="overridePartnerAccount" class="slds-form-element__label">Apply Override on
+                                    Partner Account Id</label>
+                                <div class="slds-form-element__control">
+                                    <lightning-input type="checkbox" id="overridePartnerAccount"
+                                        value={overridePartnerId} onchange={handleOverridePartnerIdChange}>
+                                    </lightning-input>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </lightning-accordion-section>
+
+
+                <lightning-accordion-section name="B" label="Ship To Customer">
+                    <div class="slds-grid slds-wrap">
+
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            <div class="slds-form-element slds-form-element_horizontal">
+                                <label class="slds-form-element__label" for="netCustomerID">Ship To Customer ID</label>
+                                <div class="slds-form-element__control">
+                                    <lightning-output-field variant="label-hidden" id="netCustomerID"
+                                        field-name='Netsuite_Customer_ID__c' value={oppRecord.Netsuite_Customer_ID__c}>
+                                    </lightning-output-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            &nbsp;
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            <div class="slds-form-element slds-form-element_horizontal">
+                                <label class="slds-form-element__label" for="customerShipToDet">Ship To Customer
+                                    Details</label>
+                                <div class="slds-form-element__control">
+                                    <lightning-formatted-text id="customerShipToDet" value={shipToDetails}>
+                                    </lightning-formatted-text>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            &nbsp;
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            <div class="slds-form-element slds-form-element_horizontal">
+                                <label for="customerIDOverride" class="slds-form-element__label">Order Ops Ship To
+                                    Override</label>
+                                <div class="slds-form-element__control">
+                                    <lightning-input-field id="customerIDOverride"
+                                        field-name='Netsuite_Customer_ID_Override__c' variant="label-hidden"
+                                        onchange={handleShipToOverrideChange}>
+                                    </lightning-input-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            &nbsp;
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            <div class="slds-form-element slds-form-element_horizontal">
+                                <label for="orderOpsShpiToOverrideDet" class="slds-form-element__label">Order Ops Ship
+                                    To
+                                    Override Customer Detail</label>
+                                <div class="slds-form-element__control">
+                                    <lightning-formatted-text id="orderOpsShpiToOverrideDet"
+                                        value={shipToOverriddenDetails}>
+                                    </lightning-formatted-text>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            &nbsp;
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-horizontal_large ">
+                            <div class="slds-form-element slds-form-element_horizontal">
+                                <label for="overrideShipToAccount" class="slds-form-element__label">Apply Override on
+                                    SFDC
+                                    Ship To Account</label>
+                                <div class="slds-form-element__control">
+                                    <lightning-input type="checkbox" id="overrideShipToAccount" value={overrideShipToId}
+                                        onchange={handleoverrideShipToIdChange}>
+                                    </lightning-input>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </lightning-accordion-section>
+                <lightning-accordion-section name="C" label="Additional Details">
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-size_1-of-1 slds-p-horizontal_large ">
+                            <lightning-input-field field-name='Primary_Partner_Program__c'>
+                            </lightning-input-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-p-horizontal_large ">
+                            <lightning-output-field field-name='StageName'>
+                            </lightning-output-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-p-horizontal_large ">
+                            <lightning-input-field field-name='X10b_Reason__c'>
+                            </lightning-input-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-p-horizontal_large ">
+                            <lightning-input-field field-name='Finance_Comments__c'>
+                            </lightning-input-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-p-horizontal_large ">
+                            <lightning-input-field field-name='SO_Creation_Date__c' required="true">
+                            </lightning-input-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-p-horizontal_large ">
+                            <lightning-input-field field-name='Secondary_Partner__c'>
+                            </lightning-input-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-p-horizontal_large ">
+                            <lightning-input-field field-name='Secondary_Partner_Role__c'>
+                            </lightning-input-field>
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-1 slds-p-horizontal_large ">
+                            <lightning-input-field field-name='Partner_PO_Number__c' required="true">
+                            </lightning-input-field>
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-1 slds-p-horizontal_large ">
+                            <div class="slds-form-element slds-form-element_horizontal">
+                                <label for="firstPODate" class="slds-form-element__label">Customer Since</label>
+                                <div class="slds-form-element__control">
+                                    <lightning-input-field id="firstPODate" field-name='First_PO_Date__c'
+                                        variant="label-hidden">
+                                    </lightning-input-field>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-1 slds-p-horizontal_large ">
+                            <div class="slds-form-element slds-form-element_horizontal">
+                                <label for="promoCode" class="slds-form-element__label">Netsuite Promo Code</label>
+                                <div class="slds-form-element__control">
+                                    <lightning-input-field id="promoCode" field-name='Netsuite_Promo_Code__c'
+                                        variant="label-hidden">
+                                    </lightning-input-field>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </lightning-accordion-section>
+
+
+            </lightning-accordion>
+            <!--Actions/Buttons-->
+            <div class="slds-text-align_center">
+                <lightning-button
+                    class="slds-m-around_small slds-text-align_right slds-p-vertical_medium slds-p-right_large"
+                    type="cancel" label="Cancel" onclick={handleOpportunityCancel}>
+                </lightning-button>
+                <lightning-button
+                    class="slds-m-around_small slds-text-align_right slds-p-vertical_medium slds-p-right_large"
+                    variant="brand" type="submit" label="Review >>">
+                </lightning-button>
+
+                <lightning-button
+                    class="slds-m-around_small slds-text-align_right slds-p-vertical_medium slds-p-right_large"
+                    label="View Customer Details" onclick={handleCustomerDetails}>
+                </lightning-button>
+            </div>
+        </lightning-record-edit-form>
+
+
+        <template if:false={isLoaded}>
+            <div class="slds-spinner_container">
+                <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+    </template>
+</template>

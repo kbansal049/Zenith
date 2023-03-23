@@ -1,0 +1,92 @@
+<template>
+	
+	<template if:true={teamingTechPartners}>
+
+		
+
+		<table class="center slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered"
+                       style="width:100%">
+					
+			<thead>
+				<tr class="slds-text-title_caps">
+					<!--<th style="text-align:center;width:10%" class="" scope="col">
+						<div class="slds-truncate" title="Action">Action</div>
+					</th>-->
+					<th style="text-align:center;width:30%" class="" scope="col">
+						<div class="slds-truncate" title="Partner">Partner</div>
+					</th>
+					<th style="text-align:center;width:30%" class="" scope="col">
+						<div class="slds-truncate" title="Activity Type">Partner Account<br>Type</div>
+					</th>
+					<th style="text-align:center;width:30%" class="" scope="col">
+						<div class="slds-truncate" title="Activity Type">Activity Type</div>
+					</th>
+					<th style="text-align:center;width:20%" class="" scope="col">
+						<div class="slds-truncate" title="Created By">Created By</div>
+					</th>
+					<th style="text-align:center;width:10%" class="" scope="col">
+						<div class="slds-truncate" title="Approval Status">Approver Name</div>
+					</th>
+					<th style="text-align:center;width:10%" class="" scope="col">
+						<div class="slds-truncate" title="Approval Status">Approval Status</div>
+					</th>
+					<th style="text-align:center;width:10%" class="" scope="col">
+						<div class="slds-truncate" title="Approved/Rejected Date">Approved/Rejected<br>Date</div>
+					</th>
+				</tr>
+			</thead>	
+			<tbody>
+				<template for:each={teamingTechPartners} for:item="eachPartner">
+					<tr key={eachPartner.Id}>
+						<!--<td style="text-align:center;" >
+							<template if:true={isSystemAdmin}>
+								<a data-id={eachPartner.Id} onclick={handleDelete}>Del</a>
+							</template>
+						</td>-->
+						<td style="text-align:center; white-space: pre-line;" class="slds-truncate">
+							<a data-id={eachPartner.Id} target="_blank"><span onclick={navigateToRecordPage} >{eachPartner.Account__r.Name}</span></a> 
+						</td>
+						<td style="text-align:center; white-space: pre-line;" class="slds-truncate">
+							{eachPartner.Account__r.Partner_Type__c}
+						</td>
+						<td style="text-align:center; white-space: pre-line;" class="slds-truncate">
+							{eachPartner.Activity_Type__c}
+						</td>
+						<td style="text-align:center;">
+							{eachPartner.CreatedBy.Name}
+						</td>
+						<td style="text-align:center;">
+							<template if:true={eachPartner.Regional_Director__c}>
+								{eachPartner.Regional_Director__r.Name}
+							</template>
+						</td>
+						<td style="text-align:center;" >
+							{eachPartner.Approval_Status__c}
+						</td>
+						<td style="text-align:center;">
+							<lightning-formatted-date-time
+								value={eachPartner.Approved_Rejected_Date__c}
+								year="numeric"
+								month="numeric"
+								day="numeric"
+								time-zone="UTC"
+							></lightning-formatted-date-time>
+				
+						</td>
+					</tr>
+				</template>
+			</tbody>		
+		</table>
+
+
+	</template>
+
+	
+
+	<template if:false={teamingTechPartners}>
+		<div class="slds-align--absolute-center">
+			There were no 'Influence Partner' Partners Associated to with this Opportunity.
+		</div>
+	</template>
+    
+</template>

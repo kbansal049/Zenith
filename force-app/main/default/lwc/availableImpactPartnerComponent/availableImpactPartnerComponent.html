@@ -1,0 +1,75 @@
+<template>
+	
+	<template if:true={impactTechPartners}>
+		<table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered"
+                       style="width:100%">
+					
+			<thead>
+				<tr class="slds-text-title_caps">
+					<th style="text-align:center;width:30%" class="" scope="col">
+						<div class="slds-truncate" title="Partner Name">Partner Name</div>
+					</th>
+					<th style="text-align:center;width:30%" class="" scope="col">
+						<div class="slds-truncate" title="MEDDPICC Activity Type">MEDDPICC Activity Type</div>
+					</th>
+					<th style="text-align:center;width:20%" class="" scope="col">
+						<div class="slds-truncate" title="Created By">Created By</div>
+					</th>
+                    <th style="text-align:center;width:20%" class="" scope="col">
+						<div class="slds-truncate" title="Created By">Approver Name</div>
+					</th>
+					<th style="text-align:center;width:10%" class="" scope="col">
+						<div class="slds-truncate" title="Status">Status</div>
+					</th>
+					<th style="text-align:center;width:10%" class="" scope="col">
+						<div class="slds-truncate" title="Action">Action</div>
+					</th>
+				</tr>
+			</thead>	
+			<tbody>
+
+				<template for:each={impactTechPartners} for:item="eachPartner">
+					<tr key={eachPartner.rec.Id}>
+						<td style="text-align:center; white-space: pre-line;" class="slds-truncate">
+							{eachPartner.rec.Account__r.Name}
+						</td>
+						<td style="text-align:center; white-space: pre-line;" class="slds-truncate">
+							{eachPartner.rec.MEDDPICC_Activity_Type__c}
+						</td>
+						<td style="text-align:center;">
+							{eachPartner.rec.CreatedBy.Name}
+						</td>
+                        <td style="text-align:center;">
+                            <template if:true={eachPartner.rec.Geo_VP__c}>
+								{eachPartner.rec.Geo_VP__r.Name}
+							</template>
+						</td>
+						<td style="text-align:center;" >
+							{eachPartner.rec.Approval_Status__c}
+						</td>
+						<td style="text-align:center;" data-label="Actions">
+                            <template if:true={eachPartner.showWithdraw}>
+                                <a data-id={eachPartner.rec.Id} href="#" onclick={settowithdraw}>Withdraw | </a>
+                            </template>
+                            <template if:true={eachPartner.showComplete}>
+                                <a data-id={eachPartner.rec.Id} href="#" onclick={settocomplete}>Complete</a>
+                            </template>
+						</td>
+					</tr>
+				</template>
+			</tbody>		
+		</table>
+
+
+	</template>
+
+	<template if:false={impactTechPartners}>
+		<div class="slds-align--absolute-center">
+			There are no 'Impact Acceleration Activity' associated with this Opportunity.
+		</div>
+	</template>
+    <template if:true={isModalOpen} >
+        <c-validate-M-E-D-D-P-I-C-C-Activities partnerid={recordId} onclosemodal={closeModal}></c-validate-M-E-D-D-P-I-C-C-Activities>
+    </template>
+    
+</template>

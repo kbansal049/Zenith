@@ -1,0 +1,28 @@
+<apex:component access="global" controller="EmailComponentController">
+    <apex:attribute name="AcctId" type="Id" description="Id of the account" assignTo="{!accountId}"/>
+    <apex:attribute name="pSize" type="Integer" description="Planner Project to Be Shown" assignTo="{!plannerProjectsLimit}"/>
+    <table class="ql-table-blob">
+        <thead>
+            <tr>
+                <th>Project ID</th>
+                <th>Project Name</th>
+                <th>Project Type</th>
+                <th>Project Status</th>
+                <th>% Complete</th>
+                <th>Project Summary Notes</th>                      
+            </tr>
+        </thead>
+        <tbody>
+            <apex:repeat value="{!plannerProjects}" var="pp">
+                <tr>
+                    <td>{!pp.Project_ID__c}</td>
+                    <td Style="width: 25%;">{!pp.Name}</td>
+                    <td>{!pp.Project_Type__c}</td>
+                    <td>{!pp.inspire1__Project_Status__c}</td>
+                    <td>{!pp.inspire1__Complete__c}</td>
+                    <td>{!pp.Management_Notes__c}</td>
+                </tr>
+            </apex:repeat>  
+        </tbody>     
+    </table>
+</apex:component>

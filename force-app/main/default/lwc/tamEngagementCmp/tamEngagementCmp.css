@@ -1,0 +1,12 @@
+.hidden-row {
+    display: none;
+}
+
+.hidden-row-product {
+    display: none;
+}
+
+.readonly-path{
+    pointer-events: none;
+    padding: 5px;
+}

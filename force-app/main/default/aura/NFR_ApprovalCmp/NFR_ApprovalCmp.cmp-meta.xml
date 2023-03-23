@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuraDefinitionBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>50.0</apiVersion>
+    <description>This component validates if a record is already Approved whenever Submit for approval button is clicked. If already approved throws an error if not submits record for approval.</description>
+</AuraDefinitionBundle>

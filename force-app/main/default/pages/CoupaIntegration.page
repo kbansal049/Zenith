@@ -1,0 +1,29 @@
+<apex:page StandardController="Campaign" extensions="CoupaCampaignController" showHeader="false" sidebar="false">
+    <style>
+        .csLabel {
+            width: 35%;
+            padding-bottom: 3px;
+            padding-top: 3px;
+            padding-right: 10px;
+            padding-left: 3px;
+            text-align: right;
+            font-size: 91%;
+            font-weight: bold;
+        }
+        .mainCL1, .mainCL2{
+            width: 50%;
+        }
+    </style> 
+    <apex:panelGrid columns="2" columnClasses="mainCL1,mainCL2" style="width:100%">
+        <apex:panelGrid columns="2"  columnClasses="labelCol vfLabelColTextWrap csLabel,dataCol" style="width:100%">
+            <apex:outputLabel value="Coupa Id" for="coupaID" />
+            <apex:outputText id="coupaID" value="{!Campaign.Coupa_Id__c}" />
+            <apex:outputLabel value="Coupa Integration Status"  for="coupaIntegrationStatus"/>
+            <apex:outputText id="coupaIntegrationStatus" value="{!Campaign.Coupa_Integration_Status__c}" />
+        </apex:panelGrid>
+        <apex:panelGrid columns="2"  columnClasses="labelCol vfLabelColTextWrap csLabel,dataCol" style="width:100%">
+            <apex:outputLabel value="Coupa Integration Error" for="coupaErr" />
+            <apex:outputText id="coupaErr" value="{!Campaign.Coupa_Integration_Error__c} " />
+        </apex:panelGrid>
+    </apex:panelGrid>
+</apex:page>

@@ -1,0 +1,55 @@
+<template>
+
+
+
+
+    <div class="container">
+
+        <h1>Categories</h1>
+        <div class="slds-grid slds-wrap slds-gutters_x-small slds-gutters_y-small">
+            <template if:true={categorySubCategoryData} for:each={categorySubCategoryData} for:item="obj"
+                for:index="index">
+                <div key={obj.Id}
+                    class=" mainCols slds-col slds-small-size_1-of-1 slds-medium-size_4-of-12 slds-large-size_4-of-12">
+
+                    <p class="categoryHead slds-wrap">{obj.category.Name}</p>
+                    <template if:true={obj.subCategoryList} for:each={obj.subCategoryList} for:item="subCat"
+                        for:index="index">
+
+                        <div key={subCat.Id}>
+                            <p class="subCategories slds-wrap"
+                                data-id={subCat.Id}
+                                onclick={handleSubCategoryClick}
+                            >
+                                {subCat.Name}
+                            </p>
+                        </div>
+                    </template>
+
+                    <p class="seeAllButton subCategories" data-id={obj.category.Group_Id__c} data-name={obj.category.Name} onclick={handleSeeAll}>See all</p>
+                    
+
+                </div>
+               
+
+            </template>
+
+
+
+
+        </div>
+
+        <template if:true={showMoreRecords}>
+            <div style="margin-top: 2rem;" data-name="viewMore" onclick={handleMoreCategories}>
+                <span class="view-more-button">
+                    View more categories
+                </span>
+            </div>
+
+        </template>
+
+    </div>
+
+
+
+</template>

@@ -1,0 +1,21 @@
+<template>
+    <c-custom-toast-component auto-close-time="3000"></c-custom-toast-component>
+
+    <div class="slds-m-around_small">
+      <template if:false={cloudRecord}>
+         <div class="provReqSpinner" style="position: relative;">
+            <lightning-spinner alternative-text="Loading" size="small" variant="brand"></lightning-spinner>
+         </div>
+      </template>
+
+      <template if:true={cloudRecord}>
+         <div class="custCenter">
+            <b>{cloudName}</b>
+            <p>Please wait, while we submit the request.</p>
+         </div>
+         <div class="provReqSpinner" style="position: relative;">
+            <lightning-spinner alternative-text="Loading" size="small" variant="brand"></lightning-spinner>
+         </div>
+      </template>
+   </div>
+</template>

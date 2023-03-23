@@ -1,0 +1,65 @@
+<!--
+@description       : 
+@author            : ChangeMeIn@UserSettingsUnder.SFDoc
+@group             : 
+@last modified on  : 09-03-2020
+@last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+Modifications Log 
+Ver   Date         Author                               Modification
+1.0   08-18-2020   ChangeMeIn@UserSettingsUnder.SFDoc   Initial Version
+-->
+<template>
+<template if:true={showcommentmandatorymessage}>
+    <div class="slds-box slds-theme_error" style="margin-bottom:5px;">
+        {errmsg}
+    </div>
+</template>
+<template if:true={loadData}>
+    <lightning-record-edit-form density="comfy" record-id={recordId} object-api-name="Case"
+            onload={handleload} onsuccess={handleSuccess} onsubmit={handleSubmit} record-type-id={recordTypeId}>
+        <lightning-messages></lightning-messages>
+        <div>
+            <lightning-layout pull-to-boundary="medium" multiple-rows="true">
+                <lightning-layout-item size="6" padding="around-medium">
+                    <lightning-input-field field-name='Escalation_Stage__c' class="Escalation_Stage__c" onchange={statuschange}>
+                    </lightning-input-field>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" padding="around-medium">
+                    <lightning-input-field field-name='Customer_Temperature__c' class="Customer_Temperature__c" >
+                    </lightning-input-field>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" padding="around-medium">
+                    <lightning-input-field field-name='Escalation_Reason_New_n__c' class="Escalation_Reason_New_n__c" >
+                    </lightning-input-field>
+                </lightning-layout-item>
+                <lightning-layout-item size="12" padding="around-medium">
+                    <lightning-input-field class="Escalation_Resolution_Notes__c" field-name='Escalation_Resolution_Notes__c'>
+                    </lightning-input-field>
+                </lightning-layout-item>
+                <!--Added by Chetan - CR#4039 Start-->
+                <template if:true={showClosureNotes}>
+                    <lightning-layout-item size="12" padding="around-medium">
+                        <lightning-input-field class="Escalation_Closure_Notes__c" field-name='Escalation_Closure_Notes__c' value={closureNotes} required>
+                        </lightning-input-field>
+                    </lightning-layout-item>  
+                </template>
+                <!--Added by Chetan - CR#4039 End-->    
+            </lightning-layout>
+        </div>
+    </lightning-record-edit-form>
+    <hr style="margin-top: 10px; margin-bottom:10px;">
+    <template if:false={loading}>
+        <div class="slds-box slds-box_small" style="text-align: right;border: 0px; border-radius: 0px;">
+            <lightning-button class="slds-m-right_small" variant="brand" onclick={savecase} name="save" label="Save">
+            </lightning-button>
+            <lightning-button variant="neutral" name="cancel" label="Cancel" onclick={cancelCase}>
+            </lightning-button>
+        </div>
+    </template>
+</template>
+<template if:true={loading}>
+    <div class="slds-spinner_container">
+        <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+    </div>
+</template>
+</template>

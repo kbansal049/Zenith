@@ -1,0 +1,57 @@
+<template>
+    <div class={customStyle}>
+        <template if:true={loading}>
+            <div class="slds-spinner_container">
+                <lightning-spinner variant="brand" size="small"></lightning-spinner>
+            </div>
+        </template>
+        <template if:true={errmsg}>
+            <div class="slds-box slds-theme_error" style="margin-bottom:5px;">
+                <lightning-formatted-rich-text value={errmsg}></lightning-formatted-rich-text>
+            </div>
+        </template>
+        <template if:true={loadData}>
+            <div style="width: auto;">
+                <template if:true={showData}>
+                    <lightning-layout pull-to-boundary="small">
+                        <lightning-layout-item size="4" padding="around-small">
+                            <em>Showing</em>&nbsp;<b>{recordStartnum}</b>&nbsp;<em>to</em>&nbsp;
+                            <b>{recordEndnum}</b>&nbsp;<em>of</em>&nbsp;<b>{totalRecords}</b>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4" padding="around-small">
+                            
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4" padding="around-small">
+                            <lightning-input label="Search:" style="display: flex;" name="search"
+                                type="search" value={searchVal} onchange={handleSearchChange}>
+                            </lightning-input>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <c-zs-data-table columns={columns} data={records} key-field="Id" errors={errmsg}
+                        onrowaction={handleRowAction} hide-checkbox-column="false" column-widths-mode="auto"
+                        onsave={handleSave} class="min-height" sorted-by={sortBy} sorted-direction={sortDirection}
+                        onsort={handleSortdata} min-column-width="80">
+                    </c-zs-data-table>
+                </template>
+                <template if:false={showData}>
+                    <div class="slds-text-body_regular slds-text-color_weak slds-align_absolute-center"><em>No Records
+                            to
+                            display</em></div>
+                </template>
+            </div>
+        </template>
+        <template if:true={showpagination}>
+            <div class="slds-align_absolute-center" style="margin:1rem">
+                <c-paginator-l-w-c total-records={totalRecords} current-page-number={currentpgnum}
+                    page-size={numofrecords} onselectedpage={handlePageChange}></c-paginator-l-w-c>
+            </div>
+
+        </template>
+        <template if:true={showgenericEdit}>
+            <c-generic-record-edit-component record-id={showgenericEditrecId} show-modal="true"
+                object-api-name={objectName} onstandardeditsaveevt={handleEditSave}
+                onstandardeditcancelevt={handleEditCancel} field-set-name={actionFieldSetNameEdit}>
+            </c-generic-record-edit-component>
+        </template>
+    </div>
+</template>

@@ -1,0 +1,59 @@
+<apex:component access="global" controller="OpportunityClosedLostVFController">
+    <apex:attribute name="Opptyrecord1" description="This field is used to display list of Proposal products" 
+                     type="String" assignTo="{!opptyrecId}"/>
+    <br/><br/>
+    Hello Channel Team,<br/><br/>
+    The following opportunity has been moved to Stage 7 Closed Lost in SFDC. Please find the opportunity details below.<br/><br/>
+    Account Name:&nbsp;<apex:outputLink value="{!url+'/'+opptyrec.AccountId}">{!opptyrec.Account.Name}</apex:outputLink><br/> 
+    Opportunity Name:&nbsp;<apex:outputLink value="{!url+'/'+opptyrecId}">{!opptyrec.Name}</apex:outputLink><br/>
+    Amount: {!opptyrec.Amount}<br/> 
+    Forecast Type: {!opptyrec.Forecast_Type__c}<br/>  
+    Opportunity Owner: {!opptyrec.Owner.Name}<br/>
+    Primary Reseller Partner: {!opptyrec.Primary_Reseller_Partner__r.Name}<br/>
+    Deal Reg Type: {!opptyrec.Deal_Reg_Type__c}<br/>
+    <apex:outputPanel rendered="{!if(opptyrec.Sub_Stage__c=='Closed: Delete Duplicate', true ,false)}">
+    <apex:outputPanel rendered="{!if(opptyExtrec!=Null, true ,false)}">
+    New Opportunity:&nbsp;<apex:outputLink value="{!url+'/'+opptyExtrec.Duplicate_Opportunity__c}">{!opptyExtrec.Duplicate_Opportunity__r.Name}</apex:outputLink>&nbsp; coming from Opportunity Extension from Closed Lost Opportunity.<br/><br/>
+    The following information (highlighted in Red) is NOT carried over to the New Opportunity:<br/>
+    <apex:outputPanel rendered="{!if(PartnerTypeValue==true, true ,false)}">  
+		<div style="font-weight:bold; background-color: #f18973;">
+            <apex:outputPanel rendered="{!if(SourceCheck==true, true ,false)}">
+			Deal Reg Partner (Sourced):&nbsp;&nbsp;<apex:outputLink value="{!url+'/'+opptyrec.Deal_Reg_Margin__c}">{!opptyrec.Deal_Reg_Margin__r.Name}</apex:outputLink><br/>
+            Deal Reg (Sourced):&nbsp;<apex:outputLink value="{!url+'/'+opptyrec.Deal_Reg__c}">{!opptyrec.Deal_Reg__r.Name}</apex:outputLink><br/>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!if(TeamingCheck==true, true ,false)}">
+            Deal Reg Partner (Teaming - Reseller):&nbsp;<apex:outputLink value="{!url+'/'+opptyrec.Deal_Reg_Partner_Teaming_Reseller__c}">{!opptyrec.Deal_Reg_Partner_Teaming_Reseller__r.Name}</apex:outputLink> <br/>
+            Deal Reg (Teaming - Reseller):&nbsp;<apex:outputLink value="{!url+'/'+opptyrec.Deal_Reg_Teaming_Reseller__c}">{!opptyrec.Deal_Reg_Teaming_Reseller__r.Name}</apex:outputLink> <br/>
+            </apex:outputPanel>
+		</div> 
+	</apex:outputPanel>
+    </apex:outputPanel>
+    </apex:outputPanel>
+    <br/><br/>
+    <table border="1" style="border-collapse: collapse; width: 100%">
+                  <tr style="font-weight:bold; text-align: center; background-color: #929599;">
+                        <td>Partner Accounts</td>
+                        <td>Deal Reg</td>
+                    </tr>
+                
+                <tr>
+                    <td style="text-align: center;" >Deal Reg Partner (Sourced):&nbsp;{!opptyrec.Deal_Reg_Margin__r.Name} </td>
+                    <td style="text-align: center;" >Deal Reg (Sourced):&nbsp;{!opptyrec.Deal_Reg__r.Name} </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;" >Deal Reg Partner (Teaming - Reseller):&nbsp;{!opptyrec.Deal_Reg_Partner_Teaming_Reseller__r.Name} </td>
+                    <td style="text-align: center;" >Deal Reg (Teaming - Reseller):&nbsp;{!opptyrec.Deal_Reg_Teaming_Reseller__r.Name} </td>
+                </tr>
+                <!--tr>
+                    <td style="text-align: center;" >Deal Reg Partner (Teaming-Tech Partner):&nbsp;{!opptyrec.Deal_Reg_Partner_Teaming_Tech_Partner__r.Name} </td>
+                    <td style="text-align: center;" >Deal Reg (Teaming - Tech Partner):&nbsp;{!opptyrec.Deal_Reg_Teaming_Tech_Partner__r.Name} </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;" >Deal Reg Partner (Renewal):&nbsp;{!opptyrec.Renewal_Deal_Reg_Partner__r.Name} </td>
+                    <td style="text-align: center;" >Deal Reg (Renewal):&nbsp;{!opptyrec.Renewal_Deal_Registration__r.Name} </td>
+                </tr-->
+        </table><br/><br/>
+    Thanks,<br/>
+	Channel Ops Team<br/><br/>
+
+</apex:component>

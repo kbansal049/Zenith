@@ -1,0 +1,102 @@
+<template>
+        <template if:true={showSpinner}>
+            <div class="slds-align_absolute-center">
+                <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>    
+            </div>   
+        </template>
+       <c-custom-path-l-w-c record-id={questionnaireId} category="Main Category" is-only-category=true record-type-id={recordTypeId} opportunity-id={opportunityId} project-id={projectId} oncallhandlecategorychange={handleMainCategoryChange}></c-custom-path-l-w-c>
+        <!--Show Customer Information Category Section : Start-->
+        <template if:true={customerInfo}>
+            <lightning-card>
+                <c-custom-path-l-w-c record-id={questionnaireId} category="Customer Information" is-only-category=false record-type-id={recordTypeId} opportunity-id={opportunityId} project-id={projectId} oncallhandlespinner={handleFormLoaded} oncallhandlecategorychangeonsubmit={handleMainCategoryChange} oncallformsubmitsuccess={handleRecordId}></c-custom-path-l-w-c>
+            </lightning-card>
+        </template>
+        <!--Show Customer Information Category Section : End-->
+        
+        <template if:true={showCustomerInfra}>
+            <lightning-card>
+                <c-custom-path-l-w-c record-id={questionnaireId} category="Customer Infrastructure" is-only-category=false record-type-id={recordTypeId} opportunity-id={opportunityId} project-id={projectId} oncallhandlespinner={handleFormLoaded} oncallhandlecategorychangeonsubmit={handleMainCategoryChange} oncallformsubmitsuccess={handleRecordId}></c-custom-path-l-w-c>
+            </lightning-card>
+        </template>
+
+        <template if:true={showTrafficForwarding}>
+            <lightning-card>
+                <c-custom-path-l-w-c record-id={questionnaireId} category="Traffic Forwarding" is-only-category=false record-type-id={recordTypeId} opportunity-id={opportunityId} project-id={projectId} oncallhandlespinner={handleFormLoaded} oncallhandlecategorychangeonsubmit={handleMainCategoryChange} oncallformsubmitsuccess={handleRecordId}></c-custom-path-l-w-c>
+            </lightning-card>
+        </template>
+
+        <template if:true={showAuthentication}>
+            <lightning-card>
+                <c-custom-path-l-w-c record-id={questionnaireId} category="Authentication" is-only-category=false record-type-id={recordTypeId} opportunity-id={opportunityId} project-id={projectId} oncallhandlespinner={handleFormLoaded} oncallhandlecategorychangeonsubmit={handleMainCategoryChange} oncallformsubmitsuccess={handleRecordId}></c-custom-path-l-w-c>
+            </lightning-card>
+        </template>
+
+        <template if:true={showZpaPoc}>
+            <lightning-card>
+                <c-custom-path-l-w-c record-id={questionnaireId} category="ZPA POC Information" is-only-category=false record-type-id={recordTypeId} opportunity-id={opportunityId} project-id={projectId} oncallhandlespinner={handleFormLoaded} oncallhandlecategorychangeonsubmit={handleMainCategoryChange} oncallformsubmitsuccess={handleRecordId}></c-custom-path-l-w-c>
+            </lightning-card>
+        </template>
+
+        <template if:true={showPolicies}>
+            <lightning-card>
+                <c-custom-path-l-w-c record-id={questionnaireId} category="Policies" is-only-category=false record-type-id={recordTypeId} opportunity-id={opportunityId} project-id={projectId} oncallhandlespinner={handleFormLoaded} oncallhandlecategorychangeonsubmit={handleMainCategoryChange} oncallformsubmitsuccess={handleRecordId}></c-custom-path-l-w-c>
+            </lightning-card>
+        </template>
+
+        <template if:true={showLogging}>
+            <lightning-card>
+                <c-custom-path-l-w-c record-id={questionnaireId} category="Logging" is-only-category=false record-type-id={recordTypeId} opportunity-id={opportunityId} project-id={projectId} oncallhandlespinner={handleFormLoaded} oncallhandlecategorychangeonsubmit={handleMainCategoryChange} oncallformsubmitsuccess={handleRecordId}></c-custom-path-l-w-c>
+            </lightning-card>
+        </template>
+
+        <template if:true={showQuestionnaireStatus}>
+            <lightning-card>
+                <lightning-record-edit-form record-id={questionnaireId} object-api-name="PS_Questionnaire__c"
+                                onsuccess={handleSuccess} onsubmit ={handleSubmit}>
+                        <lightning-messages></lightning-messages>
+                        <!--<div class="slds-align_absolute-center slds-scrollable">
+                            <div class="slds-m-around_medium">
+                                <div class="slds-m-around_medium slds-custom-pad5">
+                                    <lightning-layout pull-to-boundary="small" multiple-rows="true">
+                                       
+                                                <lightning-input-field  field-name="Status__c">
+                                                </lightning-input-field>
+                                            
+                                            <div class="slds-align_absolute-center" style="height:5rem">
+                                                <lightning-button class="slds-m-top_small" variant="brand" type="submit" name="Save" label="Save">
+                                                </lightning-button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <lightning-button class="slds-m-top_small" variant="neutral" onclick={handleExit} name="Exit" label="Exit">
+                                                </lightning-button>
+                                            </div>
+                                        
+                                    </lightning-layout>
+                                </div>
+                            </div>
+                        </div>-->
+                        <div class="slds-grid slds-wrap" style="margin-left: 6%; margin-right: 6%;">
+                            <div class="slds-col slds-size_1-of-1 slds-p-horizontal_xxx-large">
+                                <div class="slds-form-element">
+                                    <lightning-input-field  field-name="Status__c">
+                                    </lightning-input-field>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <br/>
+                        <div class="slds-align_absolute-center">
+                            <lightning-button class="slds-m-top_small" variant="brand" type="submit" name="Save and Exit" label="Save">
+                            </lightning-button>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <lightning-button class="slds-m-top_small" variant="neutral" onclick={handleExit} name="Cancel" label="Cancel">
+                            </lightning-button>
+                        </div>
+                    </lightning-record-edit-form>
+                    <!--<c-generic-record-edit-form-l-w-c fld-set-a-p-i-name="Questionnaire_Status" cmp-read-only=false cmp-density="comfy" cmp-columns="1" record-id={questionnaireId} object-api-name="PS_Questionnaire__c"></c-generic-record-edit-form-l-w-c>-->
+                
+            </lightning-card>
+        </template>
+
+        
+    
+    
+    
+</template>

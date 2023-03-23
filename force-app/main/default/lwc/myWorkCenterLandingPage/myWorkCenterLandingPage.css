@@ -1,0 +1,8 @@
+.custom-icon-class{
+    --slds-c-button-sizing-border: 10vh;
+}
+
+.slds-button__icon {
+    min-width: 20vh;
+    min-height: 20vh;
+}

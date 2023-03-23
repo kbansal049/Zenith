@@ -1,0 +1,218 @@
+<template>
+    <template if:true={loading}>
+        <div class="slds-spinner_container">
+            <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+        </div>
+    </template>
+    <td class="slds-truncate" style="text-align:center;" data-label="Action">
+        <a href="javascript:void(0);" onclick={checktheMatrix}>Select</a>
+    </td>
+    <td class="slds-truncate" title={record.oppName} style="text-align:center;" data-label="Opportunity">
+        <template if:false={record.isSelected}>
+            <a href={record.oppUrl} target="_blank">{record.oppName}</a>
+        </template>
+        <template if:true={record.isSelected}>
+            {record.oppName}
+        </template>
+    </td>
+    <td class="slds-truncate" title={record.accName} style="text-align:center;" data-label="Account">
+        {record.accName}
+    </td>
+    <td class="slds-truncate" title={record.type} style="text-align:center;" data-label="Type">
+        {record.type}
+    </td>
+    <td class="slds-truncate" title={record.stageName} style="text-align:center;" data-label="Stage">
+        {record.stageName}
+    </td>
+    <td class="slds-truncate" style="text-align:center;" data-label="Amount">
+        <lightning-formatted-number value={record.amount} format-style="currency" currency-code="USD">
+        </lightning-formatted-number>
+    </td>
+    <td class="slds-truncate" style="text-align:center;" data-label="Closedate">
+        <lightning-formatted-date-time value={record.closeDate}></lightning-formatted-date-time>
+    </td>
+    <td class="slds-truncate" title={record.dealRegName} style="text-align:center;" data-label="Sourced Deal Reg">
+        <a href={record.sourcedDealRegUrl} target="_blank">{record.dealRegName}</a>
+    </td>
+    <td class="slds-truncate" title={record.teamingResellerdealRegName} style="text-align:center;"
+        data-label="Teaming Deal Reg (Reseller)">
+        <a href={record.teamingResellerdealRegUrl} target="_blank">{record.teamingResellerdealRegName}</a>
+    </td>
+    <td class="slds-truncate" title={record.teamingTechPartnerdealRegName} style="text-align:center;"
+        data-label="Teaming Deal Reg (Reseller)">
+        <a href={record.teamingTechPartnerdealRegUrl} target="_blank">{record.teamingTechPartnerdealRegName}</a>
+    </td>
+
+    <template if:true={showModal}>
+        <div class="demo-only" style="height: 640px;">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open slds-modal_medium">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close" onclick={closeModal}>
+                            <lightning-icon icon-name="utility:close" size="medium">
+                            </lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading_medium slds-hyphenate">
+                            <b>Conversion Issue</b>
+                        </h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <template if:true={errmsg}>
+                            <div class="slds-box slds-theme_error" style="margin-bottom:5px;">
+                                {errmsg}
+                            </div>
+                        </template>
+                    <!--Changes of IBA - 1599 - Start -->
+                    <template if:true={showAVPAttachment}>
+                        <lightning-card>
+                            <div class="slds-p-around_medium slds-align--absolute-center">Since the selected Opportunity stage is "{record.stageName}" and Deal Registration type is {dealRegrecord.Deal_Reg_Type__c}, It requires GEO Channel VP approval before conversion. Please attach the GEO Channel VP approval email.</div>
+                            <div class="slds-p-horizontal_small slds-align--absolute-center">
+                                <lightning-input type="file" onchange={handleFileUploaded} multiple> </lightning-input>
+                            </div>
+                            <div class="slds-p-around_medium slds-align--absolute-center slds-scrollable"> 
+                                <template for:each={filesUploaded} for:item="file" for:index="index">
+                                    <span style="padding: 2px;" key={file.Title}>
+                                        <lightning-pill label={file.Title} data-id={file.Title} onremove={handleRemove}>
+                                       </lightning-pill>
+                                    </span>
+                                 </template>
+                            </div>
+                            <div class="slds-p-around_medium slds-align--absolute-center">
+                                <label class="slds-p-around_medium">GEO Channel VP Email Approval Attached</label>
+                                <lightning-input type="checkbox" value={avpApprovalcheckbox} onchange={handleAVPApprovalChange}></lightning-input>
+                            </div>
+                            <div class="slds-align--absolute-center">
+                                <lightning-button variant="neutral" name="cancel" label="Cancel" onclick={closeModal} class="slds-p-right_small"></lightning-button>
+                                <lightning-button variant="brand" label="Attach File(s)" onclick={attachFiles} class="slds-p-right_small" disabled={disableButton}> </lightning-button>
+                            </div>
+                        </lightning-card>
+                    </template>
+                    <!--Changes of IBA - 1599 - End -->
+                    <template if:false={showAVPAttachment}>
+                        <div>
+                            <div class="slds-text-heading_small">The selected opportunity contains the below Deal Reg(s)
+                                due to which the current Deal Reg cannot be converted. Please click on the link(s) below
+                                to request for expiration.</div><br /><br />
+                            <template if:true={showSourced}>
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                    <thead>
+                                        <tr class="slds-line-height_reset slds-text-title_caps">
+                                            <th style="text-align:center;" class="" scope="col">
+                                                <div class="slds-truncate">Action</div>
+                                            </th>
+                                            <th style="text-align:center;" class="" scope="col">
+                                                <div class="slds-truncate">Sourced Deal Reg #</div>
+                                            </th>
+                                            <th style="text-align:center;" class="" scope="col">
+                                                <div class="slds-truncate">Partner</div>
+                                            </th>
+                                            <th style="text-align:center;" class="" scope="col">
+                                                <div class="slds-truncate">Deal Reg Type</div>
+                                            </th>
+                                            <th style="text-align:center;" class="" scope="col">
+                                                <div class="slds-truncate">Partner Type</div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <td class="slds-truncate" style="text-align:center;">
+                                            <a href={record.srcexpirationLink} onclick={closeModal}
+                                                target="_blank">Expire</a>
+                                        </td>
+                                        <td class="slds-truncate" style="text-align:center;">
+                                            {record.dealRegName}
+                                        </td>
+                                        <td class="slds-truncate" style="text-align:center;">
+                                            {record.dealRegPartnerName}
+                                        </td>
+                                        <td class="slds-truncate" style="text-align:center;">
+                                            {record.dealRegType}
+                                        </td>
+                                        <td class="slds-truncate" style="text-align:center;">
+                                            {record.dealRegPartnerType}
+                                        </td>
+                                    </tbody>
+                                </table><br /><br />
+                            </template>
+                            <template if:true={showTeaming}>
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                    <thead>
+                                        <tr class="slds-line-height_reset slds-text-title_caps">
+                                            <th style="text-align:center;" class="" scope="col">
+                                                <div class="slds-truncate">Action</div>
+                                            </th>
+                                            <th style="text-align:center;" class="" scope="col">
+                                                <div class="slds-truncate">Sourced Deal Reg #</div>
+                                            </th>
+                                            <th style="text-align:center;" class="" scope="col">
+                                                <div class="slds-truncate">Partner</div>
+                                            </th>
+                                            <th style="text-align:center;" class="" scope="col">
+                                                <div class="slds-truncate">Deal Reg Type</div>
+                                            </th>
+                                            <th style="text-align:center;" class="" scope="col">
+                                                <div class="slds-truncate">Partner Type</div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template if:true={showTeamingReseller}>
+                                            <tr>
+                                                <td class="slds-truncate" style="text-align:center;">
+                                                    <a href={record.teamingResellerexpirationLink} onclick={closeModal}
+                                                        target="_blank">Expire</a>
+                                                </td>
+                                                <td class="slds-truncate" style="text-align:center;">
+                                                    {record.teamingResellerdealRegName}
+                                                </td>
+                                                <td class="slds-truncate" style="text-align:center;">
+                                                    {record.teamingResellerdealRegPartnerName}
+                                                </td>
+                                                <td class="slds-truncate" style="text-align:center;">
+                                                    {record.teamingResellerdealRegType}
+                                                </td>
+                                                <td class="slds-truncate" style="text-align:center;">
+                                                    {record.teamingResellerdealRegPartnerType}
+                                                </td>
+                                            </tr>
+                                        </template>
+                                        <template if:true={showTeamingTech}>
+                                            <tr>
+                                                <td class="slds-truncate" style="text-align:center;">
+                                                    <a href={record.teamingTechPartnerexpirationLink}
+                                                        onclick={closeModal} target="_blank">Expire</a>
+                                                </td>
+                                                <td class="slds-truncate" style="text-align:center;">
+                                                    {record.teamingTechPartnerdealRegName}
+                                                </td>
+                                                <td class="slds-truncate" style="text-align:center;">
+                                                    {record.teamingTechPartnerdealRegPartnerName}
+                                                </td>
+                                                <td class="slds-truncate" style="text-align:center;">
+                                                    {record.teamingTechPartnerdealRegType}
+                                                </td>
+                                                <td class="slds-truncate" style="text-align:center;">
+                                                    {record.teamingTechPartnerdealRegPartnerType}
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </template>
+                        </div>
+                        <hr style="margin-top: 10px; margin-bottom:10px;">
+                        <div class="slds-box slds-box_small" style="text-align: right;border: 0px; border-radius: 0px;">
+                            <lightning-button variant="neutral" name="cancel" label="Cancel" onclick={closeModal}>
+                            </lightning-button>
+                        </div>
+                    </template>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </template>
+</template>

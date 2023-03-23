@@ -1,0 +1,5 @@
+<aura:component implements="force:lightningQuickActionWithoutHeader,lightning:availableForFlowScreens,lightning:availableForFlowActions,flexipage:availableForAllPageTypes,force:hasRecordId" controller="DomainCreatorClass" access="global">
+   <lightning:navigation aura:id="navService"/>
+   <aura:attribute name="recordId" type="String" access="global"/>
+   <aura:handler name="init" value="{!this}" action="{!c.invoke}"/>
+</aura:component>

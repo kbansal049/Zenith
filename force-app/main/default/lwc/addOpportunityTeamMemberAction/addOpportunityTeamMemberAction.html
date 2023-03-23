@@ -1,0 +1,17 @@
+<template>
+   
+   <div class="slds-m-around_small">
+      <template if:false={opportunityRecord}>
+         <div class="Spinner">
+            <lightning-spinner alternative-text="Loading" size="small" variant="brand"></lightning-spinner>
+         </div>
+      </template>
+
+      <template if:true={opportunityRecord}>
+         <div class="Spinner">
+            <lightning-spinner alternative-text="Loading" size="small" variant="brand"></lightning-spinner>
+           
+         </div>
+      </template>
+   </div>
+</template>

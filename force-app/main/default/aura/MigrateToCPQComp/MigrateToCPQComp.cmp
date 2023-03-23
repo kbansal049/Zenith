@@ -1,0 +1,6 @@
+<aura:component implements="force:hasRecordId,force:lightningQuickAction" controller="MigrateToCPQController">
+    <aura:handler name = "init" value = "{!this}" action = "{!c.onInit}"/>
+    <div class="exampleHolder">
+        <lightning:spinner alternativeText="Loading" size="medium" />
+    </div>
+</aura:component>

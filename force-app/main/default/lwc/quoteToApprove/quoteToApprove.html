@@ -1,0 +1,152 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 11-10-2021
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<template>
+    <lightning-card>
+    <h3 slot="title" style="font-size:16px; font-family:'Salesforce Sans', Helvetica, Arial, sans-serif">
+        <b>CPQ Quotes to Approve</b>
+    </h3>
+    <br/>
+        <div style="overflow-x: scroll;">
+        <template if:true={data}>            
+            <div style="max-height: 300px;">
+                <lightning-datatable
+                    key-field="id"
+                    columns={columns}
+                    data={data}
+                    hide-checkbox-column
+                    default-sort-direction={defaultSortDirection}
+                    sorted-direction={sortDirection}
+                    sorted-by={sortedBy}
+                    onsort={onHandleSort}>
+                </lightning-datatable>
+            </div>
+            <!--
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered" style="width: 130%;">
+                <thead>
+                    <tr class="" >
+                        <th class="" scope="col">
+                            <h1>Approval Action</h1>
+                        </th>
+                        <th class="" scope="col">
+                            <h1>Rule Name</h1>
+                        </th>
+                        <th class="" scope="col">
+                            <h1>Quote Number</h1>
+                        </th >
+                        <th class="" scope="col">
+                            <h1>Opportunity</h1>
+                        </th>
+						<th class="" scope="col">
+                            <h1>Opportunity Owner</h1>
+                        </th>
+                        <th class="" scope="col">
+                            <h1>Close Date</h1>
+                        </th>
+                        <th data-id="Submitted_On__c" onclick={sortSubmiitedDate}>
+                            <a class="slds-th__action slds-text-link--reset">
+                                <span class="slds-truncate" title="Submitted On" style="margin-left: -8px;">Submitted On</span>
+                                <div if:true={isAsc}>
+                                    <lightning-icon icon-name="utility:arrowup" alternative-text="Ascending" title="Ascending" size="xx-small"></lightning-icon>
+                                </div>
+                                <div if:true={isDsc}>
+                                    <lightning-icon icon-name="utility:arrowdown" alternative-text="Descending" title="Descending" size="xx-small"></lightning-icon>
+                                </div>
+                            </a>
+                        </th>
+                        <th class="" scope="col">
+                            <h1>Geo</h1>
+                        </th>
+                        <th class="" scope="col">
+                            <h1>Sub Region</h1>
+                        </th>
+                        <th class="" scope="col">
+                            <h1>User Geo</h1>
+                        </th>
+                        <th class="" scope="col">
+                            <h1>ACV</h1>
+                        </th>
+                        <th class="" scope="col">
+                            <h1>TCV</h1>
+                        </th>
+                        <th class="" scope="col">
+                            <h1>Total Discount</h1>
+                        </th>
+                        <th class="" scope="col">
+                            <h1>Term</h1>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={data} for:item="approval">
+                        <tr class=" " key={approval.id}>
+                            <th scope="col">
+                                <div class="slds-resizable">
+                                    <lightning-formatted-url value={approval.actionURL} label="Approve/Reject" target="_blank" ></lightning-formatted-url>
+                                </div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-resizable">
+                                    <div class="slds-resizable">{approval.Approval_Rule_Name__c}</div>
+                                </div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-resizable">
+                                    <lightning-formatted-url value={approval.quoteNoURL} label={approval.quoteNoName} target="_blank" ></lightning-formatted-url>
+                                </div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-resizable">
+                                    <lightning-formatted-url value={approval.OpportunityNameURL} label={approval.OpportunityName} target="_blank" ></lightning-formatted-url>
+                                </div>
+                            </th>
+							<th scope="col">
+                                <div class="slds-resizable">
+                                    <div class="slds-resizable">{approval.OppOwner}</div>
+                                </div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-resizable">{approval.OppCloseDate}</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-resizable">{approval.Submitted_On__c}</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-resizable">{approval.Geo_Approval__c}</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-resizable">{approval.Quote__r.SBQQ__Account__r.Sales_Territory__r.District__c}</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-resizable">{approval.User_Geo_Approval__c}</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-resizable">{approval.Quote__r.ACVHeader__c}</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-resizable">{approval.Quote__r.TCV__c}</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-resizable">{approval.Quote__r.Total_Discount__c}</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-resizable">{approval.Quote__r.SBQQ__SubscriptionTerm__c}</div>
+                            </th>
+                        </tr>
+                    </template>
+                </tbody>
+            </table> 
+            -->
+        </template>
+        <template if:false={data}>
+                No approval records requested!!
+        </template>
+
+        </div>
+
+    </lightning-card>
+</template>

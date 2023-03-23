@@ -1,0 +1,827 @@
+<template>
+  <!-- <lightning-card> -->
+  <!-- Main Mail Chain Component -->
+  <template if:true={isShowParentMailChainComponent}>
+    <div style={borderStyle}>
+      <!-- For Loading Spinner -->
+      <template if:true={isSpinnerLoading}>
+        <lightning-spinner alternative-text="Loading" variant="brand" size="large">
+        </lightning-spinner>
+      </template>
+      <template if:true={isOrderTracker}>
+
+        <lightning-button variant="brand" label="Back to Order Tracker" title="Back to Order Tracker"
+          icon-name="action:back" class="slds-m-left_x-small" onclick={handleParentComponent}></lightning-button>
+        <div style="float:right">
+          <lightning-button style="margin-right: 10px;" variant="brand" label="Move to Email Tracker" title="Move to Email Tracker" class="slds-m-left_x-small" onclick={openConvertWarning}></lightning-button>
+          <lightning-button style="margin-right: 10px;" variant="brand" label={taskButtonLabel} title="Tasks"
+            icon-name="utility:add" class="slds-m-left_x-small" onclick={openTaskModal1}></lightning-button>          
+        </div>
+        <br>
+        <br>
+      </template>
+      <template if:true={isEmailTracker}>
+        <lightning-button variant="brand" label="Back to Email Tracker" title="Back to Email Tracker"
+    icon-name="action:back" class="slds-m-left_x-small" onclick={handleParentComponent}></lightning-button>
+
+    <div style="float:right">
+      <lightning-button style="margin-right: 10px;" variant="brand" label="Move to Order Tracker" title="Move to Order Tracker" class="slds-m-left_x-small" onclick={openConvertWarning}></lightning-button>
+    </div>  
+      </template>
+      <br>
+      <br>
+      <template if:true={isOrderTrackerDashboard}>
+        <div class="slds-grid" style="height:45px;border-bottom:solid 1px;background-color:#1B5297">
+          <!-- Back Arrow Button For Moving On Order Tracker Dashboard Component -->
+          <div style="padding-top: 4px;">
+            <lightning-icon class="my-icon slds-button_icon pointer" icon-name="utility:jump_to_left" size="x-large"
+              alternative-text="Back" title="Back To Order Tracker" onclick={handleParentComponent}></lightning-icon>
+          </div>
+          <div>
+         
+
+            <template if:true={isOrderTrackerDashboard}>
+              <p style="color: white;
+                      padding-left: 5px;
+                      padding-top: 13px;
+                      font-weight: bold;">ORDER TRACKER</p>
+            </template>
+          </div>
+        </div>
+        <template if:true={isOrderTrackerDashboard}>
+          <div style="margin-top: 18px;margin-left: 88%;">
+            <lightning-button style="margin-right: 10px;" variant="brand" label={taskButtonLabel} title="Tasks"
+              icon-name="utility:add" class="slds-m-left_x-small" onclick={openTaskModal1}></lightning-button>
+
+            <!--<lightning-button style="margin-right: 10px;" variant="brand" label="Tasks(2)" title="Tasks" icon-name="utility:add" class="slds-m-left_x-small" onclick={openTaskModal2}></lightning-button>-->
+          </div>
+        </template>
+      </template>
+      <!--Task tracker modal-->
+      <template if:true={openTaskTracker1Modal}>
+
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+          class="slds-modal slds-fade-in-open slds-modal_large">
+          <div class="slds-modal__container ">
+            <!-- Modal/Popup Box To Edit Remarks  -->
+            <header class="slds-modal__header">
+              <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                onclick={closeTaskTracker1Modal}>
+                <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small">
+                </lightning-icon>
+                <span class="slds-assistive-text">Close</span>
+              </button>
+              <h2 id="modal-heading-04" class="slds-text-heading_medium slds-hyphenate">Tasks</h2>
+            </header>
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-4">
+              <div class="slds-m-around--xx-large container-fluid">
+
+                <div class="container-fluid">
+                  <template if:true={disableAddTask}>
+                    <div style="padding-left: 29%;
+                              font-size: 22px;">Orders are approved, please create tasks from Task Tracker Screen</div>
+                  </template>
+                  <template if:true={noTasks}>
+                    <div style="float:right;margin-bottom: 12px;">
+                      <lightning-button variant="brand" disabled={disableAddTask} label="Add new task"
+                        title="Add new task" icon-name="utility:add" class="slds-m-left_x-small" onclick={addRow}>
+                      </lightning-button>
+                    </div>
+                  </template>
+                  <template if:false={noTasks}>
+                    <template if:false={disableAddTask}>
+                      <table
+                        style="border-left:solid 1px;border-left-color: lightgrey;border-bottom:solid 1px;border-bottom-color: lightgrey;border-right:solid 1px;border-right-color: lightgrey;"
+                        class="slds-table slds-table_col-bordered slds-table_bordered slds-table_cell-buffer">
+                        <thead>
+                          <tr style="height:40px" class="slds-text-title_caps">
+                            <th scope="col" style="width: 4%;">
+                              <div class="slds-truncate">#</div>
+                            </th>
+                            <th scope="col">
+                              <div class="slds-truncate" title="Account Name">Task Name</div>
+                            </th>
+                            <th scope="col">
+                              <div class="slds-truncate" title="Account Number">Actionable Item</div>
+                            </th>
+                            <th scope="col">
+                              <div class="slds-truncate" title="Ticket Type">Ticket Type</div>
+                            </th>
+                            <th scope="col">
+                              <div class="slds-truncate" title="Schedule Date">Schedule Date</div>
+                            </th>
+                            <th scope="col" style="width: 4%;">
+                              <div class="slds-truncate" title="Add Row"></div>
+                            </th>
+                            <th scope="col" style="width: 4%;">
+                              <div class="slds-truncate" title="Delete Row"></div>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <template for:each={taskList} for:item="task" for:index="indx">
+                            <tr key={task.key} id={task.key}>
+                              <td>{task.key}</td>
+                              <td>
+                                <lightning-input data-id={indx} label="Task Name" variant="label-hidden"
+                                  value={task.Task_Name__c} onchange={handleTaskNameChange}></lightning-input>
+                              </td>
+                              <td>
+                                <lightning-input-rich-text data-id={indx} label="Actionable Item" variant="label-hidden"
+                                  value={task.Actionable_Item__c} onchange={handleActionableItemChange}
+                                  disabled-categories="INSERT_CONTENT"></lightning-input-rich-text>
+                              </td>
+                              <td>
+                                <lightning-combobox data-id={indx} name="Ticket Type" label="Ticket Type"
+                                  variant="label-hidden" value={task.Ticket_Type__c} onchange={handleTicketTypeChange}
+                                  options={ticketTypePicklist}></lightning-combobox>
+                              </td>
+                              <td>
+                                <lightning-input type="date" data-id={indx} label="Schedule Date" variant="label-hidden"
+                                  value={task.Schedule_date__c} onchange={handleScheduleDateChange}></lightning-input>
+                              </td>
+                              <td>
+                                <lightning-button-icon icon-name="utility:add" data-id={indx} title="Add"
+                                  class="slds-m-left_xx-small" variant="bare" alternative-text="Add" onclick={addRow}>
+                                </lightning-button-icon>
+                              </td>
+                              <td>
+                                <lightning-button-icon icon-name="utility:delete" data-id={indx}
+                                  alternative-text="Delete" class="slds-m-left_xx-small" onclick={removeRow}
+                                  title="Delete"></lightning-button-icon>
+                              </td>
+                            </tr>
+                          </template>
+
+                        </tbody>
+                      </table>
+                    </template>
+
+                  </template>
+                </div>
+              </div>
+            </div>
+            <footer class="slds-modal__footer">
+              <button class="slds-button slds-button_neutral" onclick={closeTaskTracker1Modal}
+                title="Cancel">Cancel</button>
+              <button class="slds-button slds-button_brand" disabled={disableSaveButton} onclick={saveTasks1}
+                title="Save">Save</button>
+            </footer>
+          </div>
+        </section>
+
+        <div class="slds-backdrop slds-backdrop_open"></div>
+
+      </template>
+      <!--task tracker modal closed-->
+      <!--Warning for OTT to ETT-->
+      <template if:true={openConvertWarningModal}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-07" aria-modal="true"
+          class="slds-modal slds-fade-in-open">
+          <div class="slds-modal__container">
+            <!-- Modal/Popup Box To Show Message  -->
+            <header class="slds-modal__header">
+              <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                onclick={closeConvertWarning}>
+                <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small">
+                </lightning-icon>
+                <span class="slds-assistive-text">Close</span>
+              </button>
+              <template if:false={isEmailTracker}> 
+                <h2 id="modal-heading-07" class="slds-text-heading_medium slds-hyphenate">Warning !!</h2>
+              </template>
+              <template if:true={isEmailTracker}> 
+                <h2 id="modal-heading-08" class="slds-text-heading_medium slds-hyphenate">Convert To OTT !!</h2>
+              </template>
+            </header>
+            <template if:true={isOrderTracker}>        
+              <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-7">
+                <span style="font-size: initial;
+                padding-left: 89px;">Are you sure you want to move ticket from OTT to ETT?</span>
+              </div>
+            </template>
+            <template if:true={isEmailTracker}>        
+              <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-8" style= "padding-left: 20px;">
+                    Are you sure you want to move ticket from ETT to OTT?
+              </div>
+              <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-9" style= "padding-left: 20px;">
+                  <lightning-input type="text" label="Quote Number" onchange ={handleQuoteChange}></lightning-input>
+              </div>
+              <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-11" style= "padding-left: 20px;">
+                <lightning-input  type="checkbox" label="Merge ETT With OTT?" onchange ={handleMergeCheckBoxChange}></lightning-input>
+              </div>
+              <template if:true={isMergedChechbox}>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-10" style= "padding-left: 20px;">
+                  <lightning-input class="validate" type="text" label="Ticket Number" onchange ={handleTicketNumberChange} pattern="[a-zA-Z]{3}-[0-9]*" message-when-pattern-mismatch ="Please Enter a valid format for ticket number"></lightning-input>
+                </div>
+              </template>
+            </template>
+            <footer class="slds-modal__footer">
+              <button class="slds-button slds-button_neutral" onclick={closeConvertWarning} title="No">No</button>
+              <template if:true={isOrderTracker}>
+                <button class="slds-button slds-button_brand" onclick={handleConvertTracker} title="Yes">Yes</button>
+              </template>
+              <template if:true={isEmailTracker}>
+                <button class="slds-button slds-button_brand" onclick={handleOrderTrackerConvert} title="Yes">Yes</button>
+              </template>
+            </footer>
+          </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+      </template>
+      <!--Warning for OTT to ETT close-->
+
+
+      <br />
+
+      <div
+        style="margin-left: 10px;margin-right: 10px;border-left:solid 1px;border-left-color: lightgrey;border-right:solid 2px;border-top:solid 1px;border-bottom:solid 2px;border-right-color: lightgrey;border-bottom-color: lightgrey;border-top-color: lightgrey;background-color:white">
+        <!-- Order Tracker Data Table -->
+        <template if:false={isEmailTracker}>
+          <div class="slds-scrollable_x" style="width:100%;">
+            <table class=" slds-table slds-table_bordered slds-table_col-bordered">
+              <thead>
+                <tr class="slds-line-height_reset">
+                  <th class="" scope="col">
+                    <div style="padding-right: 20px;" title="Ticket #">Ticket #</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div style="padding-right: 50px;" title="PO #">PO #</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div style="padding-right: 80px;" title="Email Subject">Email Subject</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div style="padding-right: 50px;" title="Status">Status</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div style="padding-right: 50px;" title="Region">Region</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="Received Date">Received Date</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div style="padding-right: 50px;" title="Partner">Partner</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="Order Type">Order Type</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="Customer ID">Customer ID</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div style="padding-right: 50px;" title="End User">End User
+                    </div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="Checking OP Rep/QC Rep">Checking OP Rep/QC Rep
+                    </div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="OP Rep Following Up">OP Rep Following Up</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="Final Approver">Final Approver</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="Processing OP Rep">Processing OP Rep</div>
+                  </th>
+                
+                  <th class="" scope="col">
+                    <div style="padding-right: 50px;" title="SO #">SO #</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="ACV (USD)">ACV (USD)</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="PO Amount (USD)">PO Amount (USD)</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="1st Billing Amount (USD)">1st Billing Amount (USD)</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="Billing Frequency">Billing Frequency</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="Attachment on NS and SF">Attachment on NS and SF</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="ZA Updated">ZA Updated</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="AI SFDC Processes Updated">All SFDC Processes Updated</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="Confirm if all dependent PRs are moved to Production">Confirm if all dependent PRs are
+                      moved to Production</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="Proposal # for initiating QC">Proposal # for initiating QC</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="Bot Auto QC done">Bot Auto QC done</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="Bot Re QC Required">Bot Re QC Required</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="NS SFDC Integration Status">NS SFDC Integration Status</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div style=";padding-right: 100px;" title="Remarks(if any)">Remarks(if any)
+                    </div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="TAT(QC Check) (Hours)">TAT(QC Check) (Hours)</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="TAT(Order Approval) (Hours)">TAT(Order Approval) (Hours)</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="TAT(Billing) (Hours)">TAT(Billing) (Hours)</div>
+                  </th>
+
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="slds-hint-parent" key={OrderTrackerTableObj.Id}>
+                  <td style="">
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.Ticket__c}>{OrderTrackerTableObj.Ticket__c}
+                    </div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.PO__c}>
+                      <a>{OrderTrackerTableObj.PO__c}</a>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.Email_Subject__c}>
+                      {OrderTrackerTableObj.Email_Subject__c}
+                    </div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.Status__c}>
+                      {OrderTrackerTableObj.Status__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.Region__c}>
+                      {OrderTrackerTableObj.Region__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.Received_Date__c}>
+                      {OrderTrackerTableObj.Received_Date__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.Partner__c}>
+                      {OrderTrackerTableObj.Partner__c}
+                    </div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.Order_Type__c}>
+                      {OrderTrackerTableObj.Order_Type__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap" title={OrderTrackerTableObj.Customer_ID__c}>
+                      {OrderTrackerTableObj.Customer_ID__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.End_User__c}>
+                      {OrderTrackerTableObj.End_User__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.Checking_OP_Rep_QC_Rep__c}>
+                      {OrderTrackerTableObj.Checking_OP_Rep_QC_Rep__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.OP_Rep_Following_Up__c}>
+                      {OrderTrackerTableObj.OP_Rep_Following_Up__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.Final_Approver__c}>
+                      {OrderTrackerTableObj.Final_Approver__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.Processing_OP_Rep__c}>
+                      {OrderTrackerTableObj.Processing_OP_Rep__c}</div>
+                  </td>
+               
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.SO__c}>
+                      {OrderTrackerTableObj.SO__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.ACV__c}>
+                      <template if:true={OrderTrackerTableObj.ACV__c}>
+                        $
+                      </template>
+                      <lightning-formatted-number value={OrderTrackerTableObj.ACV__c}></lightning-formatted-number>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.PO_Amount__c}>
+                      <template if:true={OrderTrackerTableObj.PO_Amount__c}>
+                        $
+                      </template>
+                      <lightning-formatted-number value={OrderTrackerTableObj.PO_Amount__c}>
+                      </lightning-formatted-number>
+                    </div>
+                  </td>
+
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.X1st_Billing_Amount_USD__c}>
+                      <template if:true={OrderTrackerTableObj.X1st_Billing_Amount_USD__c}>
+                        $
+                      </template>
+                      <lightning-formatted-number value={OrderTrackerTableObj.X1st_Billing_Amount_USD__c}>
+                      </lightning-formatted-number>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.Billing_Frequency__c}>
+                      {OrderTrackerTableObj.Billing_Frequency__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.Attachment_on_NS_SF__c}>
+                      {OrderTrackerTableObj.Attachment_on_NS_SF__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.ZA_Updated__c}>
+                      {OrderTrackerTableObj.ZA_Updated__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.AI_SFDC_Processes_Updated__c}>
+                      {OrderTrackerTableObj.All_SFDC_Processses_Updated__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap "
+                      title={OrderTrackerTableObj.confirm_all_dependant_PRs_moved_to_prod__c}>
+                      {OrderTrackerTableObj.confirm_all_dependant_PRs_moved_to_prod__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.Proposal_for_initiating_QC__c}>
+                      {OrderTrackerTableObj.Proposal_for_initiating_QC__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.Bot_Auto_QC_Done__c}>
+                      {OrderTrackerTableObj.BOT_Auto_QC_Done__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.BOT_Re_QC_Required__c}>
+                      {OrderTrackerTableObj.BOT_Re_QC_Required__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.NS_SFDC_Integration_Status__c}>
+                      {OrderTrackerTableObj.NS_SFDC_Integration_Status__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.Remarks__c}>
+                      {OrderTrackerTableObj.Remarks__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.TAT_QC_Check__c}>
+                      {OrderTrackerTableObj.TAT_QC_Check__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.TAT_Order_Approval__c}>
+                      {OrderTrackerTableObj.TAT_Order_Approval__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.TAT_Billing__c}>
+                      {OrderTrackerTableObj.TAT_Billing__c}</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </template>
+        <!--Email Tracker Table-->
+        <template if:true={isEmailTracker}>
+          <div class="slds-scrollable_x" style="width:100%;">
+            <table class=" slds-table slds-table_bordered slds-table_col-bordered">
+              <thead>
+                <tr class="slds-line-height_reset">
+                  <th class="" style="" scope="col">
+                    <div title="Ticket #">Ticket #</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div style="padding-right: 50px;" title="Email Category">Email Category</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div style="padding-right: 80px;" title="Email Subject">Email Subject</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div style="padding-right: 50px;" title="Requester Name">Requester Name</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div style="padding-right: 50px;" title="Requester Org">Requester Org</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div style="padding-right: 30px;" title="Priority">Priority</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div style="padding-right: 50px;" title="Status">Status</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="% Completed">% Complete</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="Assigned To- 1st Assignee">Assigned To-
+                      1st Assignee</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="Assigned To- 2nd Assignee">Assigned To-
+                      2nd Assignee</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="Assigned To- 3rd Assignee">Assigned To-
+                      3rd Assignee</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="Date Received">Date Received</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="Completion Datetus">Completion Date</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div title="TAT(Days)">TAT(Days)</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div style="padding-right: 100px;" title="Remarks(if any)">Remarks(if any)</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="slds-hint-parent">
+                  <td style="padding-left: 10px;">
+                    <div class="slds-cell-wrap" title={OrderTrackerTableObj.Ticket__c}>
+                      {OrderTrackerTableObj.Ticket__c}
+                    </div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap" title={OrderTrackerTableObj.Email_Category__c}>
+                      {OrderTrackerTableObj.Email_Category__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap" title={OrderTrackerTableObj.Email_Subject__c}>
+                      <a data-id={OrderTrackerTableObj.Id}
+                        onclick={handleEmailTracker}>{OrderTrackerTableObj.Email_Subject__c}</a>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap" title={OrderTrackerTableObj.Requestor_Name__c}>
+                      {OrderTrackerTableObj.Requester_Name__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap" title={OrderTrackerTableObj.Requestor_Org__c}>
+                      {OrderTrackerTableObj.Requester_Org__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap" title={OrderTrackerTableObj.Priority__c}>
+                      {OrderTrackerTableObj.Priority__c}
+                    </div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap" title={OrderTrackerTableObj.Status__c}>
+                      {OrderTrackerTableObj.Status__c}
+                    </div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap" title={OrderTrackerTableObj.Completed__c}>
+                      {OrderTrackerTableObj.Complete__c}
+                    </div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap" title={OrderTrackerTableObj.Assigned_To_1st_Assignee__c}>
+                      {OrderTrackerTableObj.Assigned_To_1st_Assignee__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap" title={OrderTrackerTableObj.Assigned_To_2nd_Assignee__c}>
+                      {OrderTrackerTableObj.Assigned_To_2nd_Assignee__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap" title={OrderTrackerTableObj.Assigned_To_3rd_Assignee__c}>
+                      {OrderTrackerTableObj.Assigned_To_3rd_Assignee__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.Date_Received__c}>
+                      {OrderTrackerTableObj.Date_Received__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap " title={OrderTrackerTableObj.Completion_Date__c}>
+                      {OrderTrackerTableObj.Completion_Date__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap" title={OrderTrackerTableObj.TAT__c}>
+                      {OrderTrackerTableObj.TAT__c}</div>
+                  </td>
+                  <td>
+                    <div class="slds-cell-wrap" title={OrderTrackerTableObj.Remarks__c}>
+                      {OrderTrackerTableObj.Remarks__c}
+                    </div>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </template>
+        <br>
+
+        <template if:true={isShowTable}>
+          <br>
+          <br>
+          <br>
+          <div style="margin:16px" class="slds-grid">
+            <div class="slds-col slds-size_1-of-2">
+              <p style="color: black;
+                      padding-left: 8px;
+                      padding-top: 10px;
+                      font-size: 18px;
+                      font-weight: bold;">Mail Chain:</p>
+            </div>
+
+          </div>
+
+
+        </template>
+
+        <br>
+        <br>
+
+        <!-- Mail Chain Datatable -->
+        <template if:true={isShowTable}>
+          <div class="slds-scrollable_x" style="width:100%;overflow-y:auto">
+            <table
+              class=" slds-table slds-table_striped  slds-table_bordered slds-table_col-bordered" style="width: 100%;">
+              <thead>
+                <tr class="slds-line-height_reset">
+                  <th class="" scope="col" style="padding-left: 10px;width:5%;">
+                    <div title="Select">Select</div>
+                  </th>
+                  <th class="" scope="col" style="width: 7%;">
+                    <div title="Date & Time of Email">Date & Time of Email</div>
+                  </th>
+                  <th class="" scope="col" style="width: 10%;">
+                    <div title="From">From</div>
+                  </th>
+                  <th class="" scope="col" style="width: 10%;">
+                    <div title="TO">To</div>
+                  </th>
+                  <th class="" scope="col" style="width: 10%;">
+                    <div title="CC">CC</div>
+                  </th>
+                  <th class="" scope="col" style="width: 7%;">
+                    <div title="BCC">BCC</div>
+                  </th>
+                  <th class="" scope="col" style="width: 10%;">
+                    <div style="padding-right: 50px;" title="Subject">Subject</div>
+                  </th>
+                  <th class="" scope="col" style="width: 10%;">
+                    <div title="Attachments">Attachments</div>
+                  </th>
+                  <th class="" scope="col" style="width: 36%;">
+                    <div style="padding-right: 50px;" title="Body">Body</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <template for:each={mailChainTableList} for:item="mChain" for:index="index">
+                  <tr class="slds-hint-parent" key={mChain.Id} style="vertical-align: initial;">
+                    <td style="text-align: center;">
+                      <div title="Select To Reply" class="slds-cell-wrap" style="padding-top: 14px;">
+                        <template if:false={allowMultiSelect}>
+                          <lightning-input data-id={index} type="checkbox" name={mChain.Id}
+                            onchange={handleSelectCheckbox}></lightning-input>
+                        </template>
+
+                        <template if:true={allowMultiSelect}>
+                          <lightning-input data-id={index} type="checkbox" name={mChain.Id}
+                            onchange={handleMultiSelectCheckbox}></lightning-input>
+                        </template>
+                      </div>
+                    </td>
+                    <td>
+                      <div title={mChain.Date_Time_of_Email__c} class="slds-cell-wrap">
+                        {mChain.Date_Time_of_Email__c}</div>
+                    </td>
+                    <td>
+                      <div title={mChain.From__c} class="slds-cell-wrap">
+                        {mChain.From__c}
+                      </div>
+                    </td>
+                    <td>
+                      <div title={mChain.To__c}  class="slds-cell-wrap"> 
+                        {mChain.To__c}
+                      </div>
+                    </td>
+                    <td>
+                      <div title={mChain.CC__c} class="slds-cell-wrap">
+                        {mChain.CC__c}
+                      </div>
+                    </td>
+                    <td>
+                      <div title={mChain.BCC__c} class="slds-cell-wrap">
+                        {mChain.BCC__c}
+                      </div>
+                    </td>
+                    <td>
+                      <div title={mChain.Email_Subject__c} class="slds-cell-wrap">{mChain.Email_Subject__c}</div>
+                    </td>
+                    <td>
+                      <template for:each={mChain.fileAttachment} for:item="file" for:index="index">
+                        <div title={file.fileTitle} class="slds-cell-wrap" key={file.fileId}>
+                          <a data-id={file.fileId} class="slds-cell-wrap"
+                            onclick={handleAttachmentClick}>{file.fileTitle}</a>
+                        </div>
+                        <br key={file.fileId}>
+                      </template>
+                    </td>
+                    <td>
+                      <div>
+                        <p>
+                          <lightning-formatted-rich-text class="slds-cell-wrap" value={mChain.Body__c} linkify>
+                          </lightning-formatted-rich-text>
+                        </p>
+                        <br />
+                        <template if:true={mChain.Body_status__c}>
+                          <a data-id={index} onclick={handleTruncate}>...Show <span>{mChain.Body_status__c}</span></a>
+                        </template>
+                      </div>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="slds-grid slds-align_absolute-center">
+            <div style="margin-left: 150px;" class="slds-col slds-size_2-of-14">
+              <lightning-combobox name="Show" label="Items per page" value={value} placeholder="10"
+                dropdown-alignment="bottom-left" disabled={isDisablePageOption} options={pageOption}
+                onchange={handlePageOptions}></lightning-combobox>
+            </div>
+            <div class="slds-col slds-size_1-of-12" style="margin-left: 30px; margin-top: 20px;font-size: large;">
+              {start} - {end} of {totalRecords}
+            </div>
+            <div class="slds-col slds-size_2-of-12" style="margin-top:20px ; margin-left:2px;">
+              <template if:true={showPrevButton}>
+                <lightning-icon icon-name="utility:jump_to_left" class="pointer" size="x-large" alternative-text="Back"
+                  title="Back" onclick={handlePreviouspage}></lightning-icon>
+              </template>
+              <template if:true={showNextButton}>
+                <lightning-icon style="margin-left: 20px;" icon-name="utility:jump_to_right" class="pointer"
+                  size="x-large" alternative-text="Next" title="Next" onclick={handleNextpage}></lightning-icon>
+              </template>
+            </div>
+          </div>
+
+          <br>
+        </template>
+
+        <!-- When There is No Mail Chain Associated With Selected Order Tracker -->
+        <template if:false={isShowTable}>
+          <div style="text-align: center;font-size: 15px;margin: 1rem 0;padding-bottom: 10px;">
+            <lightning-icon size="medium" icon-name="custom:custom23"
+              style="margin-right: 10px;background-color: #C23934;"></lightning-icon>
+            No Mail Chain Data!!!
+          </div>
+          <br>
+          <br>
+
+        </template>
+      </div>
+
+      <br>
+      <br>
+
+      <!-- Reply Button To Open Email Reply Component -->
+      <template if:true={isShowTable}>
+        <div class="slds-align_absolute-center" style="height:7rem">
+          <lightning-button variant="brand" label="Reply" title="Reply" disabled={isReplyButton}
+            style="width:8%;padding: 16px 10px;" onclick={handleReplyClick} class=""></lightning-button>
+
+          <template if:true={allowWithAttachment}>
+            <lightning-button variant="brand" label="Reply with Attachment" title="Reply with Attachment"
+              disabled={isReplyButton} style="padding: 16px 10px;" onclick={handleReplyClick} class="">
+            </lightning-button>
+          </template>
+        </div>
+      </template>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+  </template>
+
+  <!-- To call Email Reply Component -->
+  <template if:false={isShowParentMailChainComponent}>
+    <c-reply-screen mail-chain-object={mailChainObjectToReply} parent-tracker-object={OrderTrackerTableObj}
+      tracker-type={trackerType} is-show-parent-mail-chain-component={isShowParentMailChainComponent}
+      is-reply-button={isReplyButton} onshowparentcomponent={handleReplyPageEvent}
+      allow-with-attachment={allowWithAttachment}></c-reply-screen>
+  </template>
+
+  <c-custom-toast-component auto-close-time="2000"></c-custom-toast-component>
+  <!-- </lightning-card> -->
+</template>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>52.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__RecordPage</target>
+        <target>lightning__AppPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage">
+            <property name="autoCloseTime" label="Timeout (in Milliseconds)" type="String" />
+            <property name="threshold" label="Threshold" type="Integer" />
+            <property name="defaultSize" label="Default Size" type="Integer" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -1,0 +1,66 @@
+<apex:page sidebar="false" standardStylesheets="false" StandardController="SBQQ__Quote__c" showHeader="true">
+    <apex:includeScript value="/soap/ajax/33.0/connection.js"/>
+    <apex:includeScript value="/soap/ajax/33.0/apex.js"/>
+    <style>
+        body{
+            margin:0;
+            padding:0;
+        }
+        .left img{
+            max-width: none !important;
+        }
+        html{
+            background: transparent !important;
+        }
+    </style>
+    <apex:includeLightning />
+    
+    <div id="page" />
+    <script>
+        sforce.connection.sessionId = "{!$Api.Session_ID}";
+        try{
+            var displayMessage='';
+            var shellQuote = sforce.apex.execute("SB_CloneQuoteController","getShellQuote",{quoteId:"{!SBQQ__Quote__c.Id}"});
+            var showBanner = sforce.apex.execute("SB_CloneQuoteController","getBannerDetail",{quoteId:"{!SBQQ__Quote__c.Id}"});
+            console.log('Error',shellQuote);
+            
+            if(showBanner == 'true'){
+                displayMessage = "{!$Label.SB_QuoteNotificationMessage}";
+            }           
+            else if(shellQuote == 'true'){
+                displayMessage= "{!$Label.shellQuoteNotificationMessage}";
+            }
+            
+            //CR# 3307 - Start
+            var approvalStatus = "{!SBQQ__Quote__c.SBQQ__Status__c}";
+            var showRecallNotification =  approvalStatus == "Approval In progress" || approvalStatus == "Approved"? true: false;
+            console.log('showRecallNotification',showRecallNotification);
+                        
+            if(showRecallNotification){
+                if(displayMessage){
+                    displayMessage = "\u2022 " + displayMessage +"\n\u2022 " + "{!$Label.SB_QuoteRecallNotification}";
+                } else {
+                    displayMessage = "{!$Label.SB_QuoteRecallNotification}";
+                }                
+            } 
+            //CR# 3307 - End     
+             
+            if(showBanner == 'true' || shellQuote == 'true' || showRecallNotification){
+                $Lightning.use("c:SB_QuoteCustomNotificationApp", function() {
+                    $Lightning.createComponent(
+                        "c:SB_QuoteCustomNotification",
+                        {
+                            quoteId: "{!SBQQ__Quote__c.Id}",
+                            message: displayMessage
+                        },                    
+                        "page",
+                        function(cmp) {
+                            console.log("Component is displayed!");
+                        });
+                });
+            }
+        }catch(e){ 
+            console.log('exception message',e); 
+        }
+    </script>
+</apex:page>

@@ -1,0 +1,20 @@
+<template>
+   
+   <div class="slds-m-around_small">
+      <template if:false={opportunityRecord}>
+         <div class="provReqSpinner">
+            <lightning-spinner alternative-text="Loading" size="small" variant="brand"></lightning-spinner>
+         </div>
+      </template>
+
+      <template if:true={opportunityRecord}>
+         <div class="provReqSpinner">
+            <lightning-spinner alternative-text="Loading" size="small" variant="brand"></lightning-spinner>
+           
+         </div>
+         <!-- <div class="custCenter">
+            Please wait, while we redirect you to the <b>New Provisioning Request</b> page for the Opportunity <b>{opportunityName}</b>.
+         </div> -->
+      </template>
+   </div>
+</template>

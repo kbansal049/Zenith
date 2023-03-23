@@ -1,0 +1,113 @@
+<template>
+    <lightning-card>
+        <div class="slds-align_absolute-center" style="height: 3rem;font-size: x-large;font-weight: bold;">
+            <span>Create Sales Order</span>
+        </div>
+
+        <div class="slds-p-horizontal_small">
+            <div class="progressIndicator slds-p-vertical_medium" style="height: 50px;margin-top: 20px;">
+                <lightning-progress-indicator current-step={currentStep} type="base" variant="base">
+                    <lightning-progress-step value="1" label="1. Validate"></lightning-progress-step>
+                    <lightning-progress-step value="2" label="2. Review"></lightning-progress-step>
+                    <lightning-progress-step value="3" label="3. Submit"></lightning-progress-step>
+                </lightning-progress-indicator>
+            </div>
+        </div>
+
+
+
+        <template if:true={showFirstStep}>
+            <div class="stepOne">
+                <div class="slds-align_absolute-center " style="height: 3rem;font-weight: bold;">
+                    <span>Step 1. Validate</span>
+                </div>
+
+                <template if:true={hasError}>
+                    <template if:true={error}>
+                        <c-error-panel errors={error} friendly-message="Error saving the details"></c-error-panel>
+                    </template>
+                </template>
+
+
+                <div class="slds-border_top slds-border_bottom slds-p-vertical_medium">
+                    <c-create-sales-order-opportunity-c-p-q sales-order-wrapper={customOrderWrapper}
+                        onchangestage={handleStageChange} onchangevalue={handleChangeValue}
+                        onchangeoppwrapper={handleOpportunityWrapperChange}>
+                    </c-create-sales-order-opportunity-c-p-q>
+                </div>
+            </div>
+        </template>
+
+        <!--Step 2 : Review Changes-->
+        <template if:true={showSecondStep}>
+            <div class="stepTwo">
+
+                <div class="slds-align_absolute-center " style="height: 3rem;font-weight: bold;">
+                    <span>Step 2. Review</span>
+                </div>
+
+                <template if:true={hasError}>
+                    <template if:true={error}>
+                        <c-error-panel errors={error} friendly-message="Error saving the details"></c-error-panel>
+                    </template>
+                </template>
+
+                <div class="slds-border_top slds-border_bottom slds-p-vertical_medium">
+                    <c-create-sales-order-lines-c-p-q sales-order-wrapper={customOrderWrapper}
+                        onchangestage={handleStageChange} onchangevalue={handleChangeValue}
+                        oncaculateacv={handleReCalculateACV} onchangeacv={handleChangeACV}
+                        onsubmitrequest={handleSubmitRequest}>
+                    </c-create-sales-order-lines-c-p-q>
+                </div>
+            </div>
+        </template>
+
+        <!--3. Submit: Submit Changes-->
+        <template if:true={showThirdStep}>
+            <div class="stepThree">
+
+                <div class="slds-align_absolute-center " style="height: 3rem;font-weight: bold;">
+                    <span>3. Submit</span>
+                </div>
+
+                <template if:true={hasError}>
+                    <template if:true={error}>
+                        <c-error-panel errors={error} friendly-message="Error saving the details"></c-error-panel>
+                    </template>
+                </template>
+
+                <div class="slds-border_top slds-border_bottom slds-p-vertical_medium">
+                    <div class="demo-only">
+                        <div class="slds-is-relative">
+                            <div class="slds-notify slds-notify_toast slds-theme_success slds-align_absolute-center"
+                                role="status">
+                                <span class="slds-assistive-text">success</span>
+                                <div class="slds-notify__content">
+                                    <h2 class="slds-text-heading_small">Request has been submitted successfully.</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Actions/Buttons-->
+                    <div class="slds-text-align_center slds-p-vertical_medium">
+                        <lightning-button
+                            class="slds-m-around_small slds-text-align_right slds-p-vertical_medium slds-p-right_large"
+                            type="cancel" label="Back to Opportunity" onclick={handleOpportunityRedirect}>
+                        </lightning-button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+
+
+        <template if:true={loading}>
+            <div class="slds-spinner_container">
+                <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+    </lightning-card>
+
+</template>

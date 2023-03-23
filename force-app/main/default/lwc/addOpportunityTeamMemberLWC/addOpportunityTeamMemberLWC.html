@@ -1,0 +1,241 @@
+<template>  
+    <template if:true={isTeamMemCreationModalOpen}>
+       <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open slds-modal_large">
+           <div class="slds-modal__container">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeTeamMemCreationModal}>
+                <lightning-icon icon-name="utility:close"
+                    alternative-text="close"
+                    variant="inverse"
+                    size="small" ></lightning-icon>
+                <span class="slds-assistive-text">Close</span>
+            </button>
+                   <lightning-card>
+                       
+                           <div class="slds-align_absolute-center" style="height: 3rem;font-size: x-large;font-weight: bold;">
+                               <span>Opportunity TAG Member Creation</span>
+                           </div>
+    
+                           <template if:true={hasError}>
+                                <template if:true={error}>
+                                        <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                                            <span class="slds-assistive-text">Error</span>
+                                            <h2>Error Occurred !!</h2>
+                                         </div>
+                                        <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                                            <h2>{error}</h2>
+                                        </div>
+                                </template>
+                            </template>
+                            <template if:false={hasError}>
+                           <div class="slds-p-horizontal_small">
+                               <div class="progressIndicator slds-p-vertical_medium" style="height: 50px;margin-top: 20px;">
+                                   <lightning-progress-indicator current-step={currentStep} type="base" variant="base">
+                                       <lightning-progress-step value="1" label="1. Manage Opportunity TAG Members"></lightning-progress-step>
+                                       <lightning-progress-step value="2" label="2. Add Opportunity TAG Members"></lightning-progress-step>
+                                       <lightning-progress-step value="3" label="3. Edit Opportunity TAG Members"></lightning-progress-step>
+                                   </lightning-progress-indicator>
+                               </div>
+                           </div>
+    
+                           <template if:true={showFirstStep}>
+                               <div class="stepOne">
+                                   <div class="slds-align_absolute-center " style="height: 3rem;font-weight: bold;">
+                                       <span>Step 1. Manage Opportunity TAG Members</span>
+                                   </div>
+    
+                                   
+                                   <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1" >
+                                       <div style="max-height:350px;overflow-y:scroll">
+                                           <lightning-card>
+                                               <lightning-datatable
+                                               key-field="Id"
+                                               data={otmList}
+                                               columns={columns}
+                                               hide-checkbox-column
+                                               onrowaction={handleRowAction}></lightning-datatable>
+                                              
+                                           </lightning-card>
+                                        </div>
+                                              
+                                              <br/>
+                                              <lightning-button variant="brand" label="Back To Opportunity" title="Primary action" onclick={closeTeamMemCreationModal} class="slds-m-left_x-small slds-float_left" style="margin-bottom:1%;"></lightning-button>
+                                              <lightning-button variant="brand" label="Add TAG Member" title="Primary action" onclick={handleClick} class="slds-m-left_x-small slds-float_right" style="margin-right: 3%; margin-bottom:1%; "></lightning-button>
+                                             
+                                              <br/>
+                                        </div>
+                               </div>
+                           </template>
+    
+                           <template if:true={showSecondStep}>
+                               <div class="stepTwo">
+                                   <header class="slds-modal__header">
+                                       <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeTeamMemCreationModal}>
+                                           <lightning-icon icon-name="utility:close"
+                                               alternative-text="close"
+                                               variant="inverse"
+                                               size="small" ></lightning-icon>
+                                           <span class="slds-assistive-text">Close</span>
+                                       </button>
+                                       <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Step 2. Add Opportunity TAG Members</h2>
+                                   </header>
+    
+                                   <template if:true={hasError}>
+                                       <template if:true={error}>
+                                           <c-error-panel errors={error} friendly-message="Error saving the details"></c-error-panel>
+                                       </template>
+                                   </template>
+                                   
+                                    <div class="slds-modal__content slds-p-around_medium">
+                                        <lightning-button variant="brand" label="Add Row" title="Primary action" onclick={addInitialRow} class="slds-m-left_x-small slds-float_left"></lightning-button>
+                                        <br/><br/>
+                                        <lightning-card>
+                                            <div style="max-height:320px;overflow-y:scroll">                                              
+                                                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped slds-border_top slds-border_bottom slds-border_right slds-border_left" >
+                                                <thead>
+                                                    <tr class="slds-text-title_caps">
+                                                        <th scope="col">
+                                                            <div class="slds-truncate" title="Type">User</div>
+                                                        </th>
+                                                        <th scope="col">
+                                                            <div class="slds-truncate" title="Action">Roles</div>
+                                                        </th>
+                                                        <th scope="col">
+                                                            <div class="slds-truncate" title="Action">Additional Roles</div>
+                                                        </th>
+                                                        <th scope="col">
+                                                            <div class="slds-truncate" title="Action"></div>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <template for:each={credList} for:item="cred" for:index="Index">
+                                                        <tr key={cred.Index}>
+                                                            <td>
+                                                            <div>
+                                                                <c-generic-search-component
+                                                                    data-generic-index={cred.Index}
+                                                                    obj-name="user"
+                                                                    icon-name="standard:user"
+                                                                    label-name=""
+                                                                    placeholder="Select User" 
+                                                                    fields={fields}
+                                                                    display-fields={displayFields}
+                                                                    onlookup={handleLookup} 
+                                                                    source-id={cred.Index}
+                                                                    filter={cred.filterClause}
+                                                                    ></c-generic-search-component>
+                                                                    
+                                                            </div>
+                                                            </td>
+                                                            <td>
+                                                                <div>
+                                                                    <lightning-combobox name="View" label="Select Role" class="comboBox"
+                                                                        value={selectedViewvalue} options={teamRoleList} placeholder={selectedViewvalue}
+                                                                        onchange={handleViewChange}  data-id={cred.Index} required>
+                                                                    </lightning-combobox>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div>
+                                                                    <template if:true={taglVals.data}>
+                                                                        <lightning-dual-listbox name="languages"
+                                                                                                label="Select Additional Roles"
+                                                                                                source-label="Available"
+                                                                                                selected-label="Selected"
+                                                                                                field-level-help="Select TAG Members"
+                                                                                                options={taglVals.data.values}
+                                                                                                data-id={cred.Index}
+                                                                                                onchange={handleTagChange}
+                                                                                                size="3"></lightning-dual-listbox>
+                                                                    </template>
+                                                                </div>
+                                                            </td>
+                                                            <td style="vertical-align: bottom;padding-bottom: 1%;">
+                                                            <div if:false={cred.isFirst}>
+                                                                <a onclick={removeRow} data-id={cred.Index}>
+                                                                    <lightning-icon icon-name="utility:delete" size="small"></lightning-icon>
+                                                                    <span class="slds-assistive-text">Delete</span>
+                                                                </a>
+                                                            </div>
+                                                            </td>
+                                                        </tr>
+                                                    </template>
+                                                </tbody>
+                                                </table>   
+                                        
+                                    </div>
+                                    <br/><br/>
+                                        <lightning-button variant="brand" label="Previous" title="Primary action" class="slds-m-left_x-small slds-float_left"  style="margin-bottom:4%; " onclick={previous}></lightning-button>
+                                        <lightning-button variant="brand" label="Back To Opportunity" title="Primary action" onclick={closeTeamMemCreationModal}  style="margin-bottom:4%; " class="slds-m-left_x-small slds-float_left"></lightning-button>
+                                        <lightning-button variant="brand" label=" Save  " title="Primary action" class="slds-m-left_x-small slds-float_right" style="margin-right: 3%; margin-bottom:1%; " disabled={isDisabled} onclick={submitOTMRequest}></lightning-button>
+                                    </lightning-card>
+                                    </div>
+                                </div>
+                           </template>
+                           <template if:true={showThirdStep}>
+                            <div class="stepThree">
+                            
+                                <div class="slds-align_absolute-center " style="height: 3rem;font-weight: bold;">
+                                    <span>Step 3. Edit Opportunity TAG Members</span>
+                                </div>
+                                <div class="slds-modal__content slds-p-around_medium">
+                                    <lightning-record-edit-form
+                                        object-api-name="OpportunityTeamMember"
+                                        record-id={recordToEdit}>
+    
+                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped slds-border_top slds-border_bottom slds-border_right slds-border_left">
+                                        
+                                        <tbody>
+                                            <tr class="slds-text-title_caps">
+                                                <td scope="col">
+                                                    <div class="slds-truncate" title="Type">User</div>
+                                                </td>
+                                                <td scope="col">
+                                                    <div class="slds-truncate" title="Type"><lightning-input-field field-name={userField} value={existingUserVal} variant="label-hidden"> </lightning-input-field></div>
+                                                </td>
+                                            </tr>
+                                            <tr class="slds-text-title_caps">
+                                                <td scope="col">
+                                                    <div class="slds-truncate" title="Type">Role</div>
+                                                </td>
+                                                <td scope="col">
+                                                    <div title="Type"><lightning-combobox name="View" class="comboBox"
+                                                        value={existingRoleVal} options={teamRoleList}
+                                                        onchange={onRoleChange}>
+                                                    </lightning-combobox></div>
+                                                </td>
+                                            </tr>
+                                            <tr class="slds-text-title_caps">
+                                                <td scope="col">
+                                                    <div class="slds-truncate" title="Type">Additional Roles</div>
+                                                </td>
+                                                <td scope="col">
+                                                    <div class="slds-truncate" title="Type"><lightning-input-field field-name={tagField} value={existingTagVal} onchange={onTagChange} variant="label-hidden"> </lightning-input-field></div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        </table>
+                                        <div class="slds-var-m-top_medium">
+                                            <lightning-button variant="brand" label="Previous" title="Primary action" class="slds-m-left_x-small slds-float_left" onclick={previous}></lightning-button>
+                                            <lightning-button variant="brand" label="Back To Opportunity" title="Primary action" onclick={closeTeamMemCreationModal} class="slds-m-left_x-small slds-float_left"></lightning-button>
+                                            <lightning-button variant="brand" type="submit" label="Save" class="slds-m-left_x-small slds-float_right" onclick={saveEditForm} disabled={hasEditFormChanged} ></lightning-button>
+                                        </div>
+                                    </lightning-record-edit-form>
+                                </div>
+                                </div>
+                           </template>
+                        </template>
+                           <template if:true={loading}>
+                               <div class="slds-spinner_container">
+                                   <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+                               </div>
+                           </template>
+    
+                   </lightning-card>
+           </div>
+       </section>
+       <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    
+    <c-custom-toast-component auto-close-time="3000"></c-custom-toast-component>
+    </template>

@@ -1,0 +1,16 @@
+.dynamic-table.dynamic-table-scrollbar thead th, .dynamic-table thead th a, .dynamic-table thead th span, .dynamic-table thead th a:before {
+    background-color: #16325c !important;
+    color: white;
+}
+.dynamic-table.dynamic-table-scrollbar a svg, .dynamic-table a svg:hover {
+    fill: white!important;
+}
+.dynamic-table.dynamic-table-scrollbar td svg{
+	fill: #16325c!important;
+}
+.dynamic-table.dynamic-table-scrollbar .slds-table{
+	background-color: #f3f3f3 !important;
+}
+.dynamic-table.dynamic-table-scrollbar .slds-spinner_container, .dynamic-table .slds-spinner_container{
+    background-color: rgba(255, 255, 255, 0);
+}

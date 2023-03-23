@@ -1,0 +1,49 @@
+<template>
+    <template if:true={loading}>
+        <div class="slds-spinner_container">
+            <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+        </div>
+    </template>
+    <td style="text-align:center;" data-label="Activity">
+        {record.Activity__c}
+    </td>
+    <td style="text-align:center;" data-label="Partner">
+        <template if:true={record.Partner__c}>
+            {record.Partner__r.Name}
+        </template>
+    </td>
+    <td style="text-align:center;" data-label="Contact">
+        <template if:false={isEdit}>
+            <template if:true={record.Partner_Contact__c}>
+                {record.Partner_Contact__r.Name}&nbsp;&nbsp;
+            </template>
+            <lightning-button-icon style="float: right;" icon-name="utility:edit" variant="bare" alternative-text="Edit" icon-class="dark"
+                onclick={editrecord}></lightning-button-icon>
+        </template>
+        <template if:true={isEdit}>
+            <c-custom-lookup-l-w-c style="display: inline-block;width:325px;" form-style="display:inline:block;" field-label=""
+                child-object-api-name='Cosell_Activities__c' target-field-api-name='Partner_Contact__c'
+                onvalueselected={handleValueSelcted}>
+            </c-custom-lookup-l-w-c>
+            &nbsp;&nbsp;
+            <lightning-button-icon icon-name="utility:save" variant="bare" alternative-text="Save" icon-class="dark"
+                onclick={saveContact}></lightning-button-icon>&nbsp;&nbsp;
+            <lightning-button-icon icon-name="utility:close" variant="bare" alternative-text="Cancel" icon-class="dark"
+                onclick={canceledit}></lightning-button-icon>
+        </template>
+    </td>
+    <td style="text-align:center;" data-label="Status">
+        {record.Status__c}
+    </td>
+    <td style="text-align:center;" data-label="Actions">
+        <template if:true={showInvite}>
+            <a href="#" onclick={settoinvite}>Invite | </a>
+        </template>
+        <template if:true={showWithdraw}>
+            <a href="#" onclick={settowithdraw}>Withdraw | </a>
+        </template>
+        <template if:true={showComplete}>
+            <a href="#" onclick={settocomplete}>Complete</a>
+        </template>
+    </td>
+</template>

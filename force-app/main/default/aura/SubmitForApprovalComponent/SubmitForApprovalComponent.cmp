@@ -1,0 +1,28 @@
+<aura:component implements="force:hasRecordId,flexipage:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" controller="SubmitForApprovalNodeConfig" >
+    <aura:attribute name="showModal" type="boolean" default="false"/>
+    <aura:attribute name="recordId" type="Id" />
+    <aura:html tag="style">
+        .slds-modal__container{
+        width: 40% !important;
+        max-width: 40% !important;
+        }
+    </aura:html>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:if isTrue="{!v.showModal}">
+        <br/>
+        <p style=" font-size: 14px;">Once you submit this record for approval, you might not be able to edit 
+            it or recall it from the approval process depending on your settings. Continue?
+        </p>
+        <br/> 
+        <div class="slds-float_right">
+            <lightning:button variant="neutral"
+                              label="Cancel"
+                              title="Cancel"
+                              onclick="{!c.hideModal}"/>
+            <lightning:button variant="brand"
+                              label="OK"
+                              title="OK"
+                              onclick="{!c.submitForApproval}"/>
+        </div>
+    </aura:if>
+</aura:component>

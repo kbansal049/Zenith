@@ -1,0 +1,106 @@
+<template>
+    <div class="sf_main">
+        <div class="sf_uppr">
+        
+            
+            <img src={iconright} onclick={handledot} data-value="id1" class="sf_imgIcon rightIcon" >
+
+            <img src={iconleft} onclick={handledot} data-value="id2" class="sf_imgIcon leftIcon" style="z-index: 33;">
+            
+            <!-- style="position: absolute;
+            z-index: 1;
+            top: 33%;
+            left: -2%;" -->
+        <p class="textHeading">Featured video</p>
+
+        <div class="slds-carousel">
+            
+            <div class="slds-carousel__stage" style="text-align: center;border-radius:10px 10px 0px 0px">
+                <div class="slds-carousel__panels" style="transform:translateX(-0%);" data-target-id="panel">
+    
+                    <div id="content-id-02" class="slds-carousel__panel " role="tabpanel" aria-hidden="false"
+                        aria-labelledby="indicator-id-02" >
+                        <div class="sf_contentContainer" data-target-id="contentMain1">
+                            
+                        <div class="iframeStyling">
+                            <iframe  src={redirecturl1}
+                                class="yt_player_iframe"
+                            frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+
+                            <span if:true={title11} class="sf_adtitle fonttexta" data-target-id="titl1">{title11}</span>
+                            <span if:true={subtitl1} class="sf_adSubtitle fontlato" data-target-id="subtitle1">{subtitl1}</span>
+    
+                          
+                        </div>
+                    </div>
+                    
+                    <div id="content-id-01" class="slds-carousel__panel" role="tabpanel" aria-hidden="true"
+                        aria-labelledby="indicator-id-01">
+                        <div class="sf_contentContainer" data-target-id="contentMain2">
+
+                            <iframe  src={redirecturl2}
+                            class="yt_player_iframe"
+                            frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+   
+                            <span if:true={title12} class="sf_adtitle fonttexta" data-target-id="titl2">{title12}</span>
+                            <span  if:true={subtitl2} class="sf_adSubtitle fontlato" data-target-id="subtitle2">{subtitl2}</span>
+                           
+                        </div>
+                    </div>
+                    <div id="content-id-03" class="slds-carousel__panel" role="tabpanel" aria-hidden="true"
+                        aria-labelledby="indicator-id-01">
+                        <div class="sf_contentContainer" data-target-id="contentMain3">
+                            <iframe  src={redirecturl3}
+                            class="yt_player_iframe"
+                            frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+   
+                            
+                            <span if:true={title13} class="sf_adtitle fonttexta" 
+                            
+                            
+                            data-target-id="titl3">{title13}</span>
+                            <span  if:true={subtitl3} class="sf_adSubtitle " data-target-id="subtitle3">{subtitl3}</span>
+                           
+    
+                        </div>
+                    </div>
+    
+                </div>
+            </div>
+        </div>
+        
+       
+       
+        
+        <!-- style="position: absolute;
+        z-index: 1;
+        top: 33%;
+        right: -2%;"     -->
+      
+      
+        <div class="sf_dotsContainer slds-hide">
+            <span style="width: 8px;
+            height: 8px;
+            background: #FFFFFF 0% 0% no-repeat padding-box;
+            border-radius:4px;
+            border: 1px solid #11567F;
+            display:inline-block" data-target-id="dot1"></span>
+            <span style="width: 8px;
+            height: 8px;
+            background: #FFFFFF 0% 0% no-repeat padding-box;
+            border: 1px solid #11567F;
+            border-radius:4px;
+            display:inline-block;
+            margin:0px 4px 0px 4px" data-target-id="dot2"></span>
+            <span style="width: 8px;
+            height: 8px;
+            background: #FFFFFF 0% 0% no-repeat padding-box;
+            border: 1px solid #11567F;
+            border-radius:4px;
+            display:inline-block" data-target-id="dot3"></span>
+    
+        </div>
+    </div>
+    </div>
+    </template>

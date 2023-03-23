@@ -1,0 +1,15 @@
+<apex:page showHeader="true" sidebar="false" standardController="Opportunity_Partner__c" extensions="opportunityPartnersController">
+    <apex:includeLightning />
+    <div id="lightning" ></div> 
+    <script>
+        var OpportunityId = '{!opportunityId}';
+        $Lightning.use("c:OpportunityPartnerCompCPQApp", function() {
+            $Lightning.createComponent("c:OpportunityPartnerCompCPQ",
+                { "OppId" : OpportunityId },
+                "lightning",function(cmp) {
+                
+                }
+            );
+        });
+    </script>
+</apex:page>

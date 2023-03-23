@@ -1,0 +1,68 @@
+<apex:page controller="QuoteApproval_VFController" sidebar="false" showHeader="false" lightningStylesheets="true">
+    <script>
+        function confirmAndClose() {
+            alert('Thank You, your response is captured.');
+           // window.close();
+        }
+        </script>
+        <style type="text/css">
+
+        .pageModalBackdrop {
+            background-color: #FFF;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            opacity: 0.5;
+            height: 100%;
+            width: 100%;
+        }
+
+        .pageLoadingIcon {
+            background-image: url("/img/loading32.gif");
+            background-repeat: no-repeat;
+            background-size: 30px 30px;
+            height: 50px;
+            width: 50px;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            opacity: 1;
+            z-index: 9999;
+        }
+
+        </style>
+    
+    <apex:slds />    
+
+    <apex:form >
+        <apex:pageBlock >
+            <apex:pageMessages />
+            <apex:pageBlockSection columns="2" id="appSec">
+                <apex:outputPanel >
+                    <apex:inputTextarea styleClass="slds-textarea" value="{!approvalComments}" title="Approval Comments" style="width: 100%;height: 80px;">
+                    </apex:inputTextarea>
+                </apex:outputPanel>
+                <apex:outputPanel >
+                    <br/>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <apex:commandButton title="Approve" value="Approve" action="{!approve}" styleClass="slds-button slds-button--brand" oncomplete="confirmAndClose();" status="pageLoadingModal"/>&nbsp;&nbsp;&nbsp;
+                    <apex:commandButton title="Reject" value="Reject" action="{!reject}" styleClass="slds-button slds-button--brand" oncomplete="confirmAndClose();" status="pageLoadingModal"/>
+                </apex:outputPanel>
+            </apex:pageBlockSection>
+            <br />
+
+        <div style="padding-left : 9px;">
+            <c:ShowCartEmailViewComponent InputProposal="{!approval.Quote__c}" InputInstanceURL="{!approval.Quote__c}" InputApprovalRequest="{!approval.id}" InputApproverId="{!$User.Id}" InputIsAssignment="False" InputIsApproved="False" InputIsApproveOrReject="True"/>
+        </div>    
+        </apex:pageBlock>
+
+        <!-- Loading Modal -->
+            <apex:actionStatus id="pageLoadingModal">
+                <apex:facet name="start"> -->
+                    <div class="pageModalBackdrop">
+                    </div>
+                    <div class="pageLoadingIcon">
+                    </div>
+                </apex:facet>
+            </apex:actionStatus>
+     </apex:form>
+</apex:page>

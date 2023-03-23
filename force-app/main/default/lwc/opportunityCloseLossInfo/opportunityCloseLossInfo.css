@@ -1,0 +1,8 @@
+.exampleHolder{
+    position: absolute;
+    display: inline-block;
+    margin-left: 15px;
+    width: 100%;
+    vertical-align: middle;
+    white-space: nowrap;
+}
